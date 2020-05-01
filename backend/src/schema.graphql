@@ -3,7 +3,7 @@ type Query {
 }
 
 type Mutation {
-  createUser(email: String!, password: String!, isAdmin: Boolean!): User
+  register(email: String!, password: String!, isAdmin: Boolean!): User
 }
 
 type User {

@@ -1,21 +1,12 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('../generated/prisma-client')
 
+const Query = require('./resolvers/Query')
+const Mutation = require('./resolvers/Mutation')
+
 const resolvers = {
-    Query: {
-        user: (parent, { id }, context) => {
-            return context.prisma.user({ id })
-        }
-    },
-    Mutation: {
-        createUser(parent, { isAdmin, email, password }, context) {
-            return context.prisma.createUser({
-                isAdmin,
-                email,
-                password
-            })
-        }
-    }
+    Query, 
+    Mutation,
 }
 
 const server = new GraphQLServer({
