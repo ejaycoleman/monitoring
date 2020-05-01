@@ -1,5 +1,5 @@
 type Query {
-  user(id: ID!): User
+  currentUser: User!
 }
 
 type Mutation {
@@ -10,7 +10,6 @@ type Mutation {
 type User {
   id: ID!
   email: String!
-  password: String!
   isAdmin: Boolean!
 }
 
