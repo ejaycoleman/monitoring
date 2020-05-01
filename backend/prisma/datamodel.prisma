@@ -1,6 +1,6 @@
 type User {
   id: ID! @id
   isAdmin: Boolean! @default(value: false)
-  email: String!
+  email: String! @unique
   password: String!
 }

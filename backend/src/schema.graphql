@@ -4,6 +4,7 @@ type Query {
 
 type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
+  login(email: String!, password: String!): LoginResponse
 }
 
 type User {
@@ -11,4 +12,9 @@ type User {
   email: String!
   password: String!
   isAdmin: Boolean!
+}
+
+type LoginResponse {
+  token: String
+  user: User
 }
