@@ -1,4 +1,4 @@
-async function currentUser(parent, { id }, {user, prisma}) {
+async function currentUser(parent, args, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
