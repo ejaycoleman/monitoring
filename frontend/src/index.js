@@ -20,6 +20,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import App from './App'
+import Login from './Login'
 // import Contact from './Contact'
 
 // import Login from './Login'
@@ -30,31 +31,32 @@ import './index.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { Menu } from 'antd';
 
-// import { ApolloClient } from 'apollo-client';
-// import { createHttpLink } from 'apollo-link-http';
-// import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 // import { ApolloClient } from 'apollo-client';
 // import { createHttpLink } from 'apollo-link-http';
 // import { InMemoryCache } from 'apollo-cache-inmemory';
-// import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 
-// import auth0Client from './util/Auth';
+// import authClient from './util/Auth';
 
-// import { setContext } from 'apollo-link-context'
+import { setContext } from 'apollo-link-context'
 
-// const authLink = setContext((_, { headers }) => {
-//   if (!auth0Client.isAuthenticated()) return
+const authLink = setContext((_, { headers }) => {
+  // if (!authClient.isAuthenticated()) return
 
-//   const token = auth0Client.getIdToken()
-//   console.log(token)
-//   return {
-//     headers: {
-//       ...headers,
-//       authorization: token ? `Bearer ${token}` : ''
-//     }
-//   }
-// })
+  // const token = authLink.getIdToken()
+  // console.log(token)
+  const token = localStorage.getItem('token')
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  }
+})
 
 // const httpLink = createHttpLink({
 //   uri: 'http://localhost:4000',
@@ -137,7 +139,7 @@ class AppRouter extends React.Component {
           </Menu>
           <Route path="/" exact component={App} />
           {/* <Route path="/contact/" component={Contact} /> */}
-          <Route path="/login/" component={App} />
+          <Route path="/login/" component={Login} />
           {/* <Route exact path='/callback' component={Callback} />           */}
         </div>
       </Router>
@@ -146,4 +148,4 @@ class AppRouter extends React.Component {
 }
 
 // ReactDOM.render(<ApolloProvider client={client}></ApolloProvider>, document.getElementById('root'));
-ReactDOM.render(<React.StrictMode><AppRouter/></React.StrictMode>, document.getElementById('root'))
+ReactDOM.render(<ApolloProvider client={client}><React.StrictMode><AppRouter/></React.StrictMode></ApolloProvider>, document.getElementById('root'))
