@@ -1,16 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
-import App from './App'
-import Login from './Login/index'
+
 import './index.css';
-import { BrowserRouter as Router, Route, NavLink, Redirect } from "react-router-dom";
-import { Button } from 'antd';
+import { BrowserRouter as Router } from "react-router-dom";
+
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
 import { setContext } from 'apollo-link-context'
+
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import rootReducer from './reducers'
+import Navigation from './Navigation';
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token')
@@ -31,6 +35,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const store = createStore(rootReducer)
+
 class AppRouter extends React.Component {
   constructor(props) {
     super(props);
@@ -50,28 +56,13 @@ class AppRouter extends React.Component {
     this.setState({current: window.location.pathname.replace(/\//g, '') === '' ? 'home' : window.location.pathname.replace(/\//g, '')})
   }
 
-  signOut = () => {
-    localStorage.removeItem('AUTH_TOKEN')
-    return <Redirect to="/" />
-  }
-
   render() {
     return (
       <Router>
-        <div>
-            <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "red"}} to='/'>Home</NavLink>
-            { 
-              localStorage.getItem("AUTH_TOKEN") ?
-              <Button type="danger" onClick={() => this.signOut()}>Sign Out</Button>
-              :
-              <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "red"}} to='/login'>Login</NavLink>
-            }
-          <Route path="/" exact component={App} />
-          <Route path="/login/" component={Login} />
-        </div>
+        <Navigation/>
       </Router>
     )
   }
 }
 
-ReactDOM.render(<ApolloProvider client={client}><React.StrictMode><AppRouter/></React.StrictMode></ApolloProvider>, document.getElementById('root'))
+ReactDOM.render(<ApolloProvider client={client}><React.StrictMode><Provider store={store}><AppRouter/></Provider></React.StrictMode></ApolloProvider>, document.getElementById('root'))
