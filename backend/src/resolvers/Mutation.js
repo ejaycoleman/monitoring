@@ -51,36 +51,37 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
         throw new Error('Incorrect Privileges')
     }
 
-    myTasks = {
-        "tasks":
-            [
-                {
-                    "number": 17,
-                    "command": "retrievelogs",
-                    "frequency": 1,
-                    "period": "weeks"
-                },
-                {
-                    "number": 23,
-                    "command": "retrievestats",
-                    "frequency": 1,
-                    "period": "days"
-                },
-                {
-                    "number": 35,
-                    "command": "refreshcache",
-                    "frequency": 1,
-                    "period": "months"
-                },
-                {
-                    "number": 49,
-                    "command": "obtainupdates",
-                    "frequency": 2,
-                    "period": "weeks"
-                }
-            ]
-    }
+    // myTasks = {
+    //     "tasks":
+    //         [
+    //             {
+    //                 "number": 17,
+    //                 "command": "retrievelogs",
+    //                 "frequency": 1,
+    //                 "period": "weeks"
+    //             },
+    //             {
+    //                 "number": 23,
+    //                 "command": "retrievestats",
+    //                 "frequency": 1,
+    //                 "period": "days"
+    //             },
+    //             {
+    //                 "number": 35,
+    //                 "command": "refreshcache",
+    //                 "frequency": 1,
+    //                 "period": "months"
+    //             },
+    //             {
+    //                 "number": 49,
+    //                 "command": "obtainupdates",
+    //                 "frequency": 2,
+    //                 "period": "weeks"
+    //             }
+    //         ]
+    // }
     
+    myTasks = JSON.parse(args.tasks)
 
     created = []
 

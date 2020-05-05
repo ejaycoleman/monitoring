@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
 import App from './App'
 import Login from './Login/index'
+import Upload from './Upload/index'
 
 function Navigation() {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ function Navigation() {
         <div>
             <Menu mode="horizontal" style={{paddingLeft: 10, paddingRight: 10}}>
                 <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/'>Home</NavLink>
+                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/upload'>Upload</NavLink>
                 <div style={{float: 'right'}}>
                     { 
                         isLogged ?
@@ -31,6 +33,7 @@ function Navigation() {
             </Menu>   
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
+            <Route path="/upload/" component={Upload} />
         </div>
     )
 }
