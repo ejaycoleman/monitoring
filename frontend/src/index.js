@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import jwt from 'jsonwebtoken'
 import { BrowserRouter as Router } from "react-router-dom";
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
@@ -35,12 +36,13 @@ const client = new ApolloClient({
 });
 
 const store = createStore(rootReducer)
-
 const AppRouter = () => {
   const dispatch = useDispatch()
-
-  if (localStorage.getItem('AUTH_TOKEN')) {
+  const session = jwt.decode(localStorage.getItem('AUTH_TOKEN'))
+  if (session && new Date().getTime() / 1000 < session.exp ) {
     dispatch(login())
+  } else {
+    localStorage.removeItem('AUTH_TOKEN')
   }
 
   return (
