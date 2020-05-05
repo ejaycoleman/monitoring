@@ -6,6 +6,9 @@ const Mutation = require('./resolvers/Mutation')
 
 const jwt = require('jsonwebtoken')
 
+const CronJob = require('cron').CronJob;
+const fs = require('fs')
+
 const getUser = token => {
     try {
         if (token) {
@@ -37,4 +40,14 @@ const server = new GraphQLServer({
     }
 })
 
+var job = new CronJob('0 * * * * *', function() {
+    fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
+        files.forEach(file => {
+        //   console.log(file);
+            console.log(file.split("_")[2])
+        });
+    });
+});
+
+job.start();
 server.start(() => console.log('Server is running on http://loclahost:4000'))
