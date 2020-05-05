@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'antd';
+import { Button, Menu } from 'antd';
 import { Route, NavLink, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
@@ -18,16 +18,20 @@ function Navigation() {
 
     return (
         <div>
-            <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "red"}} to='/'>Home</NavLink>
-            { 
-                isLogged ?
-                <Button type="danger" onClick={() => signOut()}>Sign Out</Button>
-                :
-                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "red"}} to='/login'>Login</NavLink>
-            }
+            <Menu mode="horizontal" style={{paddingLeft: 10, paddingRight: 10}}>
+                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/'>Home</NavLink>
+                <div style={{float: 'right'}}>
+                    { 
+                        isLogged ?
+                        <Button type="danger" onClick={() => signOut()}>Sign Out</Button>
+                        :
+                        <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'>Login</NavLink>
+                    }
+                </div>
+            </Menu>   
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
-        </div>   
+        </div>
     )
 }
 
