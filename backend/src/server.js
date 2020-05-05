@@ -43,11 +43,22 @@ const server = new GraphQLServer({
 var job = new CronJob('0 * * * * *', function() {
     fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
         files.forEach(file => {
-        //   console.log(file);
             console.log(file.split("_")[2])
         });
     });
 });
 
 job.start();
+
+
+
 server.start(() => console.log('Server is running on http://loclahost:4000'))
+
+const loadTasks = () => {
+    const tasks = JSON.parse(fs.readFileSync('./tasks.json')).tasks;
+    console.log(tasks)
+
+    console.log(server.Users)
+}
+
+loadTasks();

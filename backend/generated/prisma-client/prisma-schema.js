@@ -3,7 +3,15 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateUser {
+/* GraphQL */ `type AggregateExecutions {
+  count: Int!
+}
+
+type AggregateTask {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -11,9 +19,135 @@ type BatchPayload {
   count: Long!
 }
 
+scalar DateTime
+
+type Executions {
+  id: ID!
+  task: ID!
+  datetime: DateTime!
+}
+
+type ExecutionsConnection {
+  pageInfo: PageInfo!
+  edges: [ExecutionsEdge]!
+  aggregate: AggregateExecutions!
+}
+
+input ExecutionsCreateInput {
+  id: ID
+  task: ID!
+  datetime: DateTime!
+}
+
+type ExecutionsEdge {
+  node: Executions!
+  cursor: String!
+}
+
+enum ExecutionsOrderByInput {
+  id_ASC
+  id_DESC
+  task_ASC
+  task_DESC
+  datetime_ASC
+  datetime_DESC
+}
+
+type ExecutionsPreviousValues {
+  id: ID!
+  task: ID!
+  datetime: DateTime!
+}
+
+type ExecutionsSubscriptionPayload {
+  mutation: MutationType!
+  node: Executions
+  updatedFields: [String!]
+  previousValues: ExecutionsPreviousValues
+}
+
+input ExecutionsSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ExecutionsWhereInput
+  AND: [ExecutionsSubscriptionWhereInput!]
+  OR: [ExecutionsSubscriptionWhereInput!]
+  NOT: [ExecutionsSubscriptionWhereInput!]
+}
+
+input ExecutionsUpdateInput {
+  task: ID
+  datetime: DateTime
+}
+
+input ExecutionsUpdateManyMutationInput {
+  task: ID
+  datetime: DateTime
+}
+
+input ExecutionsWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  task: ID
+  task_not: ID
+  task_in: [ID!]
+  task_not_in: [ID!]
+  task_lt: ID
+  task_lte: ID
+  task_gt: ID
+  task_gte: ID
+  task_contains: ID
+  task_not_contains: ID
+  task_starts_with: ID
+  task_not_starts_with: ID
+  task_ends_with: ID
+  task_not_ends_with: ID
+  datetime: DateTime
+  datetime_not: DateTime
+  datetime_in: [DateTime!]
+  datetime_not_in: [DateTime!]
+  datetime_lt: DateTime
+  datetime_lte: DateTime
+  datetime_gt: DateTime
+  datetime_gte: DateTime
+  AND: [ExecutionsWhereInput!]
+  OR: [ExecutionsWhereInput!]
+  NOT: [ExecutionsWhereInput!]
+}
+
+input ExecutionsWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
+  createExecutions(data: ExecutionsCreateInput!): Executions!
+  updateExecutions(data: ExecutionsUpdateInput!, where: ExecutionsWhereUniqueInput!): Executions
+  updateManyExecutionses(data: ExecutionsUpdateManyMutationInput!, where: ExecutionsWhereInput): BatchPayload!
+  upsertExecutions(where: ExecutionsWhereUniqueInput!, create: ExecutionsCreateInput!, update: ExecutionsUpdateInput!): Executions!
+  deleteExecutions(where: ExecutionsWhereUniqueInput!): Executions
+  deleteManyExecutionses(where: ExecutionsWhereInput): BatchPayload!
+  createTask(data: TaskCreateInput!): Task!
+  updateTask(data: TaskUpdateInput!, where: TaskWhereUniqueInput!): Task
+  updateManyTasks(data: TaskUpdateManyMutationInput!, where: TaskWhereInput): BatchPayload!
+  upsertTask(where: TaskWhereUniqueInput!, create: TaskCreateInput!, update: TaskUpdateInput!): Task!
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteManyTasks(where: TaskWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -40,6 +174,12 @@ type PageInfo {
 }
 
 type Query {
+  executions(where: ExecutionsWhereUniqueInput!): Executions
+  executionses(where: ExecutionsWhereInput, orderBy: ExecutionsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Executions]!
+  executionsesConnection(where: ExecutionsWhereInput, orderBy: ExecutionsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExecutionsConnection!
+  task(where: TaskWhereUniqueInput!): Task
+  tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task]!
+  tasksConnection(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -47,7 +187,142 @@ type Query {
 }
 
 type Subscription {
+  executions(where: ExecutionsSubscriptionWhereInput): ExecutionsSubscriptionPayload
+  task(where: TaskSubscriptionWhereInput): TaskSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type Task {
+  id: ID!
+  command: String!
+  frequency: Int!
+  period: String!
+}
+
+type TaskConnection {
+  pageInfo: PageInfo!
+  edges: [TaskEdge]!
+  aggregate: AggregateTask!
+}
+
+input TaskCreateInput {
+  id: ID
+  command: String!
+  frequency: Int!
+  period: String!
+}
+
+type TaskEdge {
+  node: Task!
+  cursor: String!
+}
+
+enum TaskOrderByInput {
+  id_ASC
+  id_DESC
+  command_ASC
+  command_DESC
+  frequency_ASC
+  frequency_DESC
+  period_ASC
+  period_DESC
+}
+
+type TaskPreviousValues {
+  id: ID!
+  command: String!
+  frequency: Int!
+  period: String!
+}
+
+type TaskSubscriptionPayload {
+  mutation: MutationType!
+  node: Task
+  updatedFields: [String!]
+  previousValues: TaskPreviousValues
+}
+
+input TaskSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TaskWhereInput
+  AND: [TaskSubscriptionWhereInput!]
+  OR: [TaskSubscriptionWhereInput!]
+  NOT: [TaskSubscriptionWhereInput!]
+}
+
+input TaskUpdateInput {
+  command: String
+  frequency: Int
+  period: String
+}
+
+input TaskUpdateManyMutationInput {
+  command: String
+  frequency: Int
+  period: String
+}
+
+input TaskWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  command: String
+  command_not: String
+  command_in: [String!]
+  command_not_in: [String!]
+  command_lt: String
+  command_lte: String
+  command_gt: String
+  command_gte: String
+  command_contains: String
+  command_not_contains: String
+  command_starts_with: String
+  command_not_starts_with: String
+  command_ends_with: String
+  command_not_ends_with: String
+  frequency: Int
+  frequency_not: Int
+  frequency_in: [Int!]
+  frequency_not_in: [Int!]
+  frequency_lt: Int
+  frequency_lte: Int
+  frequency_gt: Int
+  frequency_gte: Int
+  period: String
+  period_not: String
+  period_in: [String!]
+  period_not_in: [String!]
+  period_lt: String
+  period_lte: String
+  period_gt: String
+  period_gte: String
+  period_contains: String
+  period_not_contains: String
+  period_starts_with: String
+  period_not_starts_with: String
+  period_ends_with: String
+  period_not_ends_with: String
+  AND: [TaskWhereInput!]
+  OR: [TaskWhereInput!]
+  NOT: [TaskWhereInput!]
+}
+
+input TaskWhereUniqueInput {
+  id: ID
 }
 
 type User {

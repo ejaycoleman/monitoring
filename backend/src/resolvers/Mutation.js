@@ -41,7 +41,64 @@ async function login(parent, {email, password}, context) {
     }
 }
 
+async function uploadTasksFile(parent, args, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+    const fullUser = await prisma.user({id: user.id})
+    
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    myTasks = {
+        "tasks":
+            [
+                {
+                    "number": 17,
+                    "command": "retrievelogs",
+                    "frequency": 1,
+                    "period": "weeks"
+                },
+                {
+                    "number": 23,
+                    "command": "retrievestats",
+                    "frequency": 1,
+                    "period": "days"
+                },
+                {
+                    "number": 35,
+                    "command": "refreshcache",
+                    "frequency": 1,
+                    "period": "months"
+                },
+                {
+                    "number": 49,
+                    "command": "obtainupdates",
+                    "frequency": 2,
+                    "period": "weeks"
+                }
+            ]
+    }
+    
+
+    created = []
+
+   
+    myTasks.tasks.forEach(async task => {
+        const result = await prisma.createTask({
+            command: task.command,
+            frequency: task.frequency,
+            period: task.period
+        })
+        created.push(result)
+    })
+
+    return created
+}
+
 module.exports = {
     register,
-    login
+    login,
+    uploadTasksFile
 }

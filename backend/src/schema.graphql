@@ -5,6 +5,7 @@ type Query {
 type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
   login(email: String!, password: String!): LoginResponse
+  uploadTasksFile: [Task]
 }
 
 type User {
@@ -16,4 +17,10 @@ type User {
 type LoginResponse {
   token: String
   user: User
+}
+
+type Task {
+  command: String!,
+  frequency: Int!,
+  period: String!
 }

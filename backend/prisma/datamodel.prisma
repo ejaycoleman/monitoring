@@ -4,3 +4,16 @@ type User {
   email: String! @unique
   password: String!
 }
+
+type Task {
+  id: ID! @id,
+  command: String!,
+  frequency: Int!,
+  period: String!
+}
+
+type Executions {
+  id: ID! @id,
+  task: ID!,
+  datetime: DateTime!
+}
