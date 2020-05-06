@@ -40,25 +40,31 @@ const server = new GraphQLServer({
     }
 })
 
-var job = new CronJob('0 * * * * *', function() {
+let taskIngressID = [] 
+
+const taskObj = {}
+
+async function loadTasks() {
+    const myTasks = await prisma.tasks()
+    myTasks.forEach(task => {
+        if (taskIngressID.includes(task.number)) {
+            console.log("FOUND")
+        }
+    })
+}
+
+var job = new CronJob('* * * * * *', function() {
     fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
+        taskIngressID = []
         files.forEach(file => {
-            console.log(file.split("_")[2])
+            const taskId = file.split("_")[2]
+            taskId && taskIngressID.push(parseInt(taskId.match(/\d+/g)[0]))
+            taskId && (taskObj[taskIngressID.push(parseInt(taskId.match(/\d+/g)[0]))] = {date: file.split("_")[0]})
         });
     });
+    console.log(taskObj)
+    loadTasks();
 });
 
 job.start();
-
-
-
-server.start(() => console.log('Server is running on http://loclahost:4000'))
-
-const loadTasks = () => {
-    const tasks = JSON.parse(fs.readFileSync('./tasks.json')).tasks;
-    console.log(tasks)
-
-    console.log(server.Users)
-}
-
-loadTasks();
+server.start(() => console.log('Server is running on http://localhost:4000'))
