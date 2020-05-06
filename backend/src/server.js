@@ -40,29 +40,28 @@ const server = new GraphQLServer({
     }
 })
 
-let taskIngressID = [] 
-
 const taskObj = {}
 
 async function loadTasks() {
     const myTasks = await prisma.tasks()
     myTasks.forEach(task => {
-        if (taskIngressID.includes(task.number)) {
+        if (Object.keys(taskObj).includes(task.number.toString())) {
             console.log("FOUND")
         }
     })
 }
 
-var job = new CronJob('* * * * * *', function() {
+const job = new CronJob('* * * * * *', function() {
     fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
-        taskIngressID = []
         files.forEach(file => {
-            const taskId = file.split("_")[2]
-            taskId && taskIngressID.push(parseInt(taskId.match(/\d+/g)[0]))
-            taskId && (taskObj[taskIngressID.push(parseInt(taskId.match(/\d+/g)[0]))] = {date: file.split("_")[0]})
+            const [ taskDate, taskExecution, last ] = file.split("_")
+            const taskId = last && last.match(/\d+/)[0]
+            if (isNaN(Date.parse(taskDate)) || isNaN(taskExecution) || taskId === null) {
+                return
+            }
+            taskObj[taskId] = {lastExecuted: Date.parse(taskDate)/1000}
         });
     });
-    console.log(taskObj)
     loadTasks();
 });
 
