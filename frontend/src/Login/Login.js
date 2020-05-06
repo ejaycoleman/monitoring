@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button } from 'antd';
 import { login } from '../actions'
 import { useDispatch } from 'react-redux'
 
@@ -26,10 +25,10 @@ const Login = props => {
 			/>
 			</div>
 			<div className="flex mt3">
-			<Button onClick={() => props.loginMutation({ email, password }).then(() => {
+			<button onClick={() => props.loginMutation({ email, password }).then(() => {
 				dispatch(login())
 				props.history.push(`/`)
-			})}>LOGIN</Button>
+			})}>LOGIN</button>
 			</div>
 		</div>
 	) 

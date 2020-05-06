@@ -16,7 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  executions: (where?: ExecutionsWhereInput) => Promise<boolean>;
+  execution: (where?: ExecutionWhereInput) => Promise<boolean>;
   task: (where?: TaskWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -40,25 +40,25 @@ export interface Prisma {
    * Queries
    */
 
-  executions: (where: ExecutionsWhereUniqueInput) => ExecutionsNullablePromise;
-  executionses: (args?: {
-    where?: ExecutionsWhereInput;
-    orderBy?: ExecutionsOrderByInput;
+  execution: (where: ExecutionWhereUniqueInput) => ExecutionNullablePromise;
+  executions: (args?: {
+    where?: ExecutionWhereInput;
+    orderBy?: ExecutionOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Executions>;
-  executionsesConnection: (args?: {
-    where?: ExecutionsWhereInput;
-    orderBy?: ExecutionsOrderByInput;
+  }) => FragmentableArray<Execution>;
+  executionsConnection: (args?: {
+    where?: ExecutionWhereInput;
+    orderBy?: ExecutionOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => ExecutionsConnectionPromise;
+  }) => ExecutionConnectionPromise;
   task: (where: TaskWhereUniqueInput) => TaskNullablePromise;
   tasks: (args?: {
     where?: TaskWhereInput;
@@ -103,22 +103,22 @@ export interface Prisma {
    * Mutations
    */
 
-  createExecutions: (data: ExecutionsCreateInput) => ExecutionsPromise;
-  updateExecutions: (args: {
-    data: ExecutionsUpdateInput;
-    where: ExecutionsWhereUniqueInput;
-  }) => ExecutionsPromise;
-  updateManyExecutionses: (args: {
-    data: ExecutionsUpdateManyMutationInput;
-    where?: ExecutionsWhereInput;
+  createExecution: (data: ExecutionCreateInput) => ExecutionPromise;
+  updateExecution: (args: {
+    data: ExecutionUpdateInput;
+    where: ExecutionWhereUniqueInput;
+  }) => ExecutionPromise;
+  updateManyExecutions: (args: {
+    data: ExecutionUpdateManyMutationInput;
+    where?: ExecutionWhereInput;
   }) => BatchPayloadPromise;
-  upsertExecutions: (args: {
-    where: ExecutionsWhereUniqueInput;
-    create: ExecutionsCreateInput;
-    update: ExecutionsUpdateInput;
-  }) => ExecutionsPromise;
-  deleteExecutions: (where: ExecutionsWhereUniqueInput) => ExecutionsPromise;
-  deleteManyExecutionses: (where?: ExecutionsWhereInput) => BatchPayloadPromise;
+  upsertExecution: (args: {
+    where: ExecutionWhereUniqueInput;
+    create: ExecutionCreateInput;
+    update: ExecutionUpdateInput;
+  }) => ExecutionPromise;
+  deleteExecution: (where: ExecutionWhereUniqueInput) => ExecutionPromise;
+  deleteManyExecutions: (where?: ExecutionWhereInput) => BatchPayloadPromise;
   createTask: (data: TaskCreateInput) => TaskPromise;
   updateTask: (args: {
     data: TaskUpdateInput;
@@ -160,9 +160,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  executions: (
-    where?: ExecutionsSubscriptionWhereInput
-  ) => ExecutionsSubscriptionPayloadSubscription;
+  execution: (
+    where?: ExecutionSubscriptionWhereInput
+  ) => ExecutionSubscriptionPayloadSubscription;
   task: (
     where?: TaskSubscriptionWhereInput
   ) => TaskSubscriptionPayloadSubscription;
@@ -179,7 +179,7 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type ExecutionsOrderByInput =
+export type ExecutionOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "task_ASC"
@@ -190,6 +190,8 @@ export type ExecutionsOrderByInput =
 export type TaskOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "number_ASC"
+  | "number_DESC"
   | "command_ASC"
   | "command_DESC"
   | "frequency_ASC"
@@ -209,11 +211,11 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type ExecutionsWhereUniqueInput = AtLeastOne<{
+export type ExecutionWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface ExecutionsWhereInput {
+export interface ExecutionWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -250,13 +252,14 @@ export interface ExecutionsWhereInput {
   datetime_lte?: Maybe<DateTimeInput>;
   datetime_gt?: Maybe<DateTimeInput>;
   datetime_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<ExecutionsWhereInput[] | ExecutionsWhereInput>;
-  OR?: Maybe<ExecutionsWhereInput[] | ExecutionsWhereInput>;
-  NOT?: Maybe<ExecutionsWhereInput[] | ExecutionsWhereInput>;
+  AND?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
+  OR?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
+  NOT?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
 }
 
 export type TaskWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
+  number?: Maybe<Int>;
 }>;
 
 export interface TaskWhereInput {
@@ -274,6 +277,14 @@ export interface TaskWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  number?: Maybe<Int>;
+  number_not?: Maybe<Int>;
+  number_in?: Maybe<Int[] | Int>;
+  number_not_in?: Maybe<Int[] | Int>;
+  number_lt?: Maybe<Int>;
+  number_lte?: Maybe<Int>;
+  number_gt?: Maybe<Int>;
+  number_gte?: Maybe<Int>;
   command?: Maybe<String>;
   command_not?: Maybe<String>;
   command_in?: Maybe<String[] | String>;
@@ -370,36 +381,39 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface ExecutionsCreateInput {
+export interface ExecutionCreateInput {
   id?: Maybe<ID_Input>;
   task: ID_Input;
   datetime: DateTimeInput;
 }
 
-export interface ExecutionsUpdateInput {
+export interface ExecutionUpdateInput {
   task?: Maybe<ID_Input>;
   datetime?: Maybe<DateTimeInput>;
 }
 
-export interface ExecutionsUpdateManyMutationInput {
+export interface ExecutionUpdateManyMutationInput {
   task?: Maybe<ID_Input>;
   datetime?: Maybe<DateTimeInput>;
 }
 
 export interface TaskCreateInput {
   id?: Maybe<ID_Input>;
+  number: Int;
   command: String;
   frequency: Int;
   period: String;
 }
 
 export interface TaskUpdateInput {
+  number?: Maybe<Int>;
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
 }
 
 export interface TaskUpdateManyMutationInput {
+  number?: Maybe<Int>;
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
@@ -424,20 +438,20 @@ export interface UserUpdateManyMutationInput {
   password?: Maybe<String>;
 }
 
-export interface ExecutionsSubscriptionWhereInput {
+export interface ExecutionSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<ExecutionsWhereInput>;
+  node?: Maybe<ExecutionWhereInput>;
   AND?: Maybe<
-    ExecutionsSubscriptionWhereInput[] | ExecutionsSubscriptionWhereInput
+    ExecutionSubscriptionWhereInput[] | ExecutionSubscriptionWhereInput
   >;
   OR?: Maybe<
-    ExecutionsSubscriptionWhereInput[] | ExecutionsSubscriptionWhereInput
+    ExecutionSubscriptionWhereInput[] | ExecutionSubscriptionWhereInput
   >;
   NOT?: Maybe<
-    ExecutionsSubscriptionWhereInput[] | ExecutionsSubscriptionWhereInput
+    ExecutionSubscriptionWhereInput[] | ExecutionSubscriptionWhereInput
   >;
 }
 
@@ -467,53 +481,53 @@ export interface NodeNode {
   id: ID_Output;
 }
 
-export interface Executions {
+export interface Execution {
   id: ID_Output;
   task: ID_Output;
   datetime: DateTimeOutput;
 }
 
-export interface ExecutionsPromise extends Promise<Executions>, Fragmentable {
+export interface ExecutionPromise extends Promise<Execution>, Fragmentable {
   id: () => Promise<ID_Output>;
   task: () => Promise<ID_Output>;
   datetime: () => Promise<DateTimeOutput>;
 }
 
-export interface ExecutionsSubscription
-  extends Promise<AsyncIterator<Executions>>,
+export interface ExecutionSubscription
+  extends Promise<AsyncIterator<Execution>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   task: () => Promise<AsyncIterator<ID_Output>>;
   datetime: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface ExecutionsNullablePromise
-  extends Promise<Executions | null>,
+export interface ExecutionNullablePromise
+  extends Promise<Execution | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   task: () => Promise<ID_Output>;
   datetime: () => Promise<DateTimeOutput>;
 }
 
-export interface ExecutionsConnection {
+export interface ExecutionConnection {
   pageInfo: PageInfo;
-  edges: ExecutionsEdge[];
+  edges: ExecutionEdge[];
 }
 
-export interface ExecutionsConnectionPromise
-  extends Promise<ExecutionsConnection>,
+export interface ExecutionConnectionPromise
+  extends Promise<ExecutionConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ExecutionsEdge>>() => T;
-  aggregate: <T = AggregateExecutionsPromise>() => T;
+  edges: <T = FragmentableArray<ExecutionEdge>>() => T;
+  aggregate: <T = AggregateExecutionPromise>() => T;
 }
 
-export interface ExecutionsConnectionSubscription
-  extends Promise<AsyncIterator<ExecutionsConnection>>,
+export interface ExecutionConnectionSubscription
+  extends Promise<AsyncIterator<ExecutionConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ExecutionsEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateExecutionsSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ExecutionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateExecutionSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -539,43 +553,44 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ExecutionsEdge {
-  node: Executions;
+export interface ExecutionEdge {
+  node: Execution;
   cursor: String;
 }
 
-export interface ExecutionsEdgePromise
-  extends Promise<ExecutionsEdge>,
+export interface ExecutionEdgePromise
+  extends Promise<ExecutionEdge>,
     Fragmentable {
-  node: <T = ExecutionsPromise>() => T;
+  node: <T = ExecutionPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ExecutionsEdgeSubscription
-  extends Promise<AsyncIterator<ExecutionsEdge>>,
+export interface ExecutionEdgeSubscription
+  extends Promise<AsyncIterator<ExecutionEdge>>,
     Fragmentable {
-  node: <T = ExecutionsSubscription>() => T;
+  node: <T = ExecutionSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateExecutions {
+export interface AggregateExecution {
   count: Int;
 }
 
-export interface AggregateExecutionsPromise
-  extends Promise<AggregateExecutions>,
+export interface AggregateExecutionPromise
+  extends Promise<AggregateExecution>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateExecutionsSubscription
-  extends Promise<AsyncIterator<AggregateExecutions>>,
+export interface AggregateExecutionSubscription
+  extends Promise<AsyncIterator<AggregateExecution>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface Task {
   id: ID_Output;
+  number: Int;
   command: String;
   frequency: Int;
   period: String;
@@ -583,6 +598,7 @@ export interface Task {
 
 export interface TaskPromise extends Promise<Task>, Fragmentable {
   id: () => Promise<ID_Output>;
+  number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
   period: () => Promise<String>;
@@ -592,6 +608,7 @@ export interface TaskSubscription
   extends Promise<AsyncIterator<Task>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  number: () => Promise<AsyncIterator<Int>>;
   command: () => Promise<AsyncIterator<String>>;
   frequency: () => Promise<AsyncIterator<Int>>;
   period: () => Promise<AsyncIterator<String>>;
@@ -601,6 +618,7 @@ export interface TaskNullablePromise
   extends Promise<Task | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
   period: () => Promise<String>;
@@ -762,47 +780,47 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface ExecutionsSubscriptionPayload {
+export interface ExecutionSubscriptionPayload {
   mutation: MutationType;
-  node: Executions;
+  node: Execution;
   updatedFields: String[];
-  previousValues: ExecutionsPreviousValues;
+  previousValues: ExecutionPreviousValues;
 }
 
-export interface ExecutionsSubscriptionPayloadPromise
-  extends Promise<ExecutionsSubscriptionPayload>,
+export interface ExecutionSubscriptionPayloadPromise
+  extends Promise<ExecutionSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = ExecutionsPromise>() => T;
+  node: <T = ExecutionPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = ExecutionsPreviousValuesPromise>() => T;
+  previousValues: <T = ExecutionPreviousValuesPromise>() => T;
 }
 
-export interface ExecutionsSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ExecutionsSubscriptionPayload>>,
+export interface ExecutionSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ExecutionSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ExecutionsSubscription>() => T;
+  node: <T = ExecutionSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ExecutionsPreviousValuesSubscription>() => T;
+  previousValues: <T = ExecutionPreviousValuesSubscription>() => T;
 }
 
-export interface ExecutionsPreviousValues {
+export interface ExecutionPreviousValues {
   id: ID_Output;
   task: ID_Output;
   datetime: DateTimeOutput;
 }
 
-export interface ExecutionsPreviousValuesPromise
-  extends Promise<ExecutionsPreviousValues>,
+export interface ExecutionPreviousValuesPromise
+  extends Promise<ExecutionPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   task: () => Promise<ID_Output>;
   datetime: () => Promise<DateTimeOutput>;
 }
 
-export interface ExecutionsPreviousValuesSubscription
-  extends Promise<AsyncIterator<ExecutionsPreviousValues>>,
+export interface ExecutionPreviousValuesSubscription
+  extends Promise<AsyncIterator<ExecutionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   task: () => Promise<AsyncIterator<ID_Output>>;
@@ -836,6 +854,7 @@ export interface TaskSubscriptionPayloadSubscription
 
 export interface TaskPreviousValues {
   id: ID_Output;
+  number: Int;
   command: String;
   frequency: Int;
   period: String;
@@ -845,6 +864,7 @@ export interface TaskPreviousValuesPromise
   extends Promise<TaskPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
   period: () => Promise<String>;
@@ -854,6 +874,7 @@ export interface TaskPreviousValuesSubscription
   extends Promise<AsyncIterator<TaskPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  number: () => Promise<AsyncIterator<Int>>;
   command: () => Promise<AsyncIterator<String>>;
   frequency: () => Promise<AsyncIterator<Int>>;
   period: () => Promise<AsyncIterator<String>>;
@@ -956,7 +977,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "Executions",
+    name: "Execution",
     embedded: false
   }
 ];

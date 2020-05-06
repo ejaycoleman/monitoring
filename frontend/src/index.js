@@ -13,7 +13,6 @@ import { createStore } from 'redux'
 import rootReducer from './reducers'
 import { login } from './actions'
 import Navigation from './Navigation';
-import 'antd/dist/antd.css';
 import './index.css';
 
 const authLink = setContext((_, { headers }) => {
@@ -30,9 +29,10 @@ const httpLink = createHttpLink({
   uri: 'http://localhost:4000',
 })
 
+
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 const store = createStore(rootReducer)

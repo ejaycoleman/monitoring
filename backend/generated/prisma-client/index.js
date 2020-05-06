@@ -13,7 +13,7 @@ var models = [
     embedded: false
   },
   {
-    name: "Executions",
+    name: "Execution",
     embedded: false
   }
 ];

@@ -7,12 +7,13 @@ type User {
 
 type Task {
   id: ID! @id,
+  number: Int! @unique,
   command: String!,
   frequency: Int!,
   period: String!
 }
 
-type Executions {
+type Execution {
   id: ID! @id,
   task: ID!,
   datetime: DateTime!

@@ -3,7 +3,7 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateExecutions {
+/* GraphQL */ `type AggregateExecution {
   count: Int!
 }
 
@@ -21,30 +21,30 @@ type BatchPayload {
 
 scalar DateTime
 
-type Executions {
+type Execution {
   id: ID!
   task: ID!
   datetime: DateTime!
 }
 
-type ExecutionsConnection {
+type ExecutionConnection {
   pageInfo: PageInfo!
-  edges: [ExecutionsEdge]!
-  aggregate: AggregateExecutions!
+  edges: [ExecutionEdge]!
+  aggregate: AggregateExecution!
 }
 
-input ExecutionsCreateInput {
+input ExecutionCreateInput {
   id: ID
   task: ID!
   datetime: DateTime!
 }
 
-type ExecutionsEdge {
-  node: Executions!
+type ExecutionEdge {
+  node: Execution!
   cursor: String!
 }
 
-enum ExecutionsOrderByInput {
+enum ExecutionOrderByInput {
   id_ASC
   id_DESC
   task_ASC
@@ -53,41 +53,41 @@ enum ExecutionsOrderByInput {
   datetime_DESC
 }
 
-type ExecutionsPreviousValues {
+type ExecutionPreviousValues {
   id: ID!
   task: ID!
   datetime: DateTime!
 }
 
-type ExecutionsSubscriptionPayload {
+type ExecutionSubscriptionPayload {
   mutation: MutationType!
-  node: Executions
+  node: Execution
   updatedFields: [String!]
-  previousValues: ExecutionsPreviousValues
+  previousValues: ExecutionPreviousValues
 }
 
-input ExecutionsSubscriptionWhereInput {
+input ExecutionSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: ExecutionsWhereInput
-  AND: [ExecutionsSubscriptionWhereInput!]
-  OR: [ExecutionsSubscriptionWhereInput!]
-  NOT: [ExecutionsSubscriptionWhereInput!]
+  node: ExecutionWhereInput
+  AND: [ExecutionSubscriptionWhereInput!]
+  OR: [ExecutionSubscriptionWhereInput!]
+  NOT: [ExecutionSubscriptionWhereInput!]
 }
 
-input ExecutionsUpdateInput {
+input ExecutionUpdateInput {
   task: ID
   datetime: DateTime
 }
 
-input ExecutionsUpdateManyMutationInput {
+input ExecutionUpdateManyMutationInput {
   task: ID
   datetime: DateTime
 }
 
-input ExecutionsWhereInput {
+input ExecutionWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -124,24 +124,24 @@ input ExecutionsWhereInput {
   datetime_lte: DateTime
   datetime_gt: DateTime
   datetime_gte: DateTime
-  AND: [ExecutionsWhereInput!]
-  OR: [ExecutionsWhereInput!]
-  NOT: [ExecutionsWhereInput!]
+  AND: [ExecutionWhereInput!]
+  OR: [ExecutionWhereInput!]
+  NOT: [ExecutionWhereInput!]
 }
 
-input ExecutionsWhereUniqueInput {
+input ExecutionWhereUniqueInput {
   id: ID
 }
 
 scalar Long
 
 type Mutation {
-  createExecutions(data: ExecutionsCreateInput!): Executions!
-  updateExecutions(data: ExecutionsUpdateInput!, where: ExecutionsWhereUniqueInput!): Executions
-  updateManyExecutionses(data: ExecutionsUpdateManyMutationInput!, where: ExecutionsWhereInput): BatchPayload!
-  upsertExecutions(where: ExecutionsWhereUniqueInput!, create: ExecutionsCreateInput!, update: ExecutionsUpdateInput!): Executions!
-  deleteExecutions(where: ExecutionsWhereUniqueInput!): Executions
-  deleteManyExecutionses(where: ExecutionsWhereInput): BatchPayload!
+  createExecution(data: ExecutionCreateInput!): Execution!
+  updateExecution(data: ExecutionUpdateInput!, where: ExecutionWhereUniqueInput!): Execution
+  updateManyExecutions(data: ExecutionUpdateManyMutationInput!, where: ExecutionWhereInput): BatchPayload!
+  upsertExecution(where: ExecutionWhereUniqueInput!, create: ExecutionCreateInput!, update: ExecutionUpdateInput!): Execution!
+  deleteExecution(where: ExecutionWhereUniqueInput!): Execution
+  deleteManyExecutions(where: ExecutionWhereInput): BatchPayload!
   createTask(data: TaskCreateInput!): Task!
   updateTask(data: TaskUpdateInput!, where: TaskWhereUniqueInput!): Task
   updateManyTasks(data: TaskUpdateManyMutationInput!, where: TaskWhereInput): BatchPayload!
@@ -174,9 +174,9 @@ type PageInfo {
 }
 
 type Query {
-  executions(where: ExecutionsWhereUniqueInput!): Executions
-  executionses(where: ExecutionsWhereInput, orderBy: ExecutionsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Executions]!
-  executionsesConnection(where: ExecutionsWhereInput, orderBy: ExecutionsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExecutionsConnection!
+  execution(where: ExecutionWhereUniqueInput!): Execution
+  executions(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Execution]!
+  executionsConnection(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExecutionConnection!
   task(where: TaskWhereUniqueInput!): Task
   tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task]!
   tasksConnection(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskConnection!
@@ -187,13 +187,14 @@ type Query {
 }
 
 type Subscription {
-  executions(where: ExecutionsSubscriptionWhereInput): ExecutionsSubscriptionPayload
+  execution(where: ExecutionSubscriptionWhereInput): ExecutionSubscriptionPayload
   task(where: TaskSubscriptionWhereInput): TaskSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type Task {
   id: ID!
+  number: Int!
   command: String!
   frequency: Int!
   period: String!
@@ -207,6 +208,7 @@ type TaskConnection {
 
 input TaskCreateInput {
   id: ID
+  number: Int!
   command: String!
   frequency: Int!
   period: String!
@@ -220,6 +222,8 @@ type TaskEdge {
 enum TaskOrderByInput {
   id_ASC
   id_DESC
+  number_ASC
+  number_DESC
   command_ASC
   command_DESC
   frequency_ASC
@@ -230,6 +234,7 @@ enum TaskOrderByInput {
 
 type TaskPreviousValues {
   id: ID!
+  number: Int!
   command: String!
   frequency: Int!
   period: String!
@@ -254,12 +259,14 @@ input TaskSubscriptionWhereInput {
 }
 
 input TaskUpdateInput {
+  number: Int
   command: String
   frequency: Int
   period: String
 }
 
 input TaskUpdateManyMutationInput {
+  number: Int
   command: String
   frequency: Int
   period: String
@@ -280,6 +287,14 @@ input TaskWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  number: Int
+  number_not: Int
+  number_in: [Int!]
+  number_not_in: [Int!]
+  number_lt: Int
+  number_lte: Int
+  number_gt: Int
+  number_gte: Int
   command: String
   command_not: String
   command_in: [String!]
@@ -323,6 +338,7 @@ input TaskWhereInput {
 
 input TaskWhereUniqueInput {
   id: ID
+  number: Int
 }
 
 type User {

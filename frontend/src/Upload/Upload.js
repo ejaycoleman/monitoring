@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import { Button } from 'antd';
 
 const Upload = props => {
-	const [ tasks, setTasks ] = useState("");
-		
+    const [ tasks, setTasks ] = useState("");		
 	return (
 		<div>
-			<h4 className="mv3">Upload JSON</h4>
+			<h2 className="mv3">Upload JSON</h2>
 			<div className="flex flex-column">
 			<input
 				value={tasks}
@@ -14,10 +12,11 @@ const Upload = props => {
 				type="text"
 				placeholder="Enter the task json file"
 			/>
-			<Button onClick={() => props.uploadMutation({ tasks }).then(() => {
-				console.log("Submitted")
-			})}>UPLOAD</Button>
+			<button onClick={() => props.uploadMutation({ tasks }).catch(e => {console.log(e)})}>UPLOAD</button>
 			</div>
+            <h2>
+                {JSON.stringify(props.tasks)}
+            </h2>
 		</div>
 	) 
 }
