@@ -182,8 +182,6 @@ export interface ClientConstructor<T> {
 export type ExecutionOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "task_ASC"
-  | "task_DESC"
   | "datetime_ASC"
   | "datetime_DESC";
 
@@ -230,37 +228,19 @@ export interface ExecutionWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  task?: Maybe<ID_Input>;
-  task_not?: Maybe<ID_Input>;
-  task_in?: Maybe<ID_Input[] | ID_Input>;
-  task_not_in?: Maybe<ID_Input[] | ID_Input>;
-  task_lt?: Maybe<ID_Input>;
-  task_lte?: Maybe<ID_Input>;
-  task_gt?: Maybe<ID_Input>;
-  task_gte?: Maybe<ID_Input>;
-  task_contains?: Maybe<ID_Input>;
-  task_not_contains?: Maybe<ID_Input>;
-  task_starts_with?: Maybe<ID_Input>;
-  task_not_starts_with?: Maybe<ID_Input>;
-  task_ends_with?: Maybe<ID_Input>;
-  task_not_ends_with?: Maybe<ID_Input>;
-  datetime?: Maybe<DateTimeInput>;
-  datetime_not?: Maybe<DateTimeInput>;
-  datetime_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  datetime_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  datetime_lt?: Maybe<DateTimeInput>;
-  datetime_lte?: Maybe<DateTimeInput>;
-  datetime_gt?: Maybe<DateTimeInput>;
-  datetime_gte?: Maybe<DateTimeInput>;
+  task?: Maybe<TaskWhereInput>;
+  datetime?: Maybe<Int>;
+  datetime_not?: Maybe<Int>;
+  datetime_in?: Maybe<Int[] | Int>;
+  datetime_not_in?: Maybe<Int[] | Int>;
+  datetime_lt?: Maybe<Int>;
+  datetime_lte?: Maybe<Int>;
+  datetime_gt?: Maybe<Int>;
+  datetime_gte?: Maybe<Int>;
   AND?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
   OR?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
   NOT?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
 }
-
-export type TaskWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  number?: Maybe<Int>;
-}>;
 
 export interface TaskWhereInput {
   id?: Maybe<ID_Input>;
@@ -321,10 +301,18 @@ export interface TaskWhereInput {
   period_not_starts_with?: Maybe<String>;
   period_ends_with?: Maybe<String>;
   period_not_ends_with?: Maybe<String>;
+  executions_every?: Maybe<ExecutionWhereInput>;
+  executions_some?: Maybe<ExecutionWhereInput>;
+  executions_none?: Maybe<ExecutionWhereInput>;
   AND?: Maybe<TaskWhereInput[] | TaskWhereInput>;
   OR?: Maybe<TaskWhereInput[] | TaskWhereInput>;
   NOT?: Maybe<TaskWhereInput[] | TaskWhereInput>;
 }
+
+export type TaskWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  number?: Maybe<Int>;
+}>;
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
@@ -383,18 +371,51 @@ export interface UserWhereInput {
 
 export interface ExecutionCreateInput {
   id?: Maybe<ID_Input>;
-  task: ID_Input;
-  datetime: DateTimeInput;
+  task?: Maybe<TaskCreateOneWithoutExecutionsInput>;
+  datetime: Int;
+}
+
+export interface TaskCreateOneWithoutExecutionsInput {
+  create?: Maybe<TaskCreateWithoutExecutionsInput>;
+  connect?: Maybe<TaskWhereUniqueInput>;
+}
+
+export interface TaskCreateWithoutExecutionsInput {
+  id?: Maybe<ID_Input>;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
 }
 
 export interface ExecutionUpdateInput {
-  task?: Maybe<ID_Input>;
-  datetime?: Maybe<DateTimeInput>;
+  task?: Maybe<TaskUpdateOneWithoutExecutionsInput>;
+  datetime?: Maybe<Int>;
+}
+
+export interface TaskUpdateOneWithoutExecutionsInput {
+  create?: Maybe<TaskCreateWithoutExecutionsInput>;
+  update?: Maybe<TaskUpdateWithoutExecutionsDataInput>;
+  upsert?: Maybe<TaskUpsertWithoutExecutionsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<TaskWhereUniqueInput>;
+}
+
+export interface TaskUpdateWithoutExecutionsDataInput {
+  number?: Maybe<Int>;
+  command?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  period?: Maybe<String>;
+}
+
+export interface TaskUpsertWithoutExecutionsInput {
+  update: TaskUpdateWithoutExecutionsDataInput;
+  create: TaskCreateWithoutExecutionsInput;
 }
 
 export interface ExecutionUpdateManyMutationInput {
-  task?: Maybe<ID_Input>;
-  datetime?: Maybe<DateTimeInput>;
+  datetime?: Maybe<Int>;
 }
 
 export interface TaskCreateInput {
@@ -403,6 +424,19 @@ export interface TaskCreateInput {
   command: String;
   frequency: Int;
   period: String;
+  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
+}
+
+export interface ExecutionCreateManyWithoutTaskInput {
+  create?: Maybe<
+    ExecutionCreateWithoutTaskInput[] | ExecutionCreateWithoutTaskInput
+  >;
+  connect?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+}
+
+export interface ExecutionCreateWithoutTaskInput {
+  id?: Maybe<ID_Input>;
+  datetime: Int;
 }
 
 export interface TaskUpdateInput {
@@ -410,6 +444,82 @@ export interface TaskUpdateInput {
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
+  executions?: Maybe<ExecutionUpdateManyWithoutTaskInput>;
+}
+
+export interface ExecutionUpdateManyWithoutTaskInput {
+  create?: Maybe<
+    ExecutionCreateWithoutTaskInput[] | ExecutionCreateWithoutTaskInput
+  >;
+  delete?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+  connect?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+  set?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+  disconnect?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+  update?: Maybe<
+    | ExecutionUpdateWithWhereUniqueWithoutTaskInput[]
+    | ExecutionUpdateWithWhereUniqueWithoutTaskInput
+  >;
+  upsert?: Maybe<
+    | ExecutionUpsertWithWhereUniqueWithoutTaskInput[]
+    | ExecutionUpsertWithWhereUniqueWithoutTaskInput
+  >;
+  deleteMany?: Maybe<ExecutionScalarWhereInput[] | ExecutionScalarWhereInput>;
+  updateMany?: Maybe<
+    | ExecutionUpdateManyWithWhereNestedInput[]
+    | ExecutionUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ExecutionUpdateWithWhereUniqueWithoutTaskInput {
+  where: ExecutionWhereUniqueInput;
+  data: ExecutionUpdateWithoutTaskDataInput;
+}
+
+export interface ExecutionUpdateWithoutTaskDataInput {
+  datetime?: Maybe<Int>;
+}
+
+export interface ExecutionUpsertWithWhereUniqueWithoutTaskInput {
+  where: ExecutionWhereUniqueInput;
+  update: ExecutionUpdateWithoutTaskDataInput;
+  create: ExecutionCreateWithoutTaskInput;
+}
+
+export interface ExecutionScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  datetime?: Maybe<Int>;
+  datetime_not?: Maybe<Int>;
+  datetime_in?: Maybe<Int[] | Int>;
+  datetime_not_in?: Maybe<Int[] | Int>;
+  datetime_lt?: Maybe<Int>;
+  datetime_lte?: Maybe<Int>;
+  datetime_gt?: Maybe<Int>;
+  datetime_gte?: Maybe<Int>;
+  AND?: Maybe<ExecutionScalarWhereInput[] | ExecutionScalarWhereInput>;
+  OR?: Maybe<ExecutionScalarWhereInput[] | ExecutionScalarWhereInput>;
+  NOT?: Maybe<ExecutionScalarWhereInput[] | ExecutionScalarWhereInput>;
+}
+
+export interface ExecutionUpdateManyWithWhereNestedInput {
+  where: ExecutionScalarWhereInput;
+  data: ExecutionUpdateManyDataInput;
+}
+
+export interface ExecutionUpdateManyDataInput {
+  datetime?: Maybe<Int>;
 }
 
 export interface TaskUpdateManyMutationInput {
@@ -483,30 +593,92 @@ export interface NodeNode {
 
 export interface Execution {
   id: ID_Output;
-  task: ID_Output;
-  datetime: DateTimeOutput;
+  datetime: Int;
 }
 
 export interface ExecutionPromise extends Promise<Execution>, Fragmentable {
   id: () => Promise<ID_Output>;
-  task: () => Promise<ID_Output>;
-  datetime: () => Promise<DateTimeOutput>;
+  task: <T = TaskPromise>() => T;
+  datetime: () => Promise<Int>;
 }
 
 export interface ExecutionSubscription
   extends Promise<AsyncIterator<Execution>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  task: () => Promise<AsyncIterator<ID_Output>>;
-  datetime: () => Promise<AsyncIterator<DateTimeOutput>>;
+  task: <T = TaskSubscription>() => T;
+  datetime: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface ExecutionNullablePromise
   extends Promise<Execution | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  task: () => Promise<ID_Output>;
-  datetime: () => Promise<DateTimeOutput>;
+  task: <T = TaskPromise>() => T;
+  datetime: () => Promise<Int>;
+}
+
+export interface Task {
+  id: ID_Output;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
+}
+
+export interface TaskPromise extends Promise<Task>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  number: () => Promise<Int>;
+  command: () => Promise<String>;
+  frequency: () => Promise<Int>;
+  period: () => Promise<String>;
+  executions: <T = FragmentableArray<Execution>>(args?: {
+    where?: ExecutionWhereInput;
+    orderBy?: ExecutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface TaskSubscription
+  extends Promise<AsyncIterator<Task>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  number: () => Promise<AsyncIterator<Int>>;
+  command: () => Promise<AsyncIterator<String>>;
+  frequency: () => Promise<AsyncIterator<Int>>;
+  period: () => Promise<AsyncIterator<String>>;
+  executions: <T = Promise<AsyncIterator<ExecutionSubscription>>>(args?: {
+    where?: ExecutionWhereInput;
+    orderBy?: ExecutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface TaskNullablePromise
+  extends Promise<Task | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  number: () => Promise<Int>;
+  command: () => Promise<String>;
+  frequency: () => Promise<Int>;
+  period: () => Promise<String>;
+  executions: <T = FragmentableArray<Execution>>(args?: {
+    where?: ExecutionWhereInput;
+    orderBy?: ExecutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface ExecutionConnection {
@@ -586,42 +758,6 @@ export interface AggregateExecutionSubscription
   extends Promise<AsyncIterator<AggregateExecution>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Task {
-  id: ID_Output;
-  number: Int;
-  command: String;
-  frequency: Int;
-  period: String;
-}
-
-export interface TaskPromise extends Promise<Task>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  number: () => Promise<Int>;
-  command: () => Promise<String>;
-  frequency: () => Promise<Int>;
-  period: () => Promise<String>;
-}
-
-export interface TaskSubscription
-  extends Promise<AsyncIterator<Task>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  number: () => Promise<AsyncIterator<Int>>;
-  command: () => Promise<AsyncIterator<String>>;
-  frequency: () => Promise<AsyncIterator<Int>>;
-  period: () => Promise<AsyncIterator<String>>;
-}
-
-export interface TaskNullablePromise
-  extends Promise<Task | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  number: () => Promise<Int>;
-  command: () => Promise<String>;
-  frequency: () => Promise<Int>;
-  period: () => Promise<String>;
 }
 
 export interface TaskConnection {
@@ -807,24 +943,21 @@ export interface ExecutionSubscriptionPayloadSubscription
 
 export interface ExecutionPreviousValues {
   id: ID_Output;
-  task: ID_Output;
-  datetime: DateTimeOutput;
+  datetime: Int;
 }
 
 export interface ExecutionPreviousValuesPromise
   extends Promise<ExecutionPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  task: () => Promise<ID_Output>;
-  datetime: () => Promise<DateTimeOutput>;
+  datetime: () => Promise<Int>;
 }
 
 export interface ExecutionPreviousValuesSubscription
   extends Promise<AsyncIterator<ExecutionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  task: () => Promise<AsyncIterator<ID_Output>>;
-  datetime: () => Promise<AsyncIterator<DateTimeOutput>>;
+  datetime: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface TaskSubscriptionPayload {
@@ -935,16 +1068,6 @@ The `ID` scalar type represents a unique identifier, often used to refetch an ob
 */
 export type ID_Input = string | number;
 export type ID_Output = string;
-
-/*
-DateTime scalar input type, allowing Date
-*/
-export type DateTimeInput = Date | string;
-
-/*
-DateTime scalar output type, which is always a string
-*/
-export type DateTimeOutput = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.

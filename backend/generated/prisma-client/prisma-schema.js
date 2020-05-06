@@ -19,12 +19,10 @@ type BatchPayload {
   count: Long!
 }
 
-scalar DateTime
-
 type Execution {
   id: ID!
-  task: ID!
-  datetime: DateTime!
+  task: Task
+  datetime: Int!
 }
 
 type ExecutionConnection {
@@ -35,8 +33,18 @@ type ExecutionConnection {
 
 input ExecutionCreateInput {
   id: ID
-  task: ID!
-  datetime: DateTime!
+  task: TaskCreateOneWithoutExecutionsInput
+  datetime: Int!
+}
+
+input ExecutionCreateManyWithoutTaskInput {
+  create: [ExecutionCreateWithoutTaskInput!]
+  connect: [ExecutionWhereUniqueInput!]
+}
+
+input ExecutionCreateWithoutTaskInput {
+  id: ID
+  datetime: Int!
 }
 
 type ExecutionEdge {
@@ -47,16 +55,41 @@ type ExecutionEdge {
 enum ExecutionOrderByInput {
   id_ASC
   id_DESC
-  task_ASC
-  task_DESC
   datetime_ASC
   datetime_DESC
 }
 
 type ExecutionPreviousValues {
   id: ID!
-  task: ID!
-  datetime: DateTime!
+  datetime: Int!
+}
+
+input ExecutionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  datetime: Int
+  datetime_not: Int
+  datetime_in: [Int!]
+  datetime_not_in: [Int!]
+  datetime_lt: Int
+  datetime_lte: Int
+  datetime_gt: Int
+  datetime_gte: Int
+  AND: [ExecutionScalarWhereInput!]
+  OR: [ExecutionScalarWhereInput!]
+  NOT: [ExecutionScalarWhereInput!]
 }
 
 type ExecutionSubscriptionPayload {
@@ -78,13 +111,48 @@ input ExecutionSubscriptionWhereInput {
 }
 
 input ExecutionUpdateInput {
-  task: ID
-  datetime: DateTime
+  task: TaskUpdateOneWithoutExecutionsInput
+  datetime: Int
+}
+
+input ExecutionUpdateManyDataInput {
+  datetime: Int
 }
 
 input ExecutionUpdateManyMutationInput {
-  task: ID
-  datetime: DateTime
+  datetime: Int
+}
+
+input ExecutionUpdateManyWithoutTaskInput {
+  create: [ExecutionCreateWithoutTaskInput!]
+  delete: [ExecutionWhereUniqueInput!]
+  connect: [ExecutionWhereUniqueInput!]
+  set: [ExecutionWhereUniqueInput!]
+  disconnect: [ExecutionWhereUniqueInput!]
+  update: [ExecutionUpdateWithWhereUniqueWithoutTaskInput!]
+  upsert: [ExecutionUpsertWithWhereUniqueWithoutTaskInput!]
+  deleteMany: [ExecutionScalarWhereInput!]
+  updateMany: [ExecutionUpdateManyWithWhereNestedInput!]
+}
+
+input ExecutionUpdateManyWithWhereNestedInput {
+  where: ExecutionScalarWhereInput!
+  data: ExecutionUpdateManyDataInput!
+}
+
+input ExecutionUpdateWithoutTaskDataInput {
+  datetime: Int
+}
+
+input ExecutionUpdateWithWhereUniqueWithoutTaskInput {
+  where: ExecutionWhereUniqueInput!
+  data: ExecutionUpdateWithoutTaskDataInput!
+}
+
+input ExecutionUpsertWithWhereUniqueWithoutTaskInput {
+  where: ExecutionWhereUniqueInput!
+  update: ExecutionUpdateWithoutTaskDataInput!
+  create: ExecutionCreateWithoutTaskInput!
 }
 
 input ExecutionWhereInput {
@@ -102,28 +170,15 @@ input ExecutionWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  task: ID
-  task_not: ID
-  task_in: [ID!]
-  task_not_in: [ID!]
-  task_lt: ID
-  task_lte: ID
-  task_gt: ID
-  task_gte: ID
-  task_contains: ID
-  task_not_contains: ID
-  task_starts_with: ID
-  task_not_starts_with: ID
-  task_ends_with: ID
-  task_not_ends_with: ID
-  datetime: DateTime
-  datetime_not: DateTime
-  datetime_in: [DateTime!]
-  datetime_not_in: [DateTime!]
-  datetime_lt: DateTime
-  datetime_lte: DateTime
-  datetime_gt: DateTime
-  datetime_gte: DateTime
+  task: TaskWhereInput
+  datetime: Int
+  datetime_not: Int
+  datetime_in: [Int!]
+  datetime_not_in: [Int!]
+  datetime_lt: Int
+  datetime_lte: Int
+  datetime_gt: Int
+  datetime_gte: Int
   AND: [ExecutionWhereInput!]
   OR: [ExecutionWhereInput!]
   NOT: [ExecutionWhereInput!]
@@ -198,6 +253,7 @@ type Task {
   command: String!
   frequency: Int!
   period: String!
+  executions(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Execution!]
 }
 
 type TaskConnection {
@@ -207,6 +263,20 @@ type TaskConnection {
 }
 
 input TaskCreateInput {
+  id: ID
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+  executions: ExecutionCreateManyWithoutTaskInput
+}
+
+input TaskCreateOneWithoutExecutionsInput {
+  create: TaskCreateWithoutExecutionsInput
+  connect: TaskWhereUniqueInput
+}
+
+input TaskCreateWithoutExecutionsInput {
   id: ID
   number: Int!
   command: String!
@@ -263,6 +333,7 @@ input TaskUpdateInput {
   command: String
   frequency: Int
   period: String
+  executions: ExecutionUpdateManyWithoutTaskInput
 }
 
 input TaskUpdateManyMutationInput {
@@ -270,6 +341,27 @@ input TaskUpdateManyMutationInput {
   command: String
   frequency: Int
   period: String
+}
+
+input TaskUpdateOneWithoutExecutionsInput {
+  create: TaskCreateWithoutExecutionsInput
+  update: TaskUpdateWithoutExecutionsDataInput
+  upsert: TaskUpsertWithoutExecutionsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TaskWhereUniqueInput
+}
+
+input TaskUpdateWithoutExecutionsDataInput {
+  number: Int
+  command: String
+  frequency: Int
+  period: String
+}
+
+input TaskUpsertWithoutExecutionsInput {
+  update: TaskUpdateWithoutExecutionsDataInput!
+  create: TaskCreateWithoutExecutionsInput!
 }
 
 input TaskWhereInput {
@@ -331,6 +423,9 @@ input TaskWhereInput {
   period_not_starts_with: String
   period_ends_with: String
   period_not_ends_with: String
+  executions_every: ExecutionWhereInput
+  executions_some: ExecutionWhereInput
+  executions_none: ExecutionWhereInput
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]

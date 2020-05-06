@@ -10,11 +10,12 @@ type Task {
   number: Int! @unique,
   command: String!,
   frequency: Int!,
-  period: String!
+  period: String!,
+  executions: [Execution!]!
 }
 
 type Execution {
   id: ID! @id,
-  task: ID!,
-  datetime: DateTime!
+  task: Task,
+  datetime: Int!
 }

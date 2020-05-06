@@ -42,16 +42,24 @@ const server = new GraphQLServer({
 
 const taskObj = {}
 
+async function postExecution(taskId, datetime) {
+    const associatedTask = await prisma.task({number: taskId})
+    await prisma.createExecution({
+        datetime,
+        task: { connect: { id: associatedTask.id } },
+    })
+}
+
 async function loadTasks() {
     const myTasks = await prisma.tasks()
-    myTasks.forEach(task => {
+    myTasks.forEach(async task => {
         if (Object.keys(taskObj).includes(task.number.toString())) {
-            console.log("FOUND")
+            await postExecution(task.number, taskObj[task.number.toString()].lastExecuted)
         }
     })
 }
 
-const job = new CronJob('* * * * * *', function() {
+const job = new CronJob('*/5 * * * * *', function() {
     fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
         files.forEach(file => {
             const [ taskDate, taskExecution, last ] = file.split("_")
