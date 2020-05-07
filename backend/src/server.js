@@ -44,10 +44,13 @@ const taskObj = {}
 
 async function postExecution(taskId, datetime) {
     const associatedTask = await prisma.task({number: taskId})
-    await prisma.createExecution({
-        datetime,
-        task: { connect: { id: associatedTask.id } },
-    })
+    const associatedExecutions = await prisma.task({number: taskId}).executions()
+    if (associatedExecutions.filter(execution => execution.datetime === datetime).length === 0) {
+        await prisma.createExecution({
+            datetime,
+            task: { connect: { id: associatedTask.id } },
+        })
+    }
 }
 
 async function loadTasks() {
