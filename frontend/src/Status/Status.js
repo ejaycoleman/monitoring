@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 class Status extends React.Component {
     constructor(props) {
@@ -11,7 +12,15 @@ class Status extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.tasks !== prevProps.tasks) {
-            console.log(this.props.tasks)
+            this.props.tasks.forEach(task => {
+                task.executions.forEach(execution => {
+                    if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
+                        console.log("We're good")
+                    } else {
+                        console.log("where that file at")
+                    }
+                })                
+            })
         }
     }
 

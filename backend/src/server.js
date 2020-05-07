@@ -55,15 +55,6 @@ async function postExecution(taskId, datetime) {
     }
 }
 
-async function loadTasks() {
-    const myTasks = await prisma.tasks()
-    myTasks.forEach(async task => {
-        if (Object.keys(taskObj).includes(task.number.toString())) {
-            await postExecution(task.number, taskObj[task.number.toString()].lastExecuted)
-        }
-    })
-}
-
 const job = new CronJob('*/5 * * * * *', function() {
     fs.readdir('/Users/elliottcoleman/work/monitoring/ingress', (err, files) => {
         files.forEach(file => {
@@ -72,10 +63,11 @@ const job = new CronJob('*/5 * * * * *', function() {
             if (isNaN(Date.parse(taskDate)) || isNaN(taskExecution) || taskId === null) {
                 return
             }
+            
             taskObj[taskId] = {lastExecuted: Date.parse(taskDate)/1000}
+            postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
         });
     });
-    loadTasks();
 });
 
 job.start();
