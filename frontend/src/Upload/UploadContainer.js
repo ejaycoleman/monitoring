@@ -19,7 +19,7 @@ const retreiveTasks = gql` {
 }
 `
 
-const CreateContainer =
+const UploadContainer =
     compose(
         graphql(uploadMutation, {
             props: ({ loading, mutate, ownProps }) => ({
@@ -47,4 +47,4 @@ const CreateContainer =
 		})
     )(Upload)
 
-export default CreateContainer
+export default UploadContainer
