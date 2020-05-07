@@ -24,5 +24,11 @@ type Task {
   number: Int!,
   command: String!,
   frequency: Int!,
-  period: String!
+  period: String!,
+  executions: [Execution!]
+}
+
+type Execution {
+  id: ID!,
+  datetime: Int!
 }

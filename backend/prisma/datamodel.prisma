@@ -11,7 +11,7 @@ type Task {
   command: String!,
   frequency: Int!,
   period: String!,
-  executions: [Execution!]!
+  executions: [Execution!]
 }
 
 type Execution {

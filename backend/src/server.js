@@ -3,6 +3,7 @@ const { prisma } = require('../generated/prisma-client')
 
 const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
+const Task = require('./resolvers/Task')
 
 const jwt = require('jsonwebtoken')
 
@@ -23,6 +24,7 @@ const getUser = token => {
 const resolvers = {
     Query, 
     Mutation,
+    Task
 }
 
 const server = new GraphQLServer({
