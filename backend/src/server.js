@@ -42,8 +42,6 @@ const server = new GraphQLServer({
     }
 })
 
-const taskObj = {}
-
 async function postExecution(taskId, datetime) {
     const associatedTask = await prisma.task({number: taskId})
     const associatedExecutions = await prisma.task({number: taskId}).executions()
@@ -63,8 +61,6 @@ const job = new CronJob('*/5 * * * * *', function() {
             if (isNaN(Date.parse(taskDate)) || isNaN(taskExecution) || taskId === null) {
                 return
             }
-            
-            taskObj[taskId] = {lastExecuted: Date.parse(taskDate)/1000}
             postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
         });
     });
