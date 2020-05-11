@@ -30,5 +30,10 @@ type Task {
 
 type Execution {
   id: ID!,
-  datetime: Int!
+  datetime: Int!,
+  task: Task
+}
+
+type Subscription {
+  newExecution: Execution
 }

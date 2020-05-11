@@ -4,6 +4,8 @@ const { prisma } = require('../generated/prisma-client')
 const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
 const Task = require('./resolvers/Task')
+const Subscription = require('./resolvers/Subscription')
+const Execution = require('./resolvers/Execution')
 
 const jwt = require('jsonwebtoken')
 
@@ -24,13 +26,19 @@ const getUser = token => {
 const resolvers = {
     Query, 
     Mutation,
-    Task
+    Subscription,
+    Task,
+    Execution
 }
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     context: ({request}) => {
+        if (!request) {
+            return {prisma}
+        }
+        
         const tokenWithBearer = request.headers.authorization || ''
         const token = tokenWithBearer.split(' ')[1]
         const user = getUser(token)
