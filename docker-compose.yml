@@ -44,5 +44,16 @@ services:
       - ./backend:/app
       - /app/node_modules
       - /app/prisma
+  frontend:
+    container_name: frontend
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 volumes:
   mysql:

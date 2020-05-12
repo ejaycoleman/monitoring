@@ -1,4 +1,3 @@
-# endpoint: https://eu1.prisma.sh/elliott-coleman-54a845/monitor/dev
 endpoint: http://0.0.0.0:4466
 datamodel: datamodel.prisma
 

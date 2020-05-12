@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken')
 
 const CronJob = require('cron').CronJob;
 const fs = require('fs')
+const path = require('path');
 
 const getUser = token => {
     try {
@@ -62,8 +63,8 @@ async function postExecution(taskId, datetime) {
 }
 
 const job = new CronJob('*/5 * * * * *', function() {
-    fs.readdir('../ingress', (err, files) => {
-        files && files.forEach(file => {
+    fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {
+        files.forEach(file => {
             const [ taskDate, taskExecution, last ] = file.split("_")
             const taskId = last && last.match(/\d+/)[0]
             if (isNaN(Date.parse(taskDate)) || isNaN(taskExecution) || taskId === null) {
