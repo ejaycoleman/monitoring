@@ -8,7 +8,7 @@ then inside the backend directory, run: <br>
 
 
 ## create a user
-go to [localhost:4000]() in your browser
+go to [localhost:4000](http://localhost:4000) in your browser
 
 run mutation:
 ```
@@ -20,9 +20,9 @@ mutation user {
 ```
 
 ## upload configuration
-First, go to [localhost:3000/login]() and enter email: `admin` and password `admin`.
+First, go to [localhost:3000/login](http://localhost:3000/login) and enter email: `admin` and password `admin`.
 
-Then, go to [localhost:3000/upload]() to upload the json below:
+Then, go to [localhost:3000/upload](http://localhost:3000/upload) to upload the json below:
 ```
 {
     "tasks":
@@ -55,7 +55,7 @@ Then, go to [localhost:3000/upload]() to upload the json below:
 }
 ```
 
-Finally, go to [localhost:3000/status](), and monitor the status of each task. This page relies on websockets to automatically get updates from the server, so you shouldn't need to refresh it. 
+Finally, go to [localhost:3000/status](http://localhost:3000/status), and monitor the status of each task. This page relies on websockets to automatically get updates from the server, so you shouldn't need to refresh it. 
 
 ## Updating status of tasks
 First, run `docker exec -it backend /bin/bash`. The `ingress` directory is for the task-run files. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db.
