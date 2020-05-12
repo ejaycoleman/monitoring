@@ -31,6 +31,20 @@ class Status extends React.Component {
         }
     }
 
+    renderDataForTable = () => {
+        this.props.tasks.forEach(task => {
+            const hasRanInTime = this.state.ranInTime
+            hasRanInTime[task.number] = false
+            task.executions.forEach(execution => {
+                if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
+                    hasRanInTime[task.number] = true
+                    return
+                } 
+            })        
+            this.setState({ranInTime: hasRanInTime})        
+        })
+    }
+
     componentDidUpdate(prevProps) {
         this.props.subscribeToMore({
             document: retrieveTasksSubscription,
@@ -47,34 +61,13 @@ class Status extends React.Component {
         })
 
         if (this.props.tasks !== prevProps.tasks) {
-            this.props.tasks.forEach(task => {
-                const hasRanInTime = this.state.ranInTime
-                hasRanInTime[task.number] = false
-                task.executions.forEach(execution => {
-                    if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
-                        hasRanInTime[task.number] = true
-                        return
-                    } 
-                })        
-                this.setState({ranInTime: hasRanInTime})        
-            })
+            this.renderDataForTable()
         }
     }
 
     componentDidMount() {
-        this.props.tasks && this.props.tasks.forEach(task => {
-            const hasRanInTime = this.state.ranInTime
-            hasRanInTime[task.number] = false
-            task.executions.forEach(execution => {
-                if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
-                    hasRanInTime[task.number] = true
-                    return
-                } 
-            })        
-            this.setState({ranInTime: hasRanInTime})        
-        })
+        this.props.tasks && this.renderDataForTable()
     }
-
 
     render() {
         return (
