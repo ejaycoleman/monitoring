@@ -9,6 +9,18 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import gql from 'graphql-tag'
+
+const retrieveTasksSubscription = gql`
+    subscription {
+        newExecution {
+            datetime,
+            task {
+                number
+            }
+        }
+    }
+`
 
 class Status extends React.Component {
     constructor(props) {
@@ -20,6 +32,20 @@ class Status extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        this.props.subscribeToMore({
+            document: retrieveTasksSubscription,
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev
+                const newExecution = subscriptionData.data.newExecution
+                const existingTask = prev.tasks.find(({number})=> number === newExecution.task.number)
+                if (!moment().startOf('day').subtract(existingTask.frequency, existingTask.period).isAfter(moment.unix(newExecution.datetime))) {
+                    const ranInTime = this.state.ranInTime
+                    ranInTime[newExecution.task.number] = true
+                    this.setState({ranInTime})
+                }
+            }
+        })
+
         if (this.props.tasks !== prevProps.tasks) {
             this.props.tasks.forEach(task => {
                 const hasRanInTime = this.state.ranInTime
@@ -48,7 +74,7 @@ class Status extends React.Component {
             this.setState({ranInTime: hasRanInTime})        
         })
     }
-  
+
 
     render() {
         return (
