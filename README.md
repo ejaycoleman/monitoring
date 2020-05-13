@@ -1,7 +1,7 @@
 # Server Monitoring Project Overview
 ## Prerequisites
 - docker and docker-compose
-- prisma (npm install @prisma/client)
+- prisma (sudo npm i -g prisma)
 
 ## Overview
 The system is comprised of two systems: the frontend (localhost:3000) and the backend (localhost:4000). The backend stores data in a mysql database, using prisma to allow GraphQL queries. The frontend is written in React.
