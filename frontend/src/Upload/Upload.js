@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
 
 const theme = {
@@ -22,7 +22,10 @@ const theme = {
 };
 
 const Upload = props => {
-    const [ tasks, setTasks ] = useState("");		
+	const [ tasks, setTasks ] = useState("");		
+	const [ jsonTasks, setJsonTasks ] = useState([]);		
+	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
+	
 	return (
 		<div>
 			<h2 className="mv3">Upload JSON</h2>
@@ -33,9 +36,9 @@ const Upload = props => {
 				type="text"
 				placeholder="Enter the task json file"
 			/>
-			<button onClick={() => props.uploadMutation({ tasks }).catch(e => {console.log(e)})}>UPLOAD</button>
+			<button onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(e => {console.log(e)})}>UPLOAD</button>
 			</div>
-			<JSONTree data={props.tasks} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
+			<JSONTree data={jsonTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
 		</div>
 	) 
 }

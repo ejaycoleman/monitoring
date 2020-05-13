@@ -51,18 +51,18 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
         throw new Error('Incorrect Privileges')
     }
     
-    myTasks = JSON.parse(args.tasks)
-   
-    myTasks.tasks.forEach(async (task) => {
-        await prisma.createTask({
+    myTasks = JSON.parse(args.tasks)   
+    const promises = myTasks.tasks.map(async task => {
+        const result = await prisma.createTask({
             number: task.number,
             command: task.command,
             frequency: task.frequency,
             period: task.period
         })
+        return result        
     })
 
-    return true
+    return Promise.all(promises)
 }
 
 module.exports = {

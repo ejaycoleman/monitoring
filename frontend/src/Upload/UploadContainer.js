@@ -5,7 +5,12 @@ import gql from 'graphql-tag'
 
 const uploadMutation = gql`
     mutation uploadTasksFile($tasks: String!) {
-        uploadTasksFile(tasks: $tasks)
+        uploadTasksFile(tasks: $tasks) {
+            number,
+            command,
+            frequency,
+            period
+        }
     }
 `
 
@@ -28,11 +33,7 @@ const UploadContainer =
                     return mutate({
                         variables: {
                             tasks
-                        },
-                        update: (cache, { data: uploadTasksFile }, error) => {},
-                        refetchQueries: [{
-                            query: retreiveTasks
-                        }]
+                        }
                     })
                 }
             })

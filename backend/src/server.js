@@ -54,7 +54,7 @@ const server = new GraphQLServer({
 async function postExecution(taskId, datetime) {
     const associatedTask = await prisma.task({number: taskId})
     const associatedExecutions = await prisma.task({number: taskId}).executions()
-    if (associatedExecutions.filter(execution => execution.datetime === datetime).length === 0) {
+    if (associatedExecutions && associatedExecutions.filter(execution => execution.datetime === datetime).length === 0) {
         await prisma.createExecution({
             datetime,
             task: { connect: { id: associatedTask.id } },
