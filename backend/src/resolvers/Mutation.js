@@ -67,8 +67,26 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     return Promise.all(promises)
 }
 
+async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    const fullUser = await prisma.user({id: user.id})
+
+    return prisma.createTask({
+        author: { connect: { id: user.id } },
+        approved: fullUser.isAdmin,
+        number,
+        command,
+        frequency,
+        period
+    })
+}
+
 module.exports = {
     register,
     login,
-    uploadTasksFile
+    uploadTasksFile,
+    uploadSingleTask
 }
