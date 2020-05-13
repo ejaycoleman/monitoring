@@ -13,6 +13,7 @@ type User {
   id: ID!
   email: String!
   isAdmin: Boolean!
+  tasks: [Task]
 }
 
 type LoginResponse {
@@ -21,10 +22,11 @@ type LoginResponse {
 }
 
 type Task {
-  number: Int!,
-  command: String!,
-  frequency: Int!,
-  period: String!,
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+  author: User
   executions: [Execution!]
 }
 

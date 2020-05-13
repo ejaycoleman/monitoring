@@ -179,15 +179,11 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type ExecutionOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "datetime_ASC"
-  | "datetime_DESC";
-
 export type TaskOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "approved_ASC"
+  | "approved_DESC"
   | "number_ASC"
   | "number_DESC"
   | "command_ASC"
@@ -196,6 +192,12 @@ export type TaskOrderByInput =
   | "frequency_DESC"
   | "period_ASC"
   | "period_DESC";
+
+export type ExecutionOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "datetime_ASC"
+  | "datetime_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -213,35 +215,6 @@ export type ExecutionWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface ExecutionWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  task?: Maybe<TaskWhereInput>;
-  datetime?: Maybe<Int>;
-  datetime_not?: Maybe<Int>;
-  datetime_in?: Maybe<Int[] | Int>;
-  datetime_not_in?: Maybe<Int[] | Int>;
-  datetime_lt?: Maybe<Int>;
-  datetime_lte?: Maybe<Int>;
-  datetime_gt?: Maybe<Int>;
-  datetime_gte?: Maybe<Int>;
-  AND?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
-  OR?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
-  NOT?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
-}
-
 export interface TaskWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -257,6 +230,9 @@ export interface TaskWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  author?: Maybe<UserWhereInput>;
+  approved?: Maybe<Boolean>;
+  approved_not?: Maybe<Boolean>;
   number?: Maybe<Int>;
   number_not?: Maybe<Int>;
   number_in?: Maybe<Int[] | Int>;
@@ -309,16 +285,6 @@ export interface TaskWhereInput {
   NOT?: Maybe<TaskWhereInput[] | TaskWhereInput>;
 }
 
-export type TaskWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  number?: Maybe<Int>;
-}>;
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  email?: Maybe<String>;
-}>;
-
 export interface UserWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -364,10 +330,52 @@ export interface UserWhereInput {
   password_not_starts_with?: Maybe<String>;
   password_ends_with?: Maybe<String>;
   password_not_ends_with?: Maybe<String>;
+  tasks_every?: Maybe<TaskWhereInput>;
+  tasks_some?: Maybe<TaskWhereInput>;
+  tasks_none?: Maybe<TaskWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
+
+export interface ExecutionWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  task?: Maybe<TaskWhereInput>;
+  datetime?: Maybe<Int>;
+  datetime_not?: Maybe<Int>;
+  datetime_in?: Maybe<Int[] | Int>;
+  datetime_not_in?: Maybe<Int[] | Int>;
+  datetime_lt?: Maybe<Int>;
+  datetime_lte?: Maybe<Int>;
+  datetime_gt?: Maybe<Int>;
+  datetime_gte?: Maybe<Int>;
+  AND?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
+  OR?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
+  NOT?: Maybe<ExecutionWhereInput[] | ExecutionWhereInput>;
+}
+
+export type TaskWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  number?: Maybe<Int>;
+}>;
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+}>;
 
 export interface ExecutionCreateInput {
   id?: Maybe<ID_Input>;
@@ -382,10 +390,24 @@ export interface TaskCreateOneWithoutExecutionsInput {
 
 export interface TaskCreateWithoutExecutionsInput {
   id?: Maybe<ID_Input>;
+  author?: Maybe<UserCreateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
   number: Int;
   command: String;
   frequency: Int;
   period: String;
+}
+
+export interface UserCreateOneWithoutTasksInput {
+  create?: Maybe<UserCreateWithoutTasksInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutTasksInput {
+  id?: Maybe<ID_Input>;
+  isAdmin?: Maybe<Boolean>;
+  email: String;
+  password: String;
 }
 
 export interface ExecutionUpdateInput {
@@ -403,10 +425,32 @@ export interface TaskUpdateOneWithoutExecutionsInput {
 }
 
 export interface TaskUpdateWithoutExecutionsDataInput {
+  author?: Maybe<UserUpdateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
   number?: Maybe<Int>;
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
+}
+
+export interface UserUpdateOneWithoutTasksInput {
+  create?: Maybe<UserCreateWithoutTasksInput>;
+  update?: Maybe<UserUpdateWithoutTasksDataInput>;
+  upsert?: Maybe<UserUpsertWithoutTasksInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutTasksDataInput {
+  isAdmin?: Maybe<Boolean>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface UserUpsertWithoutTasksInput {
+  update: UserUpdateWithoutTasksDataInput;
+  create: UserCreateWithoutTasksInput;
 }
 
 export interface TaskUpsertWithoutExecutionsInput {
@@ -420,6 +464,8 @@ export interface ExecutionUpdateManyMutationInput {
 
 export interface TaskCreateInput {
   id?: Maybe<ID_Input>;
+  author?: Maybe<UserCreateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
   number: Int;
   command: String;
   frequency: Int;
@@ -440,6 +486,8 @@ export interface ExecutionCreateWithoutTaskInput {
 }
 
 export interface TaskUpdateInput {
+  author?: Maybe<UserUpdateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
   number?: Maybe<Int>;
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
@@ -523,6 +571,7 @@ export interface ExecutionUpdateManyDataInput {
 }
 
 export interface TaskUpdateManyMutationInput {
+  approved?: Maybe<Boolean>;
   number?: Maybe<Int>;
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
@@ -534,12 +583,148 @@ export interface UserCreateInput {
   isAdmin?: Maybe<Boolean>;
   email: String;
   password: String;
+  tasks?: Maybe<TaskCreateManyWithoutAuthorInput>;
+}
+
+export interface TaskCreateManyWithoutAuthorInput {
+  create?: Maybe<TaskCreateWithoutAuthorInput[] | TaskCreateWithoutAuthorInput>;
+  connect?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+}
+
+export interface TaskCreateWithoutAuthorInput {
+  id?: Maybe<ID_Input>;
+  approved?: Maybe<Boolean>;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
+  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
 }
 
 export interface UserUpdateInput {
   isAdmin?: Maybe<Boolean>;
   email?: Maybe<String>;
   password?: Maybe<String>;
+  tasks?: Maybe<TaskUpdateManyWithoutAuthorInput>;
+}
+
+export interface TaskUpdateManyWithoutAuthorInput {
+  create?: Maybe<TaskCreateWithoutAuthorInput[] | TaskCreateWithoutAuthorInput>;
+  delete?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+  connect?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+  set?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+  disconnect?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+  update?: Maybe<
+    | TaskUpdateWithWhereUniqueWithoutAuthorInput[]
+    | TaskUpdateWithWhereUniqueWithoutAuthorInput
+  >;
+  upsert?: Maybe<
+    | TaskUpsertWithWhereUniqueWithoutAuthorInput[]
+    | TaskUpsertWithWhereUniqueWithoutAuthorInput
+  >;
+  deleteMany?: Maybe<TaskScalarWhereInput[] | TaskScalarWhereInput>;
+  updateMany?: Maybe<
+    TaskUpdateManyWithWhereNestedInput[] | TaskUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface TaskUpdateWithWhereUniqueWithoutAuthorInput {
+  where: TaskWhereUniqueInput;
+  data: TaskUpdateWithoutAuthorDataInput;
+}
+
+export interface TaskUpdateWithoutAuthorDataInput {
+  approved?: Maybe<Boolean>;
+  number?: Maybe<Int>;
+  command?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  period?: Maybe<String>;
+  executions?: Maybe<ExecutionUpdateManyWithoutTaskInput>;
+}
+
+export interface TaskUpsertWithWhereUniqueWithoutAuthorInput {
+  where: TaskWhereUniqueInput;
+  update: TaskUpdateWithoutAuthorDataInput;
+  create: TaskCreateWithoutAuthorInput;
+}
+
+export interface TaskScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  approved?: Maybe<Boolean>;
+  approved_not?: Maybe<Boolean>;
+  number?: Maybe<Int>;
+  number_not?: Maybe<Int>;
+  number_in?: Maybe<Int[] | Int>;
+  number_not_in?: Maybe<Int[] | Int>;
+  number_lt?: Maybe<Int>;
+  number_lte?: Maybe<Int>;
+  number_gt?: Maybe<Int>;
+  number_gte?: Maybe<Int>;
+  command?: Maybe<String>;
+  command_not?: Maybe<String>;
+  command_in?: Maybe<String[] | String>;
+  command_not_in?: Maybe<String[] | String>;
+  command_lt?: Maybe<String>;
+  command_lte?: Maybe<String>;
+  command_gt?: Maybe<String>;
+  command_gte?: Maybe<String>;
+  command_contains?: Maybe<String>;
+  command_not_contains?: Maybe<String>;
+  command_starts_with?: Maybe<String>;
+  command_not_starts_with?: Maybe<String>;
+  command_ends_with?: Maybe<String>;
+  command_not_ends_with?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  frequency_not?: Maybe<Int>;
+  frequency_in?: Maybe<Int[] | Int>;
+  frequency_not_in?: Maybe<Int[] | Int>;
+  frequency_lt?: Maybe<Int>;
+  frequency_lte?: Maybe<Int>;
+  frequency_gt?: Maybe<Int>;
+  frequency_gte?: Maybe<Int>;
+  period?: Maybe<String>;
+  period_not?: Maybe<String>;
+  period_in?: Maybe<String[] | String>;
+  period_not_in?: Maybe<String[] | String>;
+  period_lt?: Maybe<String>;
+  period_lte?: Maybe<String>;
+  period_gt?: Maybe<String>;
+  period_gte?: Maybe<String>;
+  period_contains?: Maybe<String>;
+  period_not_contains?: Maybe<String>;
+  period_starts_with?: Maybe<String>;
+  period_not_starts_with?: Maybe<String>;
+  period_ends_with?: Maybe<String>;
+  period_not_ends_with?: Maybe<String>;
+  AND?: Maybe<TaskScalarWhereInput[] | TaskScalarWhereInput>;
+  OR?: Maybe<TaskScalarWhereInput[] | TaskScalarWhereInput>;
+  NOT?: Maybe<TaskScalarWhereInput[] | TaskScalarWhereInput>;
+}
+
+export interface TaskUpdateManyWithWhereNestedInput {
+  where: TaskScalarWhereInput;
+  data: TaskUpdateManyDataInput;
+}
+
+export interface TaskUpdateManyDataInput {
+  approved?: Maybe<Boolean>;
+  number?: Maybe<Int>;
+  command?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  period?: Maybe<String>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -620,6 +805,7 @@ export interface ExecutionNullablePromise
 
 export interface Task {
   id: ID_Output;
+  approved?: Boolean;
   number: Int;
   command: String;
   frequency: Int;
@@ -628,6 +814,8 @@ export interface Task {
 
 export interface TaskPromise extends Promise<Task>, Fragmentable {
   id: () => Promise<ID_Output>;
+  author: <T = UserPromise>() => T;
+  approved: () => Promise<Boolean>;
   number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
@@ -647,6 +835,8 @@ export interface TaskSubscription
   extends Promise<AsyncIterator<Task>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  author: <T = UserSubscription>() => T;
+  approved: () => Promise<AsyncIterator<Boolean>>;
   number: () => Promise<AsyncIterator<Int>>;
   command: () => Promise<AsyncIterator<String>>;
   frequency: () => Promise<AsyncIterator<Int>>;
@@ -666,6 +856,8 @@ export interface TaskNullablePromise
   extends Promise<Task | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  author: <T = UserPromise>() => T;
+  approved: () => Promise<Boolean>;
   number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
@@ -673,6 +865,65 @@ export interface TaskNullablePromise
   executions: <T = FragmentableArray<Execution>>(args?: {
     where?: ExecutionWhereInput;
     orderBy?: ExecutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface User {
+  id: ID_Output;
+  isAdmin: Boolean;
+  email: String;
+  password: String;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  isAdmin: () => Promise<Boolean>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  tasks: <T = FragmentableArray<Task>>(args?: {
+    where?: TaskWhereInput;
+    orderBy?: TaskOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  isAdmin: () => Promise<AsyncIterator<Boolean>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  tasks: <T = Promise<AsyncIterator<TaskSubscription>>>(args?: {
+    where?: TaskWhereInput;
+    orderBy?: TaskOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  isAdmin: () => Promise<Boolean>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  tasks: <T = FragmentableArray<Task>>(args?: {
+    where?: TaskWhereInput;
+    orderBy?: TaskOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -812,38 +1063,6 @@ export interface AggregateTaskSubscription
   extends Promise<AsyncIterator<AggregateTask>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface User {
-  id: ID_Output;
-  isAdmin: Boolean;
-  email: String;
-  password: String;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  isAdmin: () => Promise<Boolean>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  isAdmin: () => Promise<AsyncIterator<Boolean>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserNullablePromise
-  extends Promise<User | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  isAdmin: () => Promise<Boolean>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
 }
 
 export interface UserConnection {
@@ -987,6 +1206,7 @@ export interface TaskSubscriptionPayloadSubscription
 
 export interface TaskPreviousValues {
   id: ID_Output;
+  approved?: Boolean;
   number: Int;
   command: String;
   frequency: Int;
@@ -997,6 +1217,7 @@ export interface TaskPreviousValuesPromise
   extends Promise<TaskPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  approved: () => Promise<Boolean>;
   number: () => Promise<Int>;
   command: () => Promise<String>;
   frequency: () => Promise<Int>;
@@ -1007,6 +1228,7 @@ export interface TaskPreviousValuesSubscription
   extends Promise<AsyncIterator<TaskPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  approved: () => Promise<AsyncIterator<Boolean>>;
   number: () => Promise<AsyncIterator<Int>>;
   command: () => Promise<AsyncIterator<String>>;
   frequency: () => Promise<AsyncIterator<Int>>;
@@ -1070,9 +1292,9 @@ export type ID_Input = string | number;
 export type ID_Output = string;
 
 /*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+The `Boolean` scalar type represents `true` or `false`.
 */
-export type Int = number;
+export type Boolean = boolean;
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
@@ -1080,9 +1302,9 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
-export type Boolean = boolean;
+export type Int = number;
 
 export type Long = string;
 

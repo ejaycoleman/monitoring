@@ -54,6 +54,8 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     myTasks = JSON.parse(args.tasks)   
     const promises = myTasks.tasks.map(async task => {
         const result = await prisma.createTask({
+            author: { connect: { id: user.id } },
+            approved: fullUser.isAdmin,
             number: task.number,
             command: task.command,
             frequency: task.frequency,

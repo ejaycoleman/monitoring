@@ -1,14 +1,7 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('../generated/prisma-client')
-
-const Query = require('./resolvers/Query')
-const Mutation = require('./resolvers/Mutation')
-const Task = require('./resolvers/Task')
-const Subscription = require('./resolvers/Subscription')
-const Execution = require('./resolvers/Execution')
-
+const { Query, Mutation, Task, Subscription, Execution, User } = require('./resolvers') 
 const jwt = require('jsonwebtoken')
-
 const CronJob = require('cron').CronJob;
 const fs = require('fs')
 const path = require('path');
@@ -29,7 +22,8 @@ const resolvers = {
     Mutation,
     Subscription,
     Task,
-    Execution
+    Execution,
+    User
 }
 
 const server = new GraphQLServer({

@@ -3,10 +3,13 @@ type User {
   isAdmin: Boolean! @default(value: false)
   email: String! @unique
   password: String!
+  tasks: [Task]
 }
 
 type Task {
   id: ID! @id,
+  author: User,
+  approved: Boolean,
   number: Int! @unique,
   command: String!,
   frequency: Int!,

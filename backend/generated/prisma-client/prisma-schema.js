@@ -249,6 +249,8 @@ type Subscription {
 
 type Task {
   id: ID!
+  author: User
+  approved: Boolean
   number: Int!
   command: String!
   frequency: Int!
@@ -264,6 +266,8 @@ type TaskConnection {
 
 input TaskCreateInput {
   id: ID
+  author: UserCreateOneWithoutTasksInput
+  approved: Boolean
   number: Int!
   command: String!
   frequency: Int!
@@ -271,13 +275,30 @@ input TaskCreateInput {
   executions: ExecutionCreateManyWithoutTaskInput
 }
 
+input TaskCreateManyWithoutAuthorInput {
+  create: [TaskCreateWithoutAuthorInput!]
+  connect: [TaskWhereUniqueInput!]
+}
+
 input TaskCreateOneWithoutExecutionsInput {
   create: TaskCreateWithoutExecutionsInput
   connect: TaskWhereUniqueInput
 }
 
+input TaskCreateWithoutAuthorInput {
+  id: ID
+  approved: Boolean
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+  executions: ExecutionCreateManyWithoutTaskInput
+}
+
 input TaskCreateWithoutExecutionsInput {
   id: ID
+  author: UserCreateOneWithoutTasksInput
+  approved: Boolean
   number: Int!
   command: String!
   frequency: Int!
@@ -292,6 +313,8 @@ type TaskEdge {
 enum TaskOrderByInput {
   id_ASC
   id_DESC
+  approved_ASC
+  approved_DESC
   number_ASC
   number_DESC
   command_ASC
@@ -304,10 +327,77 @@ enum TaskOrderByInput {
 
 type TaskPreviousValues {
   id: ID!
+  approved: Boolean
   number: Int!
   command: String!
   frequency: Int!
   period: String!
+}
+
+input TaskScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  approved: Boolean
+  approved_not: Boolean
+  number: Int
+  number_not: Int
+  number_in: [Int!]
+  number_not_in: [Int!]
+  number_lt: Int
+  number_lte: Int
+  number_gt: Int
+  number_gte: Int
+  command: String
+  command_not: String
+  command_in: [String!]
+  command_not_in: [String!]
+  command_lt: String
+  command_lte: String
+  command_gt: String
+  command_gte: String
+  command_contains: String
+  command_not_contains: String
+  command_starts_with: String
+  command_not_starts_with: String
+  command_ends_with: String
+  command_not_ends_with: String
+  frequency: Int
+  frequency_not: Int
+  frequency_in: [Int!]
+  frequency_not_in: [Int!]
+  frequency_lt: Int
+  frequency_lte: Int
+  frequency_gt: Int
+  frequency_gte: Int
+  period: String
+  period_not: String
+  period_in: [String!]
+  period_not_in: [String!]
+  period_lt: String
+  period_lte: String
+  period_gt: String
+  period_gte: String
+  period_contains: String
+  period_not_contains: String
+  period_starts_with: String
+  period_not_starts_with: String
+  period_ends_with: String
+  period_not_ends_with: String
+  AND: [TaskScalarWhereInput!]
+  OR: [TaskScalarWhereInput!]
+  NOT: [TaskScalarWhereInput!]
 }
 
 type TaskSubscriptionPayload {
@@ -329,6 +419,8 @@ input TaskSubscriptionWhereInput {
 }
 
 input TaskUpdateInput {
+  author: UserUpdateOneWithoutTasksInput
+  approved: Boolean
   number: Int
   command: String
   frequency: Int
@@ -336,11 +428,37 @@ input TaskUpdateInput {
   executions: ExecutionUpdateManyWithoutTaskInput
 }
 
-input TaskUpdateManyMutationInput {
+input TaskUpdateManyDataInput {
+  approved: Boolean
   number: Int
   command: String
   frequency: Int
   period: String
+}
+
+input TaskUpdateManyMutationInput {
+  approved: Boolean
+  number: Int
+  command: String
+  frequency: Int
+  period: String
+}
+
+input TaskUpdateManyWithoutAuthorInput {
+  create: [TaskCreateWithoutAuthorInput!]
+  delete: [TaskWhereUniqueInput!]
+  connect: [TaskWhereUniqueInput!]
+  set: [TaskWhereUniqueInput!]
+  disconnect: [TaskWhereUniqueInput!]
+  update: [TaskUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [TaskUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [TaskScalarWhereInput!]
+  updateMany: [TaskUpdateManyWithWhereNestedInput!]
+}
+
+input TaskUpdateManyWithWhereNestedInput {
+  where: TaskScalarWhereInput!
+  data: TaskUpdateManyDataInput!
 }
 
 input TaskUpdateOneWithoutExecutionsInput {
@@ -352,16 +470,38 @@ input TaskUpdateOneWithoutExecutionsInput {
   connect: TaskWhereUniqueInput
 }
 
+input TaskUpdateWithoutAuthorDataInput {
+  approved: Boolean
+  number: Int
+  command: String
+  frequency: Int
+  period: String
+  executions: ExecutionUpdateManyWithoutTaskInput
+}
+
 input TaskUpdateWithoutExecutionsDataInput {
+  author: UserUpdateOneWithoutTasksInput
+  approved: Boolean
   number: Int
   command: String
   frequency: Int
   period: String
 }
 
+input TaskUpdateWithWhereUniqueWithoutAuthorInput {
+  where: TaskWhereUniqueInput!
+  data: TaskUpdateWithoutAuthorDataInput!
+}
+
 input TaskUpsertWithoutExecutionsInput {
   update: TaskUpdateWithoutExecutionsDataInput!
   create: TaskCreateWithoutExecutionsInput!
+}
+
+input TaskUpsertWithWhereUniqueWithoutAuthorInput {
+  where: TaskWhereUniqueInput!
+  update: TaskUpdateWithoutAuthorDataInput!
+  create: TaskCreateWithoutAuthorInput!
 }
 
 input TaskWhereInput {
@@ -379,6 +519,9 @@ input TaskWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  author: UserWhereInput
+  approved: Boolean
+  approved_not: Boolean
   number: Int
   number_not: Int
   number_in: [Int!]
@@ -441,6 +584,7 @@ type User {
   isAdmin: Boolean!
   email: String!
   password: String!
+  tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task!]
 }
 
 type UserConnection {
@@ -450,6 +594,19 @@ type UserConnection {
 }
 
 input UserCreateInput {
+  id: ID
+  isAdmin: Boolean
+  email: String!
+  password: String!
+  tasks: TaskCreateManyWithoutAuthorInput
+}
+
+input UserCreateOneWithoutTasksInput {
+  create: UserCreateWithoutTasksInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutTasksInput {
   id: ID
   isAdmin: Boolean
   email: String!
@@ -501,12 +658,33 @@ input UserUpdateInput {
   isAdmin: Boolean
   email: String
   password: String
+  tasks: TaskUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyMutationInput {
   isAdmin: Boolean
   email: String
   password: String
+}
+
+input UserUpdateOneWithoutTasksInput {
+  create: UserCreateWithoutTasksInput
+  update: UserUpdateWithoutTasksDataInput
+  upsert: UserUpsertWithoutTasksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutTasksDataInput {
+  isAdmin: Boolean
+  email: String
+  password: String
+}
+
+input UserUpsertWithoutTasksInput {
+  update: UserUpdateWithoutTasksDataInput!
+  create: UserCreateWithoutTasksInput!
 }
 
 input UserWhereInput {
@@ -554,6 +732,9 @@ input UserWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  tasks_every: TaskWhereInput
+  tasks_some: TaskWhereInput
+  tasks_none: TaskWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
