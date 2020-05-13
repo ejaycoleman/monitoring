@@ -27,7 +27,8 @@ async function login(parent, {email, password}, context) {
     const token = jwt.sign(
         {
             id: user.id,
-            email: user.email
+            email: user.email,
+            admin: user.isAdmin
         },
         'the-project-secret',
         {

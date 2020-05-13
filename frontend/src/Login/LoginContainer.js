@@ -5,7 +5,10 @@ import gql from 'graphql-tag'
 const loginMutation = gql`
     mutation login($email: String!, $password: String!) {
         login(email: $email, password: $password) {
-            token
+            token,
+            user {
+                isAdmin
+            }
         }
     }
 `
@@ -19,9 +22,6 @@ const CreateContainer =
                     variables: {
                         email: email,
                         password: password,
-                    },
-                    update: (cache, { data: { login } }) => {
-                        localStorage.setItem('AUTH_TOKEN', login.token)   
                     }
                 })
             }

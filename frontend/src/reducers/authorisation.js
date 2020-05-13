@@ -1,9 +1,9 @@
-const authorisation = (state = false, action) => {
+const authorisation = (state = {authed: false, admin: false}, action) => {
     switch (action.type) {
         case 'LOGIN_USER':
-            return true
+            return {authed: true, admin: action.value}
         case 'LOGOUT_USER':
-            return false
+            return {authed: false, admin: false}
         default:
             return state
     }
