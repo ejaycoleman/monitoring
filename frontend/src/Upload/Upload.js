@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
+import { useSelector } from 'react-redux'
 
 const theme = {
 	scheme: 'monokai',
@@ -29,6 +30,7 @@ const Upload = props => {
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
 	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
+	const isAdmin = useSelector(state => state.isLogged.admin)
 	
 	return (
 		<div>
@@ -75,7 +77,7 @@ const Upload = props => {
 				period: newTaskPeriod 
 			}).then(({data}) => setJsonTasks(
 				[...jsonTasks, data.uploadSingleTask]
-			)).catch(error => console.log(error))}>CREATE</button>
+			)).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</button>
 		</div>
 	) 
 }

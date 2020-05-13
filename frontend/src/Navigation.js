@@ -6,7 +6,7 @@ import App from './App'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
-
+import SecuredRoute from './SecuredRoute';
 
 function Navigation() {
     const dispatch = useDispatch();
@@ -35,7 +35,7 @@ function Navigation() {
             </div>
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
-            <Route path="/upload/" component={Upload} />
+            <SecuredRoute path="/upload/" component={Upload} />
             <Route path="/status" component={Status} />
         </div>
     )
