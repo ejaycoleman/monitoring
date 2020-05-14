@@ -1,5 +1,6 @@
-export const login = () => ({
-    type: 'LOGIN_USER'
+export const login = isAdmin => ({
+    type: 'LOGIN_USER',
+    value: isAdmin
 })
 
 export const logout = () => ({

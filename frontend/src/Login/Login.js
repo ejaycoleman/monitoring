@@ -25,8 +25,9 @@ const Login = props => {
 			/>
 			</div>
 			<div className="flex mt3">
-			<button onClick={() => props.loginMutation({ email, password }).then(() => {
-				dispatch(login())
+			<button onClick={() => props.loginMutation({ email, password }).then(({data}) => {
+				localStorage.setItem('AUTH_TOKEN', data.login.token)
+				dispatch(login(data.login.user.isAdmin))
 				props.history.push(`/`)
 			})}>LOGIN</button>
 			</div>

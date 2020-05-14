@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
+import { useSelector } from 'react-redux'
 
 const theme = {
 	scheme: 'monokai',
@@ -23,8 +24,13 @@ const theme = {
 
 const Upload = props => {
 	const [ tasks, setTasks ] = useState("");		
-	const [ jsonTasks, setJsonTasks ] = useState([]);		
+	const [ jsonTasks, setJsonTasks ] = useState([]);
+	const [ newTaskNumber, setNewTaskNumber ] = useState(0);	
+	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
+	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
+	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
 	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
+	const isAdmin = useSelector(state => state.isLogged.admin)
 	
 	return (
 		<div>
@@ -36,9 +42,42 @@ const Upload = props => {
 				type="text"
 				placeholder="Enter the task json file"
 			/>
-			<button onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(e => {console.log(e)})}>UPLOAD</button>
+			<button onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(error => {console.log(error)})}>UPLOAD</button>
 			</div>
 			<JSONTree data={jsonTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
+			<input
+				value={newTaskNumber}
+				onChange={e => setNewTaskNumber(e.target.value)}
+				type="number"
+				placeholder="number"
+			/>
+			<input
+				value={newTaskCommand}
+				onChange={e => setNewTaskCommand(e.target.value)}
+				type="text"
+				placeholder="command"
+			/>
+			<input
+				value={newTaskFrequency}
+				onChange={e => setNewTaskFrequency(e.target.value)}
+				type="number"
+				placeholder="frequency"
+			/>
+			<select id="period" value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
+				<option value="hours">hours</option>
+				<option value="days">days</option>
+				<option value="weeks">weeks</option>
+				<option value="months">months</option>
+			</select>
+			<button onClick={() => props.uploadSingleTask({ 
+				number: newTaskNumber, 
+				command: newTaskCommand, 
+				frequency: 
+				newTaskFrequency, 
+				period: newTaskPeriod 
+			}).then(({data}) => isAdmin && setJsonTasks(
+				[...jsonTasks, data.uploadSingleTask]
+			)).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</button>
 		</div>
 	) 
 }

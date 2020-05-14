@@ -6,7 +6,8 @@ import App from './App'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
-
+import Admin from './Admin/index'
+import SecuredRoute from './SecuredRoute';
 
 function Navigation() {
     const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function Navigation() {
         return <Redirect to="/" />
     }
 
-    const isLogged = useSelector(state => state.isLogged)
+    const { authed, admin } = useSelector(state => state.isLogged)
 
     return (
         <div>
@@ -26,16 +27,19 @@ function Navigation() {
                 <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/status'>Status</NavLink>
                 <div style={{float: 'right'}}>
                     { 
-                        isLogged ?
+                        authed ?
                         <button type="danger" onClick={() => signOut()}>Sign Out</button>
                         :
                         <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'>Login</NavLink>
                     }
+                    { authed && admin && <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/admin'>Admin</NavLink>}
                 </div>
-            </div>   
+                
+            </div>
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
-            <Route path="/upload/" component={Upload} />
+            <SecuredRoute path="/upload/" component={Upload} />
+            <SecuredRoute path="/admin/" component={Admin} adminRequired />
             <Route path="/status" component={Status} />
         </div>
     )

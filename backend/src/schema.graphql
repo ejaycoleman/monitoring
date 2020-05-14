@@ -1,18 +1,21 @@
 type Query {
   currentUser: User!
-  tasks: [Task]
+  tasks(approved: Boolean): [Task]
 }
 
 type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
   login(email: String!, password: String!): LoginResponse
   uploadTasksFile(tasks: String!): [Task]
+  uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: String!): Task
+  approveTask(id: ID!): Task
 }
 
 type User {
   id: ID!
   email: String!
   isAdmin: Boolean!
+  tasks: [Task]
 }
 
 type LoginResponse {
@@ -21,10 +24,13 @@ type LoginResponse {
 }
 
 type Task {
-  number: Int!,
-  command: String!,
-  frequency: Int!,
-  period: String!,
+  id: ID!
+  approved: Boolean!
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+  author: User
   executions: [Execution!]
 }
 
