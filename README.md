@@ -14,7 +14,7 @@ In the project directory, run: <br>
 
 then inside the backend directory (on the host), run: <br>
 `prisma deploy`<br>
-Finally, in the generated/prisma-client/index.js file, change the endpoint from `http://localhost:4466` to `http://prisma:4466`
+Finally, in the generated/prisma-client/index.js file, ensure the endpoint is `http://prisma:4466` (and not `http://localhost:4466`)
 
 
 ## create a user
