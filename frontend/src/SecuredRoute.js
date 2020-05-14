@@ -3,12 +3,12 @@ import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 
 const SecuredRoute = props => {
-  const { component: Component, path } = props
-  const isLogged = useSelector(state => state.isLogged.authed)
+  const { component: Component, path, adminRequired } = props
+  const { authed, admin } = useSelector(state => state.isLogged)
 
   return (
     <Route path={path} render={() => {
-        if (!isLogged) {
+        if (!authed || (!admin && adminRequired)) {
             return <Redirect to="/login" />
         }
         return <Component />

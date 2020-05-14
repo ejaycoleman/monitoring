@@ -19,6 +19,8 @@ services:
             rawAccess: true
             port: 3306
             migrations: true
+    links:
+      - mysql
   mysql:
     image: mysql:5.7
     restart: always
@@ -34,9 +36,11 @@ services:
       - mysql
     depends_on:
       - mysql
+      - prisma
     container_name: backend
     ports:
       - '4000:4000'
+    stdin_open: true
     environment:
       - CHOKIDAR_USEPOLLING=true
     build:

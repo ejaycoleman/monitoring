@@ -75,7 +75,7 @@ const Upload = props => {
 				frequency: 
 				newTaskFrequency, 
 				period: newTaskPeriod 
-			}).then(({data}) => setJsonTasks(
+			}).then(({data}) => isAdmin && setJsonTasks(
 				[...jsonTasks, data.uploadSingleTask]
 			)).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</button>
 		</div>

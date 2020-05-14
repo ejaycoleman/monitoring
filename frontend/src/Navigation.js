@@ -16,7 +16,7 @@ function Navigation() {
         return <Redirect to="/" />
     }
 
-    const isLogged = useSelector(state => state.isLogged.authed)
+    const { authed, admin } = useSelector(state => state.isLogged)
 
     return (
         <div>
@@ -26,16 +26,19 @@ function Navigation() {
                 <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/status'>Status</NavLink>
                 <div style={{float: 'right'}}>
                     { 
-                        isLogged ?
+                        authed ?
                         <button type="danger" onClick={() => signOut()}>Sign Out</button>
                         :
                         <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'>Login</NavLink>
                     }
+                    { authed && (admin ? "[ADMIN]" : "[NOT ADMIN]")}
                 </div>
+                
             </div>
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
             <SecuredRoute path="/upload/" component={Upload} />
+            <SecuredRoute path="/approve/" component={Upload} adminRequired />
             <Route path="/status" component={Status} />
         </div>
     )
