@@ -85,9 +85,23 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
     })
 }
 
+async function approveTask(parent, { id }, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+    const fullUser = await prisma.user({id: user.id})
+    
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    return prisma.updateTask({where: {id}, data: {approved: true}})
+}
+
 module.exports = {
     register,
     login,
     uploadTasksFile,
-    uploadSingleTask
+    uploadSingleTask,
+    approveTask
 }

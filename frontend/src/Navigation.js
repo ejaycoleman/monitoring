@@ -6,6 +6,7 @@ import App from './App'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
+import Admin from './Admin/index'
 import SecuredRoute from './SecuredRoute';
 
 function Navigation() {
@@ -31,14 +32,14 @@ function Navigation() {
                         :
                         <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'>Login</NavLink>
                     }
-                    { authed && (admin ? "[ADMIN]" : "[NOT ADMIN]")}
+                    { authed && admin && <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/admin'>Admin</NavLink>}
                 </div>
                 
             </div>
             <Route path="/" exact component={App} />
             <Route path="/login/" component={Login} />
             <SecuredRoute path="/upload/" component={Upload} />
-            <SecuredRoute path="/approve/" component={Upload} adminRequired />
+            <SecuredRoute path="/admin/" component={Admin} adminRequired />
             <Route path="/status" component={Status} />
         </div>
     )
