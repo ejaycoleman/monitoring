@@ -4,7 +4,7 @@
 - prisma (sudo npm i -g prisma)
 
 ## Overview
-The system is comprised of two systems: the frontend (localhost:3000) and the backend (localhost:4000). The backend stores data in a mysql database, using prisma to allow GraphQL queries. The frontend is written in React.
+The system is comprised of two systems: the frontend (localhost:3000) and the backend (localhost:4000). The backend, written in Node, stores data in a mysql database, using prisma to support GraphQL queries. The frontend is written in React.
 
 # Installation/setup guide
 ## Deploy the containers
@@ -12,8 +12,9 @@ In the project directory, run: <br>
 `docker-compose build` <br> 
 `docker-compose up`
 
-then inside the backend directory, run: <br>
-`prisma deploy`
+then inside the backend directory (on the host), run: <br>
+`prisma deploy`<br>
+Finally, in the generated/prisma-client/index.js file, ensure the endpoint is `http://prisma:4466` (and not `http://localhost:4466`)
 
 
 ## create a user
