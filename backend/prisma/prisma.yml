@@ -1,4 +1,4 @@
-endpoint: http://0.0.0.0:4466
+endpoint: http://prisma:4466/node/dev
 datamodel: datamodel.prisma
 
 generate:
