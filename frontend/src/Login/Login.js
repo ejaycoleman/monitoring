@@ -29,7 +29,10 @@ const Login = props => {
 				localStorage.setItem('AUTH_TOKEN', data.login.token)
 				dispatch(login(data.login.user.isAdmin))
 				props.history.push(`/`)
-			})}>LOGIN</button>
+			}).catch(error => {
+				console.log(error)
+				return(<h1>INCORRECT</h1>)
+				})}>LOGIN</button>
 			</div>
 		</div>
 	) 

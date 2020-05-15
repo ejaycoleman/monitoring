@@ -11,12 +11,26 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import gql from 'graphql-tag'
 
-const retrieveTasksSubscription = gql`
+const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
             datetime,
             task {
                 number
+            }
+        }
+    }
+`
+
+const retrieveTasksSubscription = gql`
+    subscription {
+        newTask {
+            number,
+            command, 
+            frequency,
+            period,
+            executions {
+                datetime
             }
         }
     }
@@ -47,7 +61,7 @@ class Status extends React.Component {
 
     componentDidUpdate(prevProps) {
         this.props.subscribeToMore({
-            document: retrieveTasksSubscription,
+            document: retrieveExecutionsSubscription,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev
                 const newExecution = subscriptionData.data.newExecution
@@ -59,6 +73,27 @@ class Status extends React.Component {
                 }
             }
         })
+
+        this.props.subscribeToMore({
+            document: retrieveTasksSubscription,
+            updateQuery: (prev, { subscriptionData }) => {
+                console.log(subscriptionData)
+                if (!subscriptionData.data) return prev
+
+                
+
+                return [...prev, subscriptionData.data]
+
+                // const newExecution = subscriptionData.data.newExecution
+                // const existingTask = prev.tasks.find(({number})=> number === newExecution.task.number)
+                // if (!moment().startOf('day').subtract(existingTask.frequency, existingTask.period).isAfter(moment.unix(newExecution.datetime))) {
+                //     const ranInTime = this.state.ranInTime
+                //     ranInTime[newExecution.task.number] = true
+                //     this.setState({ranInTime})
+                // }
+            }
+        })
+
 
         if (this.props.tasks !== prevProps.tasks) {
             this.renderDataForTable()
@@ -84,10 +119,10 @@ class Status extends React.Component {
                     <TableBody>
                     {Object.keys(this.state.ranInTime).map((row) => (
                         <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                            {row}
-                        </TableCell>
-                        <TableCell align="right">{this.state.ranInTime[row] ? <CheckCircleIcon style={{color: 'green'}}/> : <CancelIcon style={{color: 'red'}}/> }</TableCell>
+                            <TableCell component="th" scope="row">
+                                {row}
+                            </TableCell>
+                            <TableCell align="right">{this.state.ranInTime[row] ? <CheckCircleIcon style={{color: 'green'}}/> : <CancelIcon style={{color: 'red'}}/> }</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
