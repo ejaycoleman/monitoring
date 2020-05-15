@@ -9,7 +9,10 @@ const retreiveTasks = gql` {
         number,
         command, 
         frequency,
-        period
+        period,
+        author {
+            email
+        }
     }
 }
 `
