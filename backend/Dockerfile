@@ -10,5 +10,3 @@ COPY prisma ./prisma/
 
 RUN npm install
 RUN prisma generate
-
-CMD [ "npm", "start" ]

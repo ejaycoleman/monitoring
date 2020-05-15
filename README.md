@@ -12,12 +12,7 @@ In the project directory, run: <br>
 `docker-compose build` <br> 
 `docker-compose up`
 
-then inside the backend directory (on the host), run: <br>
-`prisma deploy`<br>
-Finally, in the generated/prisma-client/index.js file, ensure the endpoint is `http://prisma:4466` (and not `http://localhost:4466`)
-
-
-## create a user
+## Create a user
 go to [localhost:4000](http://localhost:4000) in your browser
 
 run the GraphQL mutation below to create a user with admin privileges:
@@ -29,7 +24,7 @@ mutation user {
 }
 ```
 
-## upload configuration
+## Upload configuration
 First, go to [localhost:3000/login](http://localhost:3000/login) and enter email: `admin` and password: `admin`.
 
 Then, go to [localhost:3000/upload](http://localhost:3000/upload) to upload the json below:
