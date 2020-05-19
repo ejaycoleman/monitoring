@@ -42,27 +42,29 @@ class Status extends React.Component {
         super(props);
         this.state = {
             loading: true,
-            ranInTime: {}
+            ranInTime: {},
+            mostRecentExecution: 0
         }
     }
 
     renderDataForTable = () => {
-        let mostRecentExecution = 0
-
+        let mostRecentExecution = ''
         this.props.tasks.forEach(task => {
             const hasRanInTime = this.state.ranInTime
             hasRanInTime[task.number] = false
             task.executions.forEach(execution => {
+                if (mostRecentExecution === '') {
+                    mostRecentExecution = execution.datetime
+                }
+                mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
                 if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
                     hasRanInTime[task.number] = true
                     return
                 } 
-                // mostRecentExecution = mostRecentExecution == 0 ? moment.unix(execution.datetime) : moment.max(moment.unix(mostRecentExecution), moment.unix(execution.datetime))
             })        
             this.setState({ranInTime: hasRanInTime})        
         })
-
-        console.log(moment.unix(0))
+        this.setState({mostRecentExecution})
     }
 
     componentDidUpdate(prevProps) {
@@ -116,17 +118,18 @@ class Status extends React.Component {
                             <TableCell component="th" scope="row">
                                 {row}
                             </TableCell>
-                            <TableCell align="right">{this.props.tasks[index].executions.length === 0 ? <HelpIcon style={{color: 'orange'}}/> : (this.state.ranInTime[row] ? <CheckCircleIcon style={{color: 'green'}}/> : <CancelIcon style={{color: 'red'}}/>) }</TableCell>
+                            <TableCell align="right" component="th" scope="row">
+                                {this.props.tasks[index].executions.length === 0 ? <HelpIcon style={{color: 'grey'}}/> : (this.state.ranInTime[row] ? <CheckCircleIcon style={{color: 'green'}}/> : <CancelIcon style={{color: 'red'}}/>) }
+                            </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
                 </TableContainer>
-                Last files recieved: 
+                <h1 style={{color: 'white'}}>Last recieved: {moment.unix(this.state.mostRecentExecution).fromNow()}</h1>
             </div>
         ) 
     }
 }
 
 export default Status
-

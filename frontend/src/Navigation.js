@@ -1,5 +1,5 @@
-import React from 'react'
-import { Route, NavLink, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Route, NavLink, Redirect, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
 import Login from './Login/index'
@@ -17,6 +17,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 
 function Navigation() {
     const dispatch = useDispatch();
+    const location = useLocation();
     const signOut = () => {
         dispatch(logout())
         localStorage.removeItem('AUTH_TOKEN')
@@ -24,51 +25,47 @@ function Navigation() {
     }
 
     const { authed, admin } = useSelector(state => state.isLogged)
+    const [currentRoute, setCurrentRoute] = useState("")
+
+    useEffect(() => {
+        setCurrentRoute(location.pathname)
+    }, [location])
 
     return (
         <div>
             <AppBar position="static">
                 <Toolbar>
-                    <NavLink exact={true} style={{color: 'white', marginRight: 15}} activeStyle={{fontWeight: "bold", color: "green"}} to='/'>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="primary-search-account-menu"
-                            aria-haspopup="true"
-                        >
-                            <AssignmentIcon />
-                        </IconButton>
-                    </NavLink>
-                    <NavLink exact={true} style={{color: 'white', marginRight: 15}} activeStyle={{fontWeight: "bold", color: "green"}} to='/upload'>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="primary-search-account-menu"
-                            aria-haspopup="true"
-                        >
-                            <PublishIcon />
-                        </IconButton>
-                    </NavLink>
-                    { 
-                        authed ?
-                        <Button onClick={() => signOut()} variant="contained">Sign Out</Button>
-                        :
-                        <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'><Button type="danger" variant="contained">Login</Button></NavLink>
-                        
-                    }
-                    { authed && admin && <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/admin'>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="primary-search-account-menu"
-                            aria-haspopup="true"
-                        >
+                    <div style={{flexGrow: 1}}>
+                        <NavLink exact={true} to='/'>
+                            <IconButton edge="start" style={{color: currentRoute === '/' ? '#fff' : '#1E2650'}}>
+                                <AssignmentIcon />
+                            </IconButton>
+                        </NavLink>
+                        <NavLink exact={true} to='/upload'>
+                            <IconButton style={{color: currentRoute === '/upload' ? '#fff' : '#1E2650'}}>
+                                <PublishIcon />
+                            </IconButton>
+                        </NavLink>
+                    </div>
+                    { authed && admin && <NavLink exact={true} to='/admin'>
+                        <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
                             <AccountCircle />
                         </IconButton>
                     </NavLink>}
+                    { 
+                        authed ?
+                        <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
+                        :
+                        <NavLink exact={true} to='/login' style={{textDecoration: 'none'}} ><Button variant="contained">Login</Button></NavLink>             
+                    }
                 </Toolbar>
             </AppBar>
-            <Route path="/" exact component={Status} />
-            <Route path="/login/" component={Login} />
-            <SecuredRoute path="/upload/" component={Upload} />
-            <SecuredRoute path="/admin/" component={Admin} adminRequired />
+            <div style={{padding: 20}}>
+                <Route path="/" exact component={Status} />
+                <Route path="/login/" component={Login} />
+                <SecuredRoute path="/upload/" component={Upload} />
+                <SecuredRoute path="/admin/" component={Admin} adminRequired />
+            </div>
         </div>
     )
 }
