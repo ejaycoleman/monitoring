@@ -103,7 +103,7 @@ class Status extends React.Component {
     render() {
         return (
             <div>
-                <h2 className="mv3">Status</h2>
+                <h1 style={{color: 'white'}}>Status</h1>
                 <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -126,7 +126,7 @@ class Status extends React.Component {
                     </TableBody>
                 </Table>
                 </TableContainer>
-                <h1 style={{color: 'white'}}>Last recieved: {moment.unix(this.state.mostRecentExecution).fromNow()}</h1>
+                <h2>Last recieved: {moment.unix(this.state.mostRecentExecution).fromNow()}</h2>
             </div>
         ) 
     }
