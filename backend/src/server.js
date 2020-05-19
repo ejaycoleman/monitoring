@@ -61,10 +61,9 @@ const job = new CronJob('*/5 * * * * *', function() {
         files.forEach(file => {
             const [ taskDate, taskExecution, last ] = file.split("_")
             const taskId = last && last.match(/\d+/)[0]
-            if (isNaN(Date.parse(taskDate)) || isNaN(taskExecution) || taskId === null) {
-                return
+            if (!isNaN(Date.parse(taskDate)) && !isNaN(taskExecution) && taskId !== null) {
+                postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
             }
-            postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
         });
     });
 });
