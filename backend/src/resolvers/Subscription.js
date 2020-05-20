@@ -7,6 +7,16 @@ const newExecution = {
     },
 }
 
+const newTask = {
+    subscribe: (parent, args, context, info) => {
+        return context.prisma.$subscribe.task({ mutation_in: ['CREATED'] }).node()
+    },
+    resolve: payload => {
+        return payload
+    },
+}
+
 module.exports = {
     newExecution,
+    newTask
 }

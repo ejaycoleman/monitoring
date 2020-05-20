@@ -1,16 +1,23 @@
-import React from 'react'
-import { Route, NavLink, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Route, NavLink, Redirect, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
-import App from './App'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
 import Admin from './Admin/index'
 import SecuredRoute from './SecuredRoute';
+import Button from '@material-ui/core/Button';
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import PublishIcon from '@material-ui/icons/Publish';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 function Navigation() {
     const dispatch = useDispatch();
+    const location = useLocation();
     const signOut = () => {
         dispatch(logout())
         localStorage.removeItem('AUTH_TOKEN')
@@ -18,29 +25,47 @@ function Navigation() {
     }
 
     const { authed, admin } = useSelector(state => state.isLogged)
+    const [currentRoute, setCurrentRoute] = useState("")
+
+    useEffect(() => {
+        setCurrentRoute(location.pathname)
+    }, [location])
 
     return (
         <div>
-            <div  style={{paddingLeft: 10, paddingRight: 10, backgroundColor: "white", height: 32}}>
-                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/'>Home</NavLink>
-                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/upload'>Upload</NavLink>
-                <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/status'>Status</NavLink>
-                <div style={{float: 'right'}}>
+            <AppBar position="static">
+                <Toolbar>
+                    <div style={{flexGrow: 1}}>
+                        <NavLink exact={true} to='/'>
+                            <IconButton edge="start" style={{color: currentRoute === '/' ? '#fff' : '#1E2650'}}>
+                                <AssignmentIcon />
+                            </IconButton>
+                        </NavLink>
+                        <NavLink exact={true} to='/upload'>
+                            <IconButton style={{color: currentRoute === '/upload' ? '#fff' : '#1E2650'}}>
+                                <PublishIcon />
+                            </IconButton>
+                        </NavLink>
+                    </div>
+                    { authed && admin && <NavLink exact={true} to='/admin'>
+                        <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
+                            <AccountCircle />
+                        </IconButton>
+                    </NavLink>}
                     { 
                         authed ?
-                        <button type="danger" onClick={() => signOut()}>Sign Out</button>
+                        <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
                         :
-                        <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/login'>Login</NavLink>
+                        <NavLink exact={true} to='/login' style={{textDecoration: 'none'}} ><Button variant="contained">Login</Button></NavLink>             
                     }
-                    { authed && admin && <NavLink exact={true} activeStyle={{fontWeight: "bold", color: "green"}} to='/admin'>Admin</NavLink>}
-                </div>
-                
+                </Toolbar>
+            </AppBar>
+            <div style={{padding: 20}}>
+                <Route path="/" exact component={Status} />
+                <Route path="/login/" component={Login} />
+                <SecuredRoute path="/upload/" component={Upload} />
+                <SecuredRoute path="/admin/" component={Admin} adminRequired />
             </div>
-            <Route path="/" exact component={App} />
-            <Route path="/login/" component={Login} />
-            <SecuredRoute path="/upload/" component={Upload} />
-            <SecuredRoute path="/admin/" component={Admin} adminRequired />
-            <Route path="/status" component={Status} />
         </div>
     )
 }

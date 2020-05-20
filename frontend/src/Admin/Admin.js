@@ -17,7 +17,7 @@ const Admin = props => {
 	
 	return (
 		<div>
-            <h1>Approve the tasks below</h1>
+            <h1 style={{color: 'white'}}>Approve the tasks below</h1>
             {
                 tasks && tasks.length ? 
                     (<TableContainer component={Paper}>
@@ -64,7 +64,7 @@ const Admin = props => {
                             </TableBody>
                         </Table>
                     </TableContainer>)
-                : <h1>All tasks have been verified</h1>
+                : <h1 style={{color : 'white'}}>All tasks have been verified</h1>
             }
 		</div>
 	) 
