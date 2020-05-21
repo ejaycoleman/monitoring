@@ -29,28 +29,28 @@ const Admin = props => {
                                 <TableCell>Frequency</TableCell>
                                 <TableCell>Period</TableCell>
                                 <TableCell>Author</TableCell>
-                                <TableCell></TableCell>
+                                <TableCell style={{width: '10%'}} align="right"></TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
                             {tasks.map((row, index) => (
                                 <TableRow key={row.number}>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell>
                                         {row.number}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell>
                                         {row.command}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell>
                                         {row.frequency}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell>
                                         {row.period}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell>
                                         {row.author.email}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell style={{width: '10%'}} align="right">
                                         <Button variant="contained" onClick={() => props.approveTask({ 
                                             id: row.id
                                         }).then(({data}) => {

@@ -9,7 +9,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -20,6 +19,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -57,6 +58,7 @@ const useRowStyles = makeStyles({
 function Row(props) {
 	const { task, ranInTime } = props;
 	const [open, setOpen] = React.useState(false);
+	const [notifications, setNotifications] = React.useState(false);
 	const classes = useRowStyles();
 
 	return (
@@ -70,7 +72,7 @@ function Row(props) {
 				<TableCell component="th" scope="row">
 					{task.number}
 				</TableCell>
-				<TableCell align="right">
+				<TableCell align="right" >
 					{task.executions.length === 0 ? 
 						<HelpIcon style={{color: 'grey'}}/> 
 					: 
@@ -81,35 +83,41 @@ function Row(props) {
 						) 
 					}
 				</TableCell>
+				<TableCell component="th" scope="row" style={{textAlign: 'center'}}>
+					{notifications ? <NotificationsActiveIcon style={{color: 'green'}} onClick={() => setNotifications(!notifications)} /> : <NotificationsOffIcon style={{color: 'black'}}  onClick={() => setNotifications(!notifications)} /> }
+				</TableCell>
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
 					<Collapse in={open} timeout="auto" unmountOnExit>
 						<Box margin={1}>
-							<Typography variant="h6" gutterBottom component="div">
-								Executions
-							</Typography>
 							{task.executions.length > 0 ? (
-								<Table style={{width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
-									<TableHead>
-									<TableRow>
-										<TableCell />
-										<TableCell align="right">Datetime</TableCell>
-									</TableRow>
-									</TableHead>
-									<TableBody>
-									{task.executions.map((execution, index) => (
-										<TableRow key={execution.datetime}>
-											<TableCell component="th" scope="row">
-												{index}
-											</TableCell>
-											<TableCell align="right" scope="row">
-												{moment(execution.datetime * 1000).format('MMMM Do YYYY')}
-											</TableCell>
+								<div>
+									<h3 style={{textAlign: 'center'}}>
+										{task.executions.length === 1 ? `1 Execution` : `${task.executions.length} Executions`}
+									</h3>
+									<Table style={{width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
+										<TableHead>
+										<TableRow>
+											<TableCell />
+											<TableCell align="right">Datetime</TableCell>
 										</TableRow>
-									))}
-									</TableBody>
-								</Table>) 
+										</TableHead>
+										<TableBody>
+										{task.executions.map((execution, index) => (
+											<TableRow key={execution.datetime}>
+												<TableCell component="th" scope="row">
+													{index}
+												</TableCell>
+												<TableCell align="right" scope="row">
+													{moment(execution.datetime * 1000).format('MMMM Do YYYY')}
+												</TableCell>
+											</TableRow>
+										))}
+										</TableBody>
+									</Table>
+								</div>
+								) 
 							:
 								<h3 style={{textAlign: 'center'}}>This task hasn't been executed yet</h3>
 							}
@@ -186,9 +194,9 @@ class Status extends React.Component {
 
 	determineChipColor = time => {
 		const now = moment()
-		if (moment.unix(time).isBetween('2020-05-15', '2020-05-20')) {
+		if (moment.unix(time).isBetween(now.subtract(7, 'days'), now.subtract(2, 'days'))) {
 			return 'orange'
-		} else if (moment.unix(time).isBetween('2020-05-20', now)) {
+		} else if (moment.unix(time).isBetween(now.subtract(1, 'days'), now)) {
 			return 'green'
 		}
 		return 'red'
@@ -204,8 +212,9 @@ class Status extends React.Component {
 							<TableHead>
 								<TableRow>
 									<TableCell style={{width: 30}}/>
-									<TableCell>Test</TableCell>
+									<TableCell>Task Number</TableCell>
 									<TableCell align="right">Status</TableCell>
+									<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -216,13 +225,15 @@ class Status extends React.Component {
 						</Table>
 					</TableContainer>
 					<div style={{ 
-						marginTop: 20, 
+						marginTop: 20,
+						marginBottom: 20, 
 						float: 'right'
 					}}>
 						<Chip 
 							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
 							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
 							style={{backgroundColor: 'white'}} 
+							onClick={() => true}
 						/>	
 					</div>
 				</div>
