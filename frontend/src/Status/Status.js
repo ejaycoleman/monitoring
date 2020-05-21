@@ -18,6 +18,8 @@ import moment from 'moment'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
+import Chip from '@material-ui/core/Chip';
+import WatchLaterIcon from '@material-ui/icons/WatchLater';
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -182,26 +184,48 @@ class Status extends React.Component {
 		this.props.tasks && this.renderDataForTable()
 	}
 
+	determineChipColor = time => {
+		const now = moment()
+		if (moment.unix(time).isBetween('2020-05-15', '2020-05-20')) {
+			return 'orange'
+		} else if (moment.unix(time).isBetween('2020-05-20', now)) {
+			return 'green'
+		}
+		return 'red'
+	}
+
 	render() {
 		return (
 			<div>
 				<h1 style={{color: 'white'}}>Status</h1>
-				<TableContainer component={Paper} style={{width: '80%', marginLeft: 'auto', marginRight: 'auto'}}>
-					<Table aria-label="collapsible table">
-						<TableHead>
-							<TableRow>
-								<TableCell style={{width: 40}}/>
-								<TableCell>Test</TableCell>
-								<TableCell align="right">Status</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{Object.keys(this.state.ranInTime).map((row, index) => (
-								<Row key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+				<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto'}}>
+					<TableContainer component={Paper} >
+						<Table aria-label="collapsible table">
+							<TableHead>
+								<TableRow>
+									<TableCell style={{width: 30}}/>
+									<TableCell>Test</TableCell>
+									<TableCell align="right">Status</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{Object.keys(this.state.ranInTime).map((row, index) => (
+									<Row key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<div style={{ 
+						marginTop: 20, 
+						float: 'right'
+					}}>
+						<Chip 
+							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
+							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
+							style={{backgroundColor: 'white'}} 
+						/>	
+					</div>
+				</div>
 			</div>
 		) 
 	}
