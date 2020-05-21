@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   execution: (where?: ExecutionWhereInput) => Promise<boolean>;
   task: (where?: TaskWhereInput) => Promise<boolean>;
+  taskNotification: (where?: TaskNotificationWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -78,6 +79,27 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => TaskConnectionPromise;
+  taskNotification: (
+    where: TaskNotificationWhereUniqueInput
+  ) => TaskNotificationNullablePromise;
+  taskNotifications: (args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<TaskNotification>;
+  taskNotificationsConnection: (args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => TaskNotificationConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -135,6 +157,24 @@ export interface Prisma {
   }) => TaskPromise;
   deleteTask: (where: TaskWhereUniqueInput) => TaskPromise;
   deleteManyTasks: (where?: TaskWhereInput) => BatchPayloadPromise;
+  createTaskNotification: (
+    data: TaskNotificationCreateInput
+  ) => TaskNotificationPromise;
+  updateTaskNotification: (args: {
+    data: TaskNotificationUpdateInput;
+    where: TaskNotificationWhereUniqueInput;
+  }) => TaskNotificationPromise;
+  upsertTaskNotification: (args: {
+    where: TaskNotificationWhereUniqueInput;
+    create: TaskNotificationCreateInput;
+    update: TaskNotificationUpdateInput;
+  }) => TaskNotificationPromise;
+  deleteTaskNotification: (
+    where: TaskNotificationWhereUniqueInput
+  ) => TaskNotificationPromise;
+  deleteManyTaskNotifications: (
+    where?: TaskNotificationWhereInput
+  ) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -166,6 +206,9 @@ export interface Subscription {
   task: (
     where?: TaskSubscriptionWhereInput
   ) => TaskSubscriptionPayloadSubscription;
+  taskNotification: (
+    where?: TaskNotificationSubscriptionWhereInput
+  ) => TaskNotificationSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -192,6 +235,8 @@ export type TaskOrderByInput =
   | "frequency_DESC"
   | "period_ASC"
   | "period_DESC";
+
+export type TaskNotificationOrderByInput = "id_ASC" | "id_DESC";
 
 export type ExecutionOrderByInput =
   | "id_ASC"
@@ -280,6 +325,9 @@ export interface TaskWhereInput {
   executions_every?: Maybe<ExecutionWhereInput>;
   executions_some?: Maybe<ExecutionWhereInput>;
   executions_none?: Maybe<ExecutionWhereInput>;
+  notifications_every?: Maybe<TaskNotificationWhereInput>;
+  notifications_some?: Maybe<TaskNotificationWhereInput>;
+  notifications_none?: Maybe<TaskNotificationWhereInput>;
   AND?: Maybe<TaskWhereInput[] | TaskWhereInput>;
   OR?: Maybe<TaskWhereInput[] | TaskWhereInput>;
   NOT?: Maybe<TaskWhereInput[] | TaskWhereInput>;
@@ -333,9 +381,34 @@ export interface UserWhereInput {
   tasks_every?: Maybe<TaskWhereInput>;
   tasks_some?: Maybe<TaskWhereInput>;
   tasks_none?: Maybe<TaskWhereInput>;
+  notifications_every?: Maybe<TaskNotificationWhereInput>;
+  notifications_some?: Maybe<TaskNotificationWhereInput>;
+  notifications_none?: Maybe<TaskNotificationWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
+}
+
+export interface TaskNotificationWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<UserWhereInput>;
+  task?: Maybe<TaskWhereInput>;
+  AND?: Maybe<TaskNotificationWhereInput[] | TaskNotificationWhereInput>;
+  OR?: Maybe<TaskNotificationWhereInput[] | TaskNotificationWhereInput>;
+  NOT?: Maybe<TaskNotificationWhereInput[] | TaskNotificationWhereInput>;
 }
 
 export interface ExecutionWhereInput {
@@ -372,6 +445,10 @@ export type TaskWhereUniqueInput = AtLeastOne<{
   number?: Maybe<Int>;
 }>;
 
+export type TaskNotificationWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   email?: Maybe<String>;
@@ -396,6 +473,7 @@ export interface TaskCreateWithoutExecutionsInput {
   command: String;
   frequency: Int;
   period: String;
+  notifications?: Maybe<TaskNotificationCreateManyWithoutTaskInput>;
 }
 
 export interface UserCreateOneWithoutTasksInput {
@@ -408,6 +486,94 @@ export interface UserCreateWithoutTasksInput {
   isAdmin?: Maybe<Boolean>;
   email: String;
   password: String;
+  notifications?: Maybe<TaskNotificationCreateManyWithoutUserInput>;
+}
+
+export interface TaskNotificationCreateManyWithoutUserInput {
+  create?: Maybe<
+    | TaskNotificationCreateWithoutUserInput[]
+    | TaskNotificationCreateWithoutUserInput
+  >;
+  connect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+}
+
+export interface TaskNotificationCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  task?: Maybe<TaskCreateOneWithoutNotificationsInput>;
+}
+
+export interface TaskCreateOneWithoutNotificationsInput {
+  create?: Maybe<TaskCreateWithoutNotificationsInput>;
+  connect?: Maybe<TaskWhereUniqueInput>;
+}
+
+export interface TaskCreateWithoutNotificationsInput {
+  id?: Maybe<ID_Input>;
+  author?: Maybe<UserCreateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
+  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
+}
+
+export interface ExecutionCreateManyWithoutTaskInput {
+  create?: Maybe<
+    ExecutionCreateWithoutTaskInput[] | ExecutionCreateWithoutTaskInput
+  >;
+  connect?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+}
+
+export interface ExecutionCreateWithoutTaskInput {
+  id?: Maybe<ID_Input>;
+  datetime: Int;
+}
+
+export interface TaskNotificationCreateManyWithoutTaskInput {
+  create?: Maybe<
+    | TaskNotificationCreateWithoutTaskInput[]
+    | TaskNotificationCreateWithoutTaskInput
+  >;
+  connect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+}
+
+export interface TaskNotificationCreateWithoutTaskInput {
+  id?: Maybe<ID_Input>;
+  user?: Maybe<UserCreateOneWithoutNotificationsInput>;
+}
+
+export interface UserCreateOneWithoutNotificationsInput {
+  create?: Maybe<UserCreateWithoutNotificationsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutNotificationsInput {
+  id?: Maybe<ID_Input>;
+  isAdmin?: Maybe<Boolean>;
+  email: String;
+  password: String;
+  tasks?: Maybe<TaskCreateManyWithoutAuthorInput>;
+}
+
+export interface TaskCreateManyWithoutAuthorInput {
+  create?: Maybe<TaskCreateWithoutAuthorInput[] | TaskCreateWithoutAuthorInput>;
+  connect?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+}
+
+export interface TaskCreateWithoutAuthorInput {
+  id?: Maybe<ID_Input>;
+  approved?: Maybe<Boolean>;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
+  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
+  notifications?: Maybe<TaskNotificationCreateManyWithoutTaskInput>;
 }
 
 export interface ExecutionUpdateInput {
@@ -431,6 +597,7 @@ export interface TaskUpdateWithoutExecutionsDataInput {
   command?: Maybe<String>;
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
+  notifications?: Maybe<TaskNotificationUpdateManyWithoutTaskInput>;
 }
 
 export interface UserUpdateOneWithoutTasksInput {
@@ -446,46 +613,58 @@ export interface UserUpdateWithoutTasksDataInput {
   isAdmin?: Maybe<Boolean>;
   email?: Maybe<String>;
   password?: Maybe<String>;
+  notifications?: Maybe<TaskNotificationUpdateManyWithoutUserInput>;
 }
 
-export interface UserUpsertWithoutTasksInput {
-  update: UserUpdateWithoutTasksDataInput;
-  create: UserCreateWithoutTasksInput;
-}
-
-export interface TaskUpsertWithoutExecutionsInput {
-  update: TaskUpdateWithoutExecutionsDataInput;
-  create: TaskCreateWithoutExecutionsInput;
-}
-
-export interface ExecutionUpdateManyMutationInput {
-  datetime?: Maybe<Int>;
-}
-
-export interface TaskCreateInput {
-  id?: Maybe<ID_Input>;
-  author?: Maybe<UserCreateOneWithoutTasksInput>;
-  approved?: Maybe<Boolean>;
-  number: Int;
-  command: String;
-  frequency: Int;
-  period: String;
-  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
-}
-
-export interface ExecutionCreateManyWithoutTaskInput {
+export interface TaskNotificationUpdateManyWithoutUserInput {
   create?: Maybe<
-    ExecutionCreateWithoutTaskInput[] | ExecutionCreateWithoutTaskInput
+    | TaskNotificationCreateWithoutUserInput[]
+    | TaskNotificationCreateWithoutUserInput
   >;
-  connect?: Maybe<ExecutionWhereUniqueInput[] | ExecutionWhereUniqueInput>;
+  delete?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  connect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  set?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  disconnect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  update?: Maybe<
+    | TaskNotificationUpdateWithWhereUniqueWithoutUserInput[]
+    | TaskNotificationUpdateWithWhereUniqueWithoutUserInput
+  >;
+  upsert?: Maybe<
+    | TaskNotificationUpsertWithWhereUniqueWithoutUserInput[]
+    | TaskNotificationUpsertWithWhereUniqueWithoutUserInput
+  >;
+  deleteMany?: Maybe<
+    TaskNotificationScalarWhereInput[] | TaskNotificationScalarWhereInput
+  >;
 }
 
-export interface ExecutionCreateWithoutTaskInput {
-  id?: Maybe<ID_Input>;
-  datetime: Int;
+export interface TaskNotificationUpdateWithWhereUniqueWithoutUserInput {
+  where: TaskNotificationWhereUniqueInput;
+  data: TaskNotificationUpdateWithoutUserDataInput;
 }
 
-export interface TaskUpdateInput {
+export interface TaskNotificationUpdateWithoutUserDataInput {
+  task?: Maybe<TaskUpdateOneWithoutNotificationsInput>;
+}
+
+export interface TaskUpdateOneWithoutNotificationsInput {
+  create?: Maybe<TaskCreateWithoutNotificationsInput>;
+  update?: Maybe<TaskUpdateWithoutNotificationsDataInput>;
+  upsert?: Maybe<TaskUpsertWithoutNotificationsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<TaskWhereUniqueInput>;
+}
+
+export interface TaskUpdateWithoutNotificationsDataInput {
   author?: Maybe<UserUpdateOneWithoutTasksInput>;
   approved?: Maybe<Boolean>;
   number?: Maybe<Int>;
@@ -570,38 +749,97 @@ export interface ExecutionUpdateManyDataInput {
   datetime?: Maybe<Int>;
 }
 
-export interface TaskUpdateManyMutationInput {
-  approved?: Maybe<Boolean>;
-  number?: Maybe<Int>;
-  command?: Maybe<String>;
-  frequency?: Maybe<Int>;
-  period?: Maybe<String>;
+export interface TaskUpsertWithoutNotificationsInput {
+  update: TaskUpdateWithoutNotificationsDataInput;
+  create: TaskCreateWithoutNotificationsInput;
 }
 
-export interface UserCreateInput {
+export interface TaskNotificationUpsertWithWhereUniqueWithoutUserInput {
+  where: TaskNotificationWhereUniqueInput;
+  update: TaskNotificationUpdateWithoutUserDataInput;
+  create: TaskNotificationCreateWithoutUserInput;
+}
+
+export interface TaskNotificationScalarWhereInput {
   id?: Maybe<ID_Input>;
-  isAdmin?: Maybe<Boolean>;
-  email: String;
-  password: String;
-  tasks?: Maybe<TaskCreateManyWithoutAuthorInput>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  AND?: Maybe<
+    TaskNotificationScalarWhereInput[] | TaskNotificationScalarWhereInput
+  >;
+  OR?: Maybe<
+    TaskNotificationScalarWhereInput[] | TaskNotificationScalarWhereInput
+  >;
+  NOT?: Maybe<
+    TaskNotificationScalarWhereInput[] | TaskNotificationScalarWhereInput
+  >;
 }
 
-export interface TaskCreateManyWithoutAuthorInput {
-  create?: Maybe<TaskCreateWithoutAuthorInput[] | TaskCreateWithoutAuthorInput>;
-  connect?: Maybe<TaskWhereUniqueInput[] | TaskWhereUniqueInput>;
+export interface UserUpsertWithoutTasksInput {
+  update: UserUpdateWithoutTasksDataInput;
+  create: UserCreateWithoutTasksInput;
 }
 
-export interface TaskCreateWithoutAuthorInput {
-  id?: Maybe<ID_Input>;
-  approved?: Maybe<Boolean>;
-  number: Int;
-  command: String;
-  frequency: Int;
-  period: String;
-  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
+export interface TaskNotificationUpdateManyWithoutTaskInput {
+  create?: Maybe<
+    | TaskNotificationCreateWithoutTaskInput[]
+    | TaskNotificationCreateWithoutTaskInput
+  >;
+  delete?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  connect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  set?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  disconnect?: Maybe<
+    TaskNotificationWhereUniqueInput[] | TaskNotificationWhereUniqueInput
+  >;
+  update?: Maybe<
+    | TaskNotificationUpdateWithWhereUniqueWithoutTaskInput[]
+    | TaskNotificationUpdateWithWhereUniqueWithoutTaskInput
+  >;
+  upsert?: Maybe<
+    | TaskNotificationUpsertWithWhereUniqueWithoutTaskInput[]
+    | TaskNotificationUpsertWithWhereUniqueWithoutTaskInput
+  >;
+  deleteMany?: Maybe<
+    TaskNotificationScalarWhereInput[] | TaskNotificationScalarWhereInput
+  >;
 }
 
-export interface UserUpdateInput {
+export interface TaskNotificationUpdateWithWhereUniqueWithoutTaskInput {
+  where: TaskNotificationWhereUniqueInput;
+  data: TaskNotificationUpdateWithoutTaskDataInput;
+}
+
+export interface TaskNotificationUpdateWithoutTaskDataInput {
+  user?: Maybe<UserUpdateOneWithoutNotificationsInput>;
+}
+
+export interface UserUpdateOneWithoutNotificationsInput {
+  create?: Maybe<UserCreateWithoutNotificationsInput>;
+  update?: Maybe<UserUpdateWithoutNotificationsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutNotificationsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutNotificationsDataInput {
   isAdmin?: Maybe<Boolean>;
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -640,6 +878,7 @@ export interface TaskUpdateWithoutAuthorDataInput {
   frequency?: Maybe<Int>;
   period?: Maybe<String>;
   executions?: Maybe<ExecutionUpdateManyWithoutTaskInput>;
+  notifications?: Maybe<TaskNotificationUpdateManyWithoutTaskInput>;
 }
 
 export interface TaskUpsertWithWhereUniqueWithoutAuthorInput {
@@ -727,6 +966,85 @@ export interface TaskUpdateManyDataInput {
   period?: Maybe<String>;
 }
 
+export interface UserUpsertWithoutNotificationsInput {
+  update: UserUpdateWithoutNotificationsDataInput;
+  create: UserCreateWithoutNotificationsInput;
+}
+
+export interface TaskNotificationUpsertWithWhereUniqueWithoutTaskInput {
+  where: TaskNotificationWhereUniqueInput;
+  update: TaskNotificationUpdateWithoutTaskDataInput;
+  create: TaskNotificationCreateWithoutTaskInput;
+}
+
+export interface TaskUpsertWithoutExecutionsInput {
+  update: TaskUpdateWithoutExecutionsDataInput;
+  create: TaskCreateWithoutExecutionsInput;
+}
+
+export interface ExecutionUpdateManyMutationInput {
+  datetime?: Maybe<Int>;
+}
+
+export interface TaskCreateInput {
+  id?: Maybe<ID_Input>;
+  author?: Maybe<UserCreateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
+  number: Int;
+  command: String;
+  frequency: Int;
+  period: String;
+  executions?: Maybe<ExecutionCreateManyWithoutTaskInput>;
+  notifications?: Maybe<TaskNotificationCreateManyWithoutTaskInput>;
+}
+
+export interface TaskUpdateInput {
+  author?: Maybe<UserUpdateOneWithoutTasksInput>;
+  approved?: Maybe<Boolean>;
+  number?: Maybe<Int>;
+  command?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  period?: Maybe<String>;
+  executions?: Maybe<ExecutionUpdateManyWithoutTaskInput>;
+  notifications?: Maybe<TaskNotificationUpdateManyWithoutTaskInput>;
+}
+
+export interface TaskUpdateManyMutationInput {
+  approved?: Maybe<Boolean>;
+  number?: Maybe<Int>;
+  command?: Maybe<String>;
+  frequency?: Maybe<Int>;
+  period?: Maybe<String>;
+}
+
+export interface TaskNotificationCreateInput {
+  id?: Maybe<ID_Input>;
+  user?: Maybe<UserCreateOneWithoutNotificationsInput>;
+  task?: Maybe<TaskCreateOneWithoutNotificationsInput>;
+}
+
+export interface TaskNotificationUpdateInput {
+  user?: Maybe<UserUpdateOneWithoutNotificationsInput>;
+  task?: Maybe<TaskUpdateOneWithoutNotificationsInput>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  isAdmin?: Maybe<Boolean>;
+  email: String;
+  password: String;
+  tasks?: Maybe<TaskCreateManyWithoutAuthorInput>;
+  notifications?: Maybe<TaskNotificationCreateManyWithoutUserInput>;
+}
+
+export interface UserUpdateInput {
+  isAdmin?: Maybe<Boolean>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  tasks?: Maybe<TaskUpdateManyWithoutAuthorInput>;
+  notifications?: Maybe<TaskNotificationUpdateManyWithoutUserInput>;
+}
+
 export interface UserUpdateManyMutationInput {
   isAdmin?: Maybe<Boolean>;
   email?: Maybe<String>;
@@ -759,6 +1077,26 @@ export interface TaskSubscriptionWhereInput {
   AND?: Maybe<TaskSubscriptionWhereInput[] | TaskSubscriptionWhereInput>;
   OR?: Maybe<TaskSubscriptionWhereInput[] | TaskSubscriptionWhereInput>;
   NOT?: Maybe<TaskSubscriptionWhereInput[] | TaskSubscriptionWhereInput>;
+}
+
+export interface TaskNotificationSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<TaskNotificationWhereInput>;
+  AND?: Maybe<
+    | TaskNotificationSubscriptionWhereInput[]
+    | TaskNotificationSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    | TaskNotificationSubscriptionWhereInput[]
+    | TaskNotificationSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    | TaskNotificationSubscriptionWhereInput[]
+    | TaskNotificationSubscriptionWhereInput
+  >;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -829,6 +1167,15 @@ export interface TaskPromise extends Promise<Task>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  notifications: <T = FragmentableArray<TaskNotification>>(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface TaskSubscription
@@ -850,6 +1197,17 @@ export interface TaskSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  notifications: <
+    T = Promise<AsyncIterator<TaskNotificationSubscription>>
+  >(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface TaskNullablePromise
@@ -865,6 +1223,15 @@ export interface TaskNullablePromise
   executions: <T = FragmentableArray<Execution>>(args?: {
     where?: ExecutionWhereInput;
     orderBy?: ExecutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  notifications: <T = FragmentableArray<TaskNotification>>(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -894,6 +1261,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  notifications: <T = FragmentableArray<TaskNotification>>(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserSubscription
@@ -906,6 +1282,17 @@ export interface UserSubscription
   tasks: <T = Promise<AsyncIterator<TaskSubscription>>>(args?: {
     where?: TaskWhereInput;
     orderBy?: TaskOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  notifications: <
+    T = Promise<AsyncIterator<TaskNotificationSubscription>>
+  >(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -930,6 +1317,43 @@ export interface UserNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  notifications: <T = FragmentableArray<TaskNotification>>(args?: {
+    where?: TaskNotificationWhereInput;
+    orderBy?: TaskNotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface TaskNotification {
+  id: ID_Output;
+}
+
+export interface TaskNotificationPromise
+  extends Promise<TaskNotification>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  task: <T = TaskPromise>() => T;
+}
+
+export interface TaskNotificationSubscription
+  extends Promise<AsyncIterator<TaskNotification>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  task: <T = TaskSubscription>() => T;
+}
+
+export interface TaskNotificationNullablePromise
+  extends Promise<TaskNotification | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  task: <T = TaskPromise>() => T;
 }
 
 export interface ExecutionConnection {
@@ -1061,6 +1485,62 @@ export interface AggregateTaskPromise
 
 export interface AggregateTaskSubscription
   extends Promise<AsyncIterator<AggregateTask>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface TaskNotificationConnection {
+  pageInfo: PageInfo;
+  edges: TaskNotificationEdge[];
+}
+
+export interface TaskNotificationConnectionPromise
+  extends Promise<TaskNotificationConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<TaskNotificationEdge>>() => T;
+  aggregate: <T = AggregateTaskNotificationPromise>() => T;
+}
+
+export interface TaskNotificationConnectionSubscription
+  extends Promise<AsyncIterator<TaskNotificationConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<TaskNotificationEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateTaskNotificationSubscription>() => T;
+}
+
+export interface TaskNotificationEdge {
+  node: TaskNotification;
+  cursor: String;
+}
+
+export interface TaskNotificationEdgePromise
+  extends Promise<TaskNotificationEdge>,
+    Fragmentable {
+  node: <T = TaskNotificationPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface TaskNotificationEdgeSubscription
+  extends Promise<AsyncIterator<TaskNotificationEdge>>,
+    Fragmentable {
+  node: <T = TaskNotificationSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateTaskNotification {
+  count: Int;
+}
+
+export interface AggregateTaskNotificationPromise
+  extends Promise<AggregateTaskNotification>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateTaskNotificationSubscription
+  extends Promise<AsyncIterator<AggregateTaskNotification>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -1235,6 +1715,47 @@ export interface TaskPreviousValuesSubscription
   period: () => Promise<AsyncIterator<String>>;
 }
 
+export interface TaskNotificationSubscriptionPayload {
+  mutation: MutationType;
+  node: TaskNotification;
+  updatedFields: String[];
+  previousValues: TaskNotificationPreviousValues;
+}
+
+export interface TaskNotificationSubscriptionPayloadPromise
+  extends Promise<TaskNotificationSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = TaskNotificationPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = TaskNotificationPreviousValuesPromise>() => T;
+}
+
+export interface TaskNotificationSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<TaskNotificationSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = TaskNotificationSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = TaskNotificationPreviousValuesSubscription>() => T;
+}
+
+export interface TaskNotificationPreviousValues {
+  id: ID_Output;
+}
+
+export interface TaskNotificationPreviousValuesPromise
+  extends Promise<TaskNotificationPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+}
+
+export interface TaskNotificationPreviousValuesSubscription
+  extends Promise<AsyncIterator<TaskNotificationPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+}
+
 export interface UserSubscriptionPayload {
   mutation: MutationType;
   node: User;
@@ -1323,6 +1844,10 @@ export const models: Model[] = [
   },
   {
     name: "Execution",
+    embedded: false
+  },
+  {
+    name: "TaskNotification",
     embedded: false
   }
 ];
