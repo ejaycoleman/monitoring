@@ -58,7 +58,7 @@ const useRowStyles = makeStyles({
 function Row(props) {
 	const { task, ranInTime } = props;
 	const [open, setOpen] = React.useState(false);
-	const [notifications, setNotifications] = React.useState(false);
+	const [notifications, setNotifications] = React.useState(task.notifications.length !== 0);
 	const classes = useRowStyles();
 
 	return (
