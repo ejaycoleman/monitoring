@@ -1,4 +1,4 @@
-import Row from './Row'
+import StatusRow from './StatusRow'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -12,7 +12,7 @@ const toggleNotification = gql`
     }
 `
 
-const RowContainer =
+const StatusRowContainer =
     graphql(toggleNotification, {
         props: ({ loading, mutate, ownProps }) => ({
             loading: loading || ownProps.loading,
@@ -25,6 +25,6 @@ const RowContainer =
                 })
             }
         })
-    })(Row)
+    })(StatusRow)
 
-export default RowContainer
+export default StatusRowContainer

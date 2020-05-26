@@ -10,7 +10,7 @@ import gql from 'graphql-tag'
 import moment from 'moment'
 import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import Row from './Row'
+import StatusRow from './StatusRow'
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -126,7 +126,7 @@ class Status extends React.Component {
 							</TableHead>
 							<TableBody>
 								{Object.keys(this.state.ranInTime).map((row, index) => (
-									<Row key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
+									<StatusRow key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
 								))}
 							</TableBody>
 						</Table>

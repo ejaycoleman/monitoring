@@ -25,7 +25,7 @@ const useRowStyles = makeStyles({
 	},
 });
 
-export default function Row(props) {
+export default function StatusRow(props) {
 	const { task, ranInTime, toggleNotification } = props;
 	const [open, setOpen] = React.useState(false);
 	const [notifications, setNotifications] = React.useState(task.notifications.length !== 0);
