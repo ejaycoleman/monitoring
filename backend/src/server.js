@@ -1,6 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('../generated/prisma-client')
-const { Query, Mutation, Task, Subscription, Execution, User } = require('./resolvers') 
+const { Query, Mutation, Task, Subscription, Execution, User, TaskNotification } = require('./resolvers') 
 const jwt = require('jsonwebtoken')
 const CronJob = require('cron').CronJob;
 const fs = require('fs')
