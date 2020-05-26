@@ -23,7 +23,8 @@ const resolvers = {
     Subscription,
     Task,
     Execution,
-    User
+    User,
+    TaskNotification
 }
 
 const server = new GraphQLServer({

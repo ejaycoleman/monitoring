@@ -110,19 +110,19 @@ async function toggleNotification(parent, { taskId }, {user, prisma}) {
         throw new Error('Not Authenticated')
     }
 
-    console.log(taskId)
-    console.log(user.id)
-
-    const existing = await prisma.taskNotifications({where: {user: user.id, task: taskId}})[0]
-
-    if (!existing) {
+    const fullUser = await prisma.user({id: user.id})
+    const fullTask = await prisma.task({id: taskId})
+    const existing = await prisma.taskNotifications({where: {AND: [{user: fullUser}, {task: fullTask}]}})
+    
+    if (existing.length === 0) {
         return prisma.createTaskNotification({
-            user: user.id, 
-            task: taskId
+            user: { connect: {id: fullUser.id}}, 
+            task: { connect: {id: taskId}}
         })
     }
 
-    return prisma.deleteManyTaskNotifications({user: user.id, task: taskId})[0]
+    const result = await prisma.deleteManyTaskNotifications({AND: [{user: fullUser}, {task: fullTask}]})
+    return result[0]
 }
 
 module.exports = {
