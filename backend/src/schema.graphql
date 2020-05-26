@@ -9,6 +9,7 @@ type Mutation {
   uploadTasksFile(tasks: String!): [Task]
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: String!): Task
   approveTask(id: ID!): Task
+  toggleNotification(taskNumber: String!): TaskNotification
 }
 
 type User {
@@ -16,6 +17,7 @@ type User {
   email: String!
   isAdmin: Boolean!
   tasks: [Task]
+  notifications: [TaskNotification]
 }
 
 type LoginResponse {
@@ -32,6 +34,7 @@ type Task {
   period: String!
   author: User
   executions: [Execution!]
+  notifications: [TaskNotification]
 }
 
 type Execution {
@@ -43,4 +46,9 @@ type Execution {
 type Subscription {
   newExecution: Execution
   newTask: Task
+}
+
+type TaskNotification {
+  user: User,
+  task: Task
 }

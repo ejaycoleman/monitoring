@@ -1,6 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('../generated/prisma-client')
-const { Query, Mutation, Task, Subscription, Execution, User } = require('./resolvers') 
+const { Query, Mutation, Task, Subscription, Execution, User, TaskNotification } = require('./resolvers') 
 const jwt = require('jsonwebtoken')
 const CronJob = require('cron').CronJob;
 const fs = require('fs')
@@ -23,7 +23,8 @@ const resolvers = {
     Subscription,
     Task,
     Execution,
-    User
+    User,
+    TaskNotification
 }
 
 const server = new GraphQLServer({
@@ -48,7 +49,16 @@ const server = new GraphQLServer({
 async function postExecution(taskId, datetime) {
     const associatedTask = await prisma.task({number: taskId})
     const associatedExecutions = await prisma.task({number: taskId}).executions()
+    const associatedNotifications = await prisma.task({number: taskId}).notifications().user()
     if (associatedTask && associatedExecutions && associatedExecutions.filter(execution => execution.datetime === datetime).length === 0) {
+        
+        // ---------------------------
+        // EMAIL NOTIFICATION SEGMENT
+        associatedNotifications.map(notification => {
+            console.log(`Sending an email to ${notification.user.email} for task #${associatedTask.number}`)
+        })
+        // ---------------------------
+
         await prisma.createExecution({
             datetime,
             task: { connect: { id: associatedTask.id } },

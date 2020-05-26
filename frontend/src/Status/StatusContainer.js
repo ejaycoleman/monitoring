@@ -10,6 +10,11 @@ const retreiveTasks = gql` {
         period,
         executions {
             datetime
+        },
+        notifications {
+            user {
+                id
+            }
         }
     }
 }

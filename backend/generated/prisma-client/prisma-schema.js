@@ -11,6 +11,10 @@ type AggregateTask {
   count: Int!
 }
 
+type AggregateTaskNotification {
+  count: Int!
+}
+
 type AggregateUser {
   count: Int!
 }
@@ -203,6 +207,11 @@ type Mutation {
   upsertTask(where: TaskWhereUniqueInput!, create: TaskCreateInput!, update: TaskUpdateInput!): Task!
   deleteTask(where: TaskWhereUniqueInput!): Task
   deleteManyTasks(where: TaskWhereInput): BatchPayload!
+  createTaskNotification(data: TaskNotificationCreateInput!): TaskNotification!
+  updateTaskNotification(data: TaskNotificationUpdateInput!, where: TaskNotificationWhereUniqueInput!): TaskNotification
+  upsertTaskNotification(where: TaskNotificationWhereUniqueInput!, create: TaskNotificationCreateInput!, update: TaskNotificationUpdateInput!): TaskNotification!
+  deleteTaskNotification(where: TaskNotificationWhereUniqueInput!): TaskNotification
+  deleteManyTaskNotifications(where: TaskNotificationWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -235,6 +244,9 @@ type Query {
   task(where: TaskWhereUniqueInput!): Task
   tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task]!
   tasksConnection(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskConnection!
+  taskNotification(where: TaskNotificationWhereUniqueInput!): TaskNotification
+  taskNotifications(where: TaskNotificationWhereInput, orderBy: TaskNotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TaskNotification]!
+  taskNotificationsConnection(where: TaskNotificationWhereInput, orderBy: TaskNotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskNotificationConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -244,6 +256,7 @@ type Query {
 type Subscription {
   execution(where: ExecutionSubscriptionWhereInput): ExecutionSubscriptionPayload
   task(where: TaskSubscriptionWhereInput): TaskSubscriptionPayload
+  taskNotification(where: TaskNotificationSubscriptionWhereInput): TaskNotificationSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -256,6 +269,7 @@ type Task {
   frequency: Int!
   period: String!
   executions(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Execution!]
+  notifications(where: TaskNotificationWhereInput, orderBy: TaskNotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TaskNotification!]
 }
 
 type TaskConnection {
@@ -273,6 +287,7 @@ input TaskCreateInput {
   frequency: Int!
   period: String!
   executions: ExecutionCreateManyWithoutTaskInput
+  notifications: TaskNotificationCreateManyWithoutTaskInput
 }
 
 input TaskCreateManyWithoutAuthorInput {
@@ -285,6 +300,11 @@ input TaskCreateOneWithoutExecutionsInput {
   connect: TaskWhereUniqueInput
 }
 
+input TaskCreateOneWithoutNotificationsInput {
+  create: TaskCreateWithoutNotificationsInput
+  connect: TaskWhereUniqueInput
+}
+
 input TaskCreateWithoutAuthorInput {
   id: ID
   approved: Boolean
@@ -293,6 +313,7 @@ input TaskCreateWithoutAuthorInput {
   frequency: Int!
   period: String!
   executions: ExecutionCreateManyWithoutTaskInput
+  notifications: TaskNotificationCreateManyWithoutTaskInput
 }
 
 input TaskCreateWithoutExecutionsInput {
@@ -303,11 +324,196 @@ input TaskCreateWithoutExecutionsInput {
   command: String!
   frequency: Int!
   period: String!
+  notifications: TaskNotificationCreateManyWithoutTaskInput
+}
+
+input TaskCreateWithoutNotificationsInput {
+  id: ID
+  author: UserCreateOneWithoutTasksInput
+  approved: Boolean
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+  executions: ExecutionCreateManyWithoutTaskInput
 }
 
 type TaskEdge {
   node: Task!
   cursor: String!
+}
+
+type TaskNotification {
+  id: ID!
+  user: User
+  task: Task
+}
+
+type TaskNotificationConnection {
+  pageInfo: PageInfo!
+  edges: [TaskNotificationEdge]!
+  aggregate: AggregateTaskNotification!
+}
+
+input TaskNotificationCreateInput {
+  id: ID
+  user: UserCreateOneWithoutNotificationsInput
+  task: TaskCreateOneWithoutNotificationsInput
+}
+
+input TaskNotificationCreateManyWithoutTaskInput {
+  create: [TaskNotificationCreateWithoutTaskInput!]
+  connect: [TaskNotificationWhereUniqueInput!]
+}
+
+input TaskNotificationCreateManyWithoutUserInput {
+  create: [TaskNotificationCreateWithoutUserInput!]
+  connect: [TaskNotificationWhereUniqueInput!]
+}
+
+input TaskNotificationCreateWithoutTaskInput {
+  id: ID
+  user: UserCreateOneWithoutNotificationsInput
+}
+
+input TaskNotificationCreateWithoutUserInput {
+  id: ID
+  task: TaskCreateOneWithoutNotificationsInput
+}
+
+type TaskNotificationEdge {
+  node: TaskNotification!
+  cursor: String!
+}
+
+enum TaskNotificationOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type TaskNotificationPreviousValues {
+  id: ID!
+}
+
+input TaskNotificationScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  AND: [TaskNotificationScalarWhereInput!]
+  OR: [TaskNotificationScalarWhereInput!]
+  NOT: [TaskNotificationScalarWhereInput!]
+}
+
+type TaskNotificationSubscriptionPayload {
+  mutation: MutationType!
+  node: TaskNotification
+  updatedFields: [String!]
+  previousValues: TaskNotificationPreviousValues
+}
+
+input TaskNotificationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TaskNotificationWhereInput
+  AND: [TaskNotificationSubscriptionWhereInput!]
+  OR: [TaskNotificationSubscriptionWhereInput!]
+  NOT: [TaskNotificationSubscriptionWhereInput!]
+}
+
+input TaskNotificationUpdateInput {
+  user: UserUpdateOneWithoutNotificationsInput
+  task: TaskUpdateOneWithoutNotificationsInput
+}
+
+input TaskNotificationUpdateManyWithoutTaskInput {
+  create: [TaskNotificationCreateWithoutTaskInput!]
+  delete: [TaskNotificationWhereUniqueInput!]
+  connect: [TaskNotificationWhereUniqueInput!]
+  set: [TaskNotificationWhereUniqueInput!]
+  disconnect: [TaskNotificationWhereUniqueInput!]
+  update: [TaskNotificationUpdateWithWhereUniqueWithoutTaskInput!]
+  upsert: [TaskNotificationUpsertWithWhereUniqueWithoutTaskInput!]
+  deleteMany: [TaskNotificationScalarWhereInput!]
+}
+
+input TaskNotificationUpdateManyWithoutUserInput {
+  create: [TaskNotificationCreateWithoutUserInput!]
+  delete: [TaskNotificationWhereUniqueInput!]
+  connect: [TaskNotificationWhereUniqueInput!]
+  set: [TaskNotificationWhereUniqueInput!]
+  disconnect: [TaskNotificationWhereUniqueInput!]
+  update: [TaskNotificationUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [TaskNotificationUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [TaskNotificationScalarWhereInput!]
+}
+
+input TaskNotificationUpdateWithoutTaskDataInput {
+  user: UserUpdateOneWithoutNotificationsInput
+}
+
+input TaskNotificationUpdateWithoutUserDataInput {
+  task: TaskUpdateOneWithoutNotificationsInput
+}
+
+input TaskNotificationUpdateWithWhereUniqueWithoutTaskInput {
+  where: TaskNotificationWhereUniqueInput!
+  data: TaskNotificationUpdateWithoutTaskDataInput!
+}
+
+input TaskNotificationUpdateWithWhereUniqueWithoutUserInput {
+  where: TaskNotificationWhereUniqueInput!
+  data: TaskNotificationUpdateWithoutUserDataInput!
+}
+
+input TaskNotificationUpsertWithWhereUniqueWithoutTaskInput {
+  where: TaskNotificationWhereUniqueInput!
+  update: TaskNotificationUpdateWithoutTaskDataInput!
+  create: TaskNotificationCreateWithoutTaskInput!
+}
+
+input TaskNotificationUpsertWithWhereUniqueWithoutUserInput {
+  where: TaskNotificationWhereUniqueInput!
+  update: TaskNotificationUpdateWithoutUserDataInput!
+  create: TaskNotificationCreateWithoutUserInput!
+}
+
+input TaskNotificationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  user: UserWhereInput
+  task: TaskWhereInput
+  AND: [TaskNotificationWhereInput!]
+  OR: [TaskNotificationWhereInput!]
+  NOT: [TaskNotificationWhereInput!]
+}
+
+input TaskNotificationWhereUniqueInput {
+  id: ID
 }
 
 enum TaskOrderByInput {
@@ -426,6 +632,7 @@ input TaskUpdateInput {
   frequency: Int
   period: String
   executions: ExecutionUpdateManyWithoutTaskInput
+  notifications: TaskNotificationUpdateManyWithoutTaskInput
 }
 
 input TaskUpdateManyDataInput {
@@ -470,6 +677,15 @@ input TaskUpdateOneWithoutExecutionsInput {
   connect: TaskWhereUniqueInput
 }
 
+input TaskUpdateOneWithoutNotificationsInput {
+  create: TaskCreateWithoutNotificationsInput
+  update: TaskUpdateWithoutNotificationsDataInput
+  upsert: TaskUpsertWithoutNotificationsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TaskWhereUniqueInput
+}
+
 input TaskUpdateWithoutAuthorDataInput {
   approved: Boolean
   number: Int
@@ -477,6 +693,7 @@ input TaskUpdateWithoutAuthorDataInput {
   frequency: Int
   period: String
   executions: ExecutionUpdateManyWithoutTaskInput
+  notifications: TaskNotificationUpdateManyWithoutTaskInput
 }
 
 input TaskUpdateWithoutExecutionsDataInput {
@@ -486,6 +703,17 @@ input TaskUpdateWithoutExecutionsDataInput {
   command: String
   frequency: Int
   period: String
+  notifications: TaskNotificationUpdateManyWithoutTaskInput
+}
+
+input TaskUpdateWithoutNotificationsDataInput {
+  author: UserUpdateOneWithoutTasksInput
+  approved: Boolean
+  number: Int
+  command: String
+  frequency: Int
+  period: String
+  executions: ExecutionUpdateManyWithoutTaskInput
 }
 
 input TaskUpdateWithWhereUniqueWithoutAuthorInput {
@@ -496,6 +724,11 @@ input TaskUpdateWithWhereUniqueWithoutAuthorInput {
 input TaskUpsertWithoutExecutionsInput {
   update: TaskUpdateWithoutExecutionsDataInput!
   create: TaskCreateWithoutExecutionsInput!
+}
+
+input TaskUpsertWithoutNotificationsInput {
+  update: TaskUpdateWithoutNotificationsDataInput!
+  create: TaskCreateWithoutNotificationsInput!
 }
 
 input TaskUpsertWithWhereUniqueWithoutAuthorInput {
@@ -569,6 +802,9 @@ input TaskWhereInput {
   executions_every: ExecutionWhereInput
   executions_some: ExecutionWhereInput
   executions_none: ExecutionWhereInput
+  notifications_every: TaskNotificationWhereInput
+  notifications_some: TaskNotificationWhereInput
+  notifications_none: TaskNotificationWhereInput
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
@@ -585,6 +821,7 @@ type User {
   email: String!
   password: String!
   tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task!]
+  notifications(where: TaskNotificationWhereInput, orderBy: TaskNotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TaskNotification!]
 }
 
 type UserConnection {
@@ -599,6 +836,12 @@ input UserCreateInput {
   email: String!
   password: String!
   tasks: TaskCreateManyWithoutAuthorInput
+  notifications: TaskNotificationCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutNotificationsInput {
+  create: UserCreateWithoutNotificationsInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutTasksInput {
@@ -606,11 +849,20 @@ input UserCreateOneWithoutTasksInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutNotificationsInput {
+  id: ID
+  isAdmin: Boolean
+  email: String!
+  password: String!
+  tasks: TaskCreateManyWithoutAuthorInput
+}
+
 input UserCreateWithoutTasksInput {
   id: ID
   isAdmin: Boolean
   email: String!
   password: String!
+  notifications: TaskNotificationCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -659,12 +911,22 @@ input UserUpdateInput {
   email: String
   password: String
   tasks: TaskUpdateManyWithoutAuthorInput
+  notifications: TaskNotificationUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
   isAdmin: Boolean
   email: String
   password: String
+}
+
+input UserUpdateOneWithoutNotificationsInput {
+  create: UserCreateWithoutNotificationsInput
+  update: UserUpdateWithoutNotificationsDataInput
+  upsert: UserUpsertWithoutNotificationsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutTasksInput {
@@ -676,10 +938,23 @@ input UserUpdateOneWithoutTasksInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutNotificationsDataInput {
+  isAdmin: Boolean
+  email: String
+  password: String
+  tasks: TaskUpdateManyWithoutAuthorInput
+}
+
 input UserUpdateWithoutTasksDataInput {
   isAdmin: Boolean
   email: String
   password: String
+  notifications: TaskNotificationUpdateManyWithoutUserInput
+}
+
+input UserUpsertWithoutNotificationsInput {
+  update: UserUpdateWithoutNotificationsDataInput!
+  create: UserCreateWithoutNotificationsInput!
 }
 
 input UserUpsertWithoutTasksInput {
@@ -735,6 +1010,9 @@ input UserWhereInput {
   tasks_every: TaskWhereInput
   tasks_some: TaskWhereInput
   tasks_none: TaskWhereInput
+  notifications_every: TaskNotificationWhereInput
+  notifications_some: TaskNotificationWhereInput
+  notifications_none: TaskNotificationWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

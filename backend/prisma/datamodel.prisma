@@ -1,9 +1,10 @@
 type User {
-  id: ID! @id
-  isAdmin: Boolean! @default(value: false)
-  email: String! @unique
-  password: String!
-  tasks: [Task]
+  id: ID! @id,
+  isAdmin: Boolean! @default(value: false),
+  email: String! @unique,
+  password: String!,
+  tasks: [Task],
+  notifications: [TaskNotification],
 }
 
 type Task {
@@ -14,11 +15,18 @@ type Task {
   command: String!,
   frequency: Int!,
   period: String!,
-  executions: [Execution!]
+  executions: [Execution!],
+  notifications: [TaskNotification]
 }
 
 type Execution {
   id: ID! @id,
   task: Task,
   datetime: Int!
+}
+
+type TaskNotification {
+  id: ID! @id,
+  user: User,
+  task: Task
 }

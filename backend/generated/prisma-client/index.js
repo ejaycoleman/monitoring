@@ -15,6 +15,10 @@ var models = [
   {
     name: "Execution",
     embedded: false
+  },
+  {
+    name: "TaskNotification",
+    embedded: false
   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({

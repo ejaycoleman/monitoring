@@ -10,7 +10,8 @@ The system is comprised of two systems: the frontend (localhost:3000) and the ba
 ## Deploy the containers
 In the project directory, run: <br>
 `docker-compose build` <br> 
-`docker-compose up`
+`docker-compose up` <br> 
+(If this project has been run before, ensure you run `docker-compose down` and `docker-compose build --no-cache` to recreate the prisma scheme)
 
 ## Create a user
 go to [localhost:4000](http://localhost:4000) in your browser

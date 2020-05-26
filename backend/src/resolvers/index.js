@@ -4,6 +4,7 @@ const Task = require('./Task')
 const Subscription = require('./Subscription')
 const Execution = require('./Execution')
 const User = require('./User')
+const TaskNotification = require('./TaskNotification')
 
 module.exports = {
     Query,
@@ -11,5 +12,6 @@ module.exports = {
     Task,
     Subscription,
     Execution,
-    User
+    User,
+    TaskNotification
 }
