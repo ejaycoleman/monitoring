@@ -56,7 +56,7 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
-	const { task, ranInTime } = props;
+	const { task, ranInTime, notificationMutation } = props;
 	const [open, setOpen] = React.useState(false);
 	const [notifications, setNotifications] = React.useState(task.notifications.length !== 0);
 	const classes = useRowStyles();
@@ -83,8 +83,8 @@ function Row(props) {
 						) 
 					}
 				</TableCell>
-				<TableCell component="th" scope="row" style={{textAlign: 'center'}}>
-					{notifications ? <NotificationsActiveIcon style={{color: 'green'}} onClick={() => setNotifications(!notifications)} /> : <NotificationsOffIcon style={{color: 'black'}}  onClick={() => setNotifications(!notifications)} /> }
+				<TableCell component="th" scope="row" style={{textAlign: 'center'}} onClick={() => notificationMutation(task.number.toString()).then(() => setNotifications(!notifications)).catch(e => console.log(e))} >
+					{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 				</TableCell>
 			</TableRow>
 			<TableRow>
@@ -218,7 +218,7 @@ class Status extends React.Component {
 							</TableHead>
 							<TableBody>
 								{Object.keys(this.state.ranInTime).map((row, index) => (
-									<Row key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
+									<Row key={index} task={this.props.tasks[index]} notificationMutation={this.props.toggleNotification} ranInTime={this.state.ranInTime[row]} />
 								))}
 							</TableBody>
 						</Table>
