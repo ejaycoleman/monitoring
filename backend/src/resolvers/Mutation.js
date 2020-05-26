@@ -121,8 +121,7 @@ async function toggleNotification(parent, { taskId }, {user, prisma}) {
         })
     }
 
-    const result = await prisma.deleteManyTaskNotifications({AND: [{user: fullUser}, {task: fullTask}]})
-    return result[0]
+    return prisma.deleteTaskNotification({id: existing[0].id})
 }
 
 module.exports = {
