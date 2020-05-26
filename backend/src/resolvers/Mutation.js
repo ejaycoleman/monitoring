@@ -105,10 +105,31 @@ async function approveTask(parent, { id }, {user, prisma}) {
     return prisma.updateTask({where: {id}, data: {approved: true}})
 }
 
+async function toggleNotification(parent, { taskId }, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    console.log(taskId)
+    console.log(user.id)
+
+    const existing = await prisma.taskNotifications({where: {user: user.id, task: taskId}})[0]
+
+    if (!existing) {
+        return prisma.createTaskNotification({
+            user: user.id, 
+            task: taskId
+        })
+    }
+
+    return prisma.deleteManyTaskNotifications({user: user.id, task: taskId})[0]
+}
+
 module.exports = {
     register,
     login,
     uploadTasksFile,
     uploadSingleTask,
-    approveTask
+    approveTask,
+    toggleNotification
 }
