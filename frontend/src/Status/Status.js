@@ -12,6 +12,12 @@ import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import StatusRow from './StatusRow'
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+
 const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
@@ -43,7 +49,8 @@ class Status extends React.Component {
 		this.state = {
 			loading: true,
 			ranInTime: {},
-			mostRecentExecution: 0
+			mostRecentExecution: 0,
+			modalOpen: false
 		}
 	}
 
@@ -141,8 +148,30 @@ class Status extends React.Component {
 							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
 							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
 							style={{backgroundColor: 'white'}} 
-							onClick={() => true}
+							onClick={() => this.setState({modalOpen: true})}
 						/>	
+
+						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
+							<DialogContent>
+								<DialogContentText>
+									Change the threshold for when to expect executions
+								</DialogContentText>
+								<DialogContentText>
+									ideal time: 1 day ago
+								</DialogContentText>
+								<DialogContentText>
+									no later than: 10 days ago
+								</DialogContentText>
+								</DialogContent>
+							<DialogActions>
+							<Button onClick={() => this.setState({modalOpen: false})} color="primary">
+								Cancel
+							</Button>
+							<Button onClick={() => this.setState({modalOpen: false})} color="primary">
+								Apply
+							</Button>
+							</DialogActions>
+						</Dialog>
 					</div>
 				</div>
 			</div>

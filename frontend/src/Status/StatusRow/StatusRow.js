@@ -132,12 +132,12 @@ export default function StatusRow(props) {
 						) 
 					}
 				</TableCell>
-				<TableCell component="th" scope="row" style={{textAlign: 'center'}} 
+				<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
 					onClick={() => 
 						toggleNotification(task.number.toString())
 						.then(() => setNotifications(!notifications))
 						.catch(e => console.log(e))}>
-					{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
+							{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 				</TableCell>
 			</TableRow>
 			<TableRow>
