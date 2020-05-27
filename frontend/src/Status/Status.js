@@ -18,6 +18,69 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Button from '@material-ui/core/Button';
 
+import TextField from '@material-ui/core/TextField';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import FormGroup from '@material-ui/core/FormGroup'
+
+function PreferencesModal(props) {
+	const {close} = props
+	const [idealFreq, setIdealFreq] = React.useState(0);
+	const [idealPeriod, setIdealPeriod] = React.useState('days');
+	const [absoluteFreq, setAbsoluteFreq] = React.useState(0);
+	const [absolutePeriod, setAbsolutePeriod] = React.useState('days');
+
+	return (
+		<React.Fragment>
+			<DialogContent>
+				<DialogContentText>
+					Change the threshold for when to expect executions
+				</DialogContentText>
+				<FormGroup row>
+					<TextField
+						label="Ideally no later than..."
+						type="number"
+						placeholder="frequency"
+						value={idealFreq} onChange={e => setIdealFreq(parseInt(e.target.value))}
+					/>
+					<NativeSelect value={idealPeriod} onChange={e => setIdealPeriod(e.target.value)}>
+						<option value="days">days ago</option>
+						<option value="weeks">weeks ago</option>
+						<option value="months">months ago</option>
+					</NativeSelect>
+				</FormGroup>
+				<FormGroup row>
+					<TextField
+						label="No later than..."
+						type="number"
+						placeholder="frequency"
+						value={absoluteFreq} onChange={e => setAbsoluteFreq(parseInt(e.target.value))}
+					/>
+					<NativeSelect value={absolutePeriod} onChange={e => setAbsolutePeriod(e.target.value)}>
+						<option value="days">days ago</option>
+						<option value="weeks">weeks ago</option>
+						<option value="months">months ago</option>
+					</NativeSelect>
+				</FormGroup>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={() => close()} color="primary">
+					Cancel
+				</Button>
+				<Button onClick={() => {
+					console.log(idealFreq) 
+					console.log(idealPeriod)
+					console.log(absoluteFreq)
+					console.log(absolutePeriod)
+					close()
+					
+					}} color="primary">
+					Apply
+				</Button>
+			</DialogActions>
+		</React.Fragment>
+	)
+}
+
 const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
@@ -150,27 +213,8 @@ class Status extends React.Component {
 							style={{backgroundColor: 'white'}} 
 							onClick={() => this.setState({modalOpen: true})}
 						/>	
-
 						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
-							<DialogContent>
-								<DialogContentText>
-									Change the threshold for when to expect executions
-								</DialogContentText>
-								<DialogContentText>
-									ideal time: 1 day ago
-								</DialogContentText>
-								<DialogContentText>
-									no later than: 10 days ago
-								</DialogContentText>
-								</DialogContent>
-							<DialogActions>
-							<Button onClick={() => this.setState({modalOpen: false})} color="primary">
-								Cancel
-							</Button>
-							<Button onClick={() => this.setState({modalOpen: false})} color="primary">
-								Apply
-							</Button>
-							</DialogActions>
+							<PreferencesModal close={() => this.setState({modalOpen: false})}/>
 						</Dialog>
 					</div>
 				</div>
