@@ -101,12 +101,12 @@ class Status extends React.Component {
 	}
 
 	determineChipColor = time => {
-		if (moment.unix(time).isBetween(moment().subtract(1, 'days'), moment())) {
+		if (moment.unix(time).isBefore(moment().subtract(10, 'days'))) {
+			return 'red'
+		} else if (moment.unix(time).isSameOrAfter(moment().subtract(1, 'days'))) {
 			return 'green'
-		} else if (moment.unix(time).isBetween(moment().subtract(10, 'days'), moment().subtract(1, 'days'))) {
-			return 'orange'
 		} 
-		return 'red'
+		return 'orange'
 	}
 
 	render() {
