@@ -6,12 +6,16 @@ const Execution = require('./Execution')
 const User = require('./User')
 const TaskNotification = require('./TaskNotification')
 
-module.exports = {
-    Query,
+const resolvers = {
+    Query, 
     Mutation,
-    Task,
     Subscription,
+    Task,
     Execution,
     User,
     TaskNotification
+}
+
+module.exports = {
+    resolvers
 }

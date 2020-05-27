@@ -120,7 +120,8 @@ class Status extends React.Component {
 								<TableRow>
 									<TableCell style={{width: 30}}/>
 									<TableCell>Task Number</TableCell>
-									<TableCell align="right">Status</TableCell>
+									<TableCell align="right">Frequency</TableCell>
+									<TableCell align="right" style={{width: 30}}>Status</TableCell>
 									<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
 								</TableRow>
 							</TableHead>
