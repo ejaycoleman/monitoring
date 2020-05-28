@@ -7,6 +7,10 @@ module.exports = {
   count: Int!
 }
 
+type AggregatePreference {
+  count: Int!
+}
+
 type AggregateTask {
   count: Int!
 }
@@ -201,6 +205,12 @@ type Mutation {
   upsertExecution(where: ExecutionWhereUniqueInput!, create: ExecutionCreateInput!, update: ExecutionUpdateInput!): Execution!
   deleteExecution(where: ExecutionWhereUniqueInput!): Execution
   deleteManyExecutions(where: ExecutionWhereInput): BatchPayload!
+  createPreference(data: PreferenceCreateInput!): Preference!
+  updatePreference(data: PreferenceUpdateInput!, where: PreferenceWhereUniqueInput!): Preference
+  updateManyPreferences(data: PreferenceUpdateManyMutationInput!, where: PreferenceWhereInput): BatchPayload!
+  upsertPreference(where: PreferenceWhereUniqueInput!, create: PreferenceCreateInput!, update: PreferenceUpdateInput!): Preference!
+  deletePreference(where: PreferenceWhereUniqueInput!): Preference
+  deleteManyPreferences(where: PreferenceWhereInput): BatchPayload!
   createTask(data: TaskCreateInput!): Task!
   updateTask(data: TaskUpdateInput!, where: TaskWhereUniqueInput!): Task
   updateManyTasks(data: TaskUpdateManyMutationInput!, where: TaskWhereInput): BatchPayload!
@@ -237,10 +247,165 @@ type PageInfo {
   endCursor: String
 }
 
+type Preference {
+  id: ID!
+  forUser: User!
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+type PreferenceConnection {
+  pageInfo: PageInfo!
+  edges: [PreferenceEdge]!
+  aggregate: AggregatePreference!
+}
+
+input PreferenceCreateInput {
+  id: ID
+  forUser: UserCreateOneWithoutPreferenceInput!
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+input PreferenceCreateOneWithoutForUserInput {
+  create: PreferenceCreateWithoutForUserInput
+  connect: PreferenceWhereUniqueInput
+}
+
+input PreferenceCreateWithoutForUserInput {
+  id: ID
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+type PreferenceEdge {
+  node: Preference!
+  cursor: String!
+}
+
+enum PreferenceOrderByInput {
+  id_ASC
+  id_DESC
+  executionThresholdIdeal_ASC
+  executionThresholdIdeal_DESC
+  executionThresholdAbsolute_ASC
+  executionThresholdAbsolute_DESC
+}
+
+type PreferencePreviousValues {
+  id: ID!
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+type PreferenceSubscriptionPayload {
+  mutation: MutationType!
+  node: Preference
+  updatedFields: [String!]
+  previousValues: PreferencePreviousValues
+}
+
+input PreferenceSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PreferenceWhereInput
+  AND: [PreferenceSubscriptionWhereInput!]
+  OR: [PreferenceSubscriptionWhereInput!]
+  NOT: [PreferenceSubscriptionWhereInput!]
+}
+
+input PreferenceUpdateInput {
+  forUser: UserUpdateOneRequiredWithoutPreferenceInput
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+input PreferenceUpdateManyMutationInput {
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+input PreferenceUpdateOneWithoutForUserInput {
+  create: PreferenceCreateWithoutForUserInput
+  update: PreferenceUpdateWithoutForUserDataInput
+  upsert: PreferenceUpsertWithoutForUserInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: PreferenceWhereUniqueInput
+}
+
+input PreferenceUpdateWithoutForUserDataInput {
+  executionThresholdIdeal: String
+  executionThresholdAbsolute: String
+}
+
+input PreferenceUpsertWithoutForUserInput {
+  update: PreferenceUpdateWithoutForUserDataInput!
+  create: PreferenceCreateWithoutForUserInput!
+}
+
+input PreferenceWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  forUser: UserWhereInput
+  executionThresholdIdeal: String
+  executionThresholdIdeal_not: String
+  executionThresholdIdeal_in: [String!]
+  executionThresholdIdeal_not_in: [String!]
+  executionThresholdIdeal_lt: String
+  executionThresholdIdeal_lte: String
+  executionThresholdIdeal_gt: String
+  executionThresholdIdeal_gte: String
+  executionThresholdIdeal_contains: String
+  executionThresholdIdeal_not_contains: String
+  executionThresholdIdeal_starts_with: String
+  executionThresholdIdeal_not_starts_with: String
+  executionThresholdIdeal_ends_with: String
+  executionThresholdIdeal_not_ends_with: String
+  executionThresholdAbsolute: String
+  executionThresholdAbsolute_not: String
+  executionThresholdAbsolute_in: [String!]
+  executionThresholdAbsolute_not_in: [String!]
+  executionThresholdAbsolute_lt: String
+  executionThresholdAbsolute_lte: String
+  executionThresholdAbsolute_gt: String
+  executionThresholdAbsolute_gte: String
+  executionThresholdAbsolute_contains: String
+  executionThresholdAbsolute_not_contains: String
+  executionThresholdAbsolute_starts_with: String
+  executionThresholdAbsolute_not_starts_with: String
+  executionThresholdAbsolute_ends_with: String
+  executionThresholdAbsolute_not_ends_with: String
+  AND: [PreferenceWhereInput!]
+  OR: [PreferenceWhereInput!]
+  NOT: [PreferenceWhereInput!]
+}
+
+input PreferenceWhereUniqueInput {
+  id: ID
+}
+
 type Query {
   execution(where: ExecutionWhereUniqueInput!): Execution
   executions(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Execution]!
   executionsConnection(where: ExecutionWhereInput, orderBy: ExecutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExecutionConnection!
+  preference(where: PreferenceWhereUniqueInput!): Preference
+  preferences(where: PreferenceWhereInput, orderBy: PreferenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Preference]!
+  preferencesConnection(where: PreferenceWhereInput, orderBy: PreferenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PreferenceConnection!
   task(where: TaskWhereUniqueInput!): Task
   tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task]!
   tasksConnection(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskConnection!
@@ -255,6 +420,7 @@ type Query {
 
 type Subscription {
   execution(where: ExecutionSubscriptionWhereInput): ExecutionSubscriptionPayload
+  preference(where: PreferenceSubscriptionWhereInput): PreferenceSubscriptionPayload
   task(where: TaskSubscriptionWhereInput): TaskSubscriptionPayload
   taskNotification(where: TaskNotificationSubscriptionWhereInput): TaskNotificationSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
@@ -822,6 +988,7 @@ type User {
   password: String!
   tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task!]
   notifications(where: TaskNotificationWhereInput, orderBy: TaskNotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TaskNotification!]
+  preference: Preference
 }
 
 type UserConnection {
@@ -837,10 +1004,16 @@ input UserCreateInput {
   password: String!
   tasks: TaskCreateManyWithoutAuthorInput
   notifications: TaskNotificationCreateManyWithoutUserInput
+  preference: PreferenceCreateOneWithoutForUserInput
 }
 
 input UserCreateOneWithoutNotificationsInput {
   create: UserCreateWithoutNotificationsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPreferenceInput {
+  create: UserCreateWithoutPreferenceInput
   connect: UserWhereUniqueInput
 }
 
@@ -855,6 +1028,16 @@ input UserCreateWithoutNotificationsInput {
   email: String!
   password: String!
   tasks: TaskCreateManyWithoutAuthorInput
+  preference: PreferenceCreateOneWithoutForUserInput
+}
+
+input UserCreateWithoutPreferenceInput {
+  id: ID
+  isAdmin: Boolean
+  email: String!
+  password: String!
+  tasks: TaskCreateManyWithoutAuthorInput
+  notifications: TaskNotificationCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutTasksInput {
@@ -863,6 +1046,7 @@ input UserCreateWithoutTasksInput {
   email: String!
   password: String!
   notifications: TaskNotificationCreateManyWithoutUserInput
+  preference: PreferenceCreateOneWithoutForUserInput
 }
 
 type UserEdge {
@@ -912,12 +1096,20 @@ input UserUpdateInput {
   password: String
   tasks: TaskUpdateManyWithoutAuthorInput
   notifications: TaskNotificationUpdateManyWithoutUserInput
+  preference: PreferenceUpdateOneWithoutForUserInput
 }
 
 input UserUpdateManyMutationInput {
   isAdmin: Boolean
   email: String
   password: String
+}
+
+input UserUpdateOneRequiredWithoutPreferenceInput {
+  create: UserCreateWithoutPreferenceInput
+  update: UserUpdateWithoutPreferenceDataInput
+  upsert: UserUpsertWithoutPreferenceInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutNotificationsInput {
@@ -943,6 +1135,15 @@ input UserUpdateWithoutNotificationsDataInput {
   email: String
   password: String
   tasks: TaskUpdateManyWithoutAuthorInput
+  preference: PreferenceUpdateOneWithoutForUserInput
+}
+
+input UserUpdateWithoutPreferenceDataInput {
+  isAdmin: Boolean
+  email: String
+  password: String
+  tasks: TaskUpdateManyWithoutAuthorInput
+  notifications: TaskNotificationUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutTasksDataInput {
@@ -950,11 +1151,17 @@ input UserUpdateWithoutTasksDataInput {
   email: String
   password: String
   notifications: TaskNotificationUpdateManyWithoutUserInput
+  preference: PreferenceUpdateOneWithoutForUserInput
 }
 
 input UserUpsertWithoutNotificationsInput {
   update: UserUpdateWithoutNotificationsDataInput!
   create: UserCreateWithoutNotificationsInput!
+}
+
+input UserUpsertWithoutPreferenceInput {
+  update: UserUpdateWithoutPreferenceDataInput!
+  create: UserCreateWithoutPreferenceInput!
 }
 
 input UserUpsertWithoutTasksInput {
@@ -1013,6 +1220,7 @@ input UserWhereInput {
   notifications_every: TaskNotificationWhereInput
   notifications_some: TaskNotificationWhereInput
   notifications_none: TaskNotificationWhereInput
+  preference: PreferenceWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
