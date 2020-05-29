@@ -5,6 +5,7 @@ type User {
   password: String!,
   tasks: [Task],
   notifications: [TaskNotification],
+  preference: Preference @relation(name: "UserPreference", onDelete: CASCADE, link: TABLE)
 }
 
 type Task {
@@ -29,4 +30,11 @@ type TaskNotification {
   id: ID! @id,
   user: User,
   task: Task
+}
+
+type Preference {
+  id: ID! @id,
+  forUser: User! @relation(name: "UserPreference", onDelete: SET_NULL) @unique,
+  executionThresholdIdeal: String,
+  executionThresholdAbsolute: String
 }

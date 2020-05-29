@@ -5,6 +5,7 @@ const Subscription = require('./Subscription')
 const Execution = require('./Execution')
 const User = require('./User')
 const TaskNotification = require('./TaskNotification')
+const Preference = require('./Preference')
 
 const resolvers = {
     Query, 
@@ -13,7 +14,8 @@ const resolvers = {
     Task,
     Execution,
     User,
-    TaskNotification
+    TaskNotification,
+    Preference
 }
 
 module.exports = {

@@ -12,6 +12,70 @@ import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import StatusRow from './StatusRow'
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+
+import TextField from '@material-ui/core/TextField';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import FormGroup from '@material-ui/core/FormGroup'
+
+function PreferencesModal(props) {
+	const {close, preferences: { preference } } = props
+	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
+	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
+	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
+	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
+
+	return (
+		<React.Fragment>
+			<DialogContent>
+				<DialogContentText>
+					Change the threshold for when to expect executions
+				</DialogContentText>
+				<FormGroup row>
+					<TextField
+						label="Ideally no later than..."
+						type="number"
+						placeholder="frequency"
+						value={idealFreq} onChange={e => setIdealFreq(e.target.value)}
+					/>
+					<NativeSelect value={idealPeriod} onChange={e => setIdealPeriod(e.target.value)}>
+						<option value="days">days ago</option>
+						<option value="weeks">weeks ago</option>
+						<option value="months">months ago</option>
+					</NativeSelect>
+				</FormGroup>
+				<FormGroup row>
+					<TextField
+						label="No later than..."
+						type="number"
+						placeholder="frequency"
+						value={absoluteFreq} onChange={e => setAbsoluteFreq(e.target.value)}
+					/>
+					<NativeSelect value={absolutePeriod} onChange={e => setAbsolutePeriod(e.target.value)}>
+						<option value="days">days ago</option>
+						<option value="weeks">weeks ago</option>
+						<option value="months">months ago</option>
+					</NativeSelect>
+				</FormGroup>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={() => close()} color="primary">
+					Cancel
+				</Button>
+				<Button onClick={() => {
+					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close())
+					}} color="primary">
+					Apply
+				</Button>
+			</DialogActions>
+		</React.Fragment>
+	)
+}
+
 const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
@@ -43,7 +107,9 @@ class Status extends React.Component {
 		this.state = {
 			loading: true,
 			ranInTime: {},
-			mostRecentExecution: 0
+			mostRecentExecution: 0,
+			modalOpen: false,
+			chipColor: 'red'
 		}
 	}
 
@@ -85,7 +151,6 @@ class Status extends React.Component {
 		this.props.subscribeToMore({
 			document: retrieveTasksSubscription,
 			updateQuery: (prev, { subscriptionData }) => {
-				console.log(subscriptionData)
 				if (!subscriptionData.data) return prev
 				return [...prev, subscriptionData.data]
 			}
@@ -94,19 +159,27 @@ class Status extends React.Component {
 		if (this.props.tasks !== prevProps.tasks) {
 			this.renderDataForTable()
 		}
+
+		const chipColor = this.determineChipColor()
+		if (this.state.chipColor !== chipColor) {
+			this.setState({chipColor})
+		}
 	}
 
 	componentDidMount() {
 		this.props.tasks && this.renderDataForTable()
+		this.determineChipColor()
 	}
 
-	determineChipColor = time => {
-		if (moment.unix(time).isBetween(moment().subtract(1, 'days'), moment())) {
+	determineChipColor = () => {
+		const [idealFrequency, idealPeriod] = this.props.userPreferences && this.props.userPreferences.preference ? this.props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
+		const [absoluteFrequency, absolutePeriod] = this.props.userPreferences && this.props.userPreferences.preference? this.props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
+		if (moment.unix(this.state.mostRecentExecution).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
+			return 'red'
+		} else if (moment.unix(this.state.mostRecentExecution).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
 			return 'green'
-		} else if (moment.unix(time).isBetween(moment().subtract(10, 'days'), moment().subtract(1, 'days'))) {
-			return 'orange'
 		} 
-		return 'red'
+		return 'orange'
 	}
 
 	render() {
@@ -138,11 +211,14 @@ class Status extends React.Component {
 						float: 'right'
 					}}>
 						<Chip 
-							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
+							icon={<WatchLaterIcon style={{color: this.state.chipColor}}/>} 
 							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
 							style={{backgroundColor: 'white'}} 
-							onClick={() => true}
+							onClick={() => this.setState({modalOpen: true})}
 						/>	
+						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
+							<PreferencesModal preferences={this.props.userPreferences} setPreferences={this.props.setPreferences} close={() => this.setState({modalOpen: false})}/>
+						</Dialog>
 					</div>
 				</div>
 			</div>

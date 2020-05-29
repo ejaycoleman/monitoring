@@ -124,11 +124,28 @@ async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     return prisma.deleteTaskNotification({id: existing[0].id})
 }
 
+async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFrequency, absolutePeriod }, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    const userPreference = await prisma.user({id: user.id}).preference()
+    const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
+    const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
+
+    if (userPreference === null) {
+        return prisma.createPreference({forUser: {connect: { id: user.id }}, executionThresholdIdeal, executionThresholdAbsolute})
+    } else {
+        return prisma.updatePreference({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
+    }
+}
+
 module.exports = {
     register,
     login,
     uploadTasksFile,
     uploadSingleTask,
     approveTask,
-    toggleNotification
+    toggleNotification,
+    setPreferences
 }
