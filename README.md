@@ -64,4 +64,15 @@ Then, go to [localhost:3000/upload](http://localhost:3000/upload) to upload the 
 Finally, go to [localhost:3000/status](http://localhost:3000/status), and monitor the status of each task. This page relies on websockets to automatically get updates from the server, so you shouldn't need to refresh it. 
 
 ## Updating status of tasks
-First, run `docker exec -it backend /bin/bash`. The `ingress` directory is for the task-run files. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page.
+Task executions are saved in the `backend/ingress` directory. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page. 
+
+## Clearing the status (for debugging)
+On the Prisma backend [localhost:4466](http://localhost:4466), enter the following query to remove all executions. 
+
+```
+mutation {
+  deleteManyExecutions(where:{id_not: 0}) {
+    count
+  }
+}
+```
