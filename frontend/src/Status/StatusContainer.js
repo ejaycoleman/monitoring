@@ -30,18 +30,19 @@ const userExecutionPreferences = gql` {
     }
 }`
 
-// const userSetExecutionPreferences = gql`{
-//     mutation setPreferences($idealFrequency: Int!, $idealPeriod: String!, $absoluteFrequency: Int!, $absolutePeriod: String!) {
-//         setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {
-//             forUser {
-//                 email
-//             }
-//         }
-//     }
-// }`
+const userSetExecutionPreferences = gql`
+    mutation setPreferences($idealFrequency: String!, $idealPeriod: String!, $absoluteFrequency: String!, $absolutePeriod: String!) {
+        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {
+            forUser {
+                email,
+            },
+            executionThresholdIdeal,
+            executionThresholdAbsolute
+        }
+    }
+`
 
 const StatusContainer =
-
     compose(
         graphql(retreiveTasks, {
             props: ({ data: { loading, tasks, subscribeToMore }, ownProps }) => {
@@ -59,7 +60,22 @@ const StatusContainer =
                     loading,
                 })
             },
-        })        
+        }),
+        graphql(userSetExecutionPreferences, {
+            props: ({ loading, mutate, ownProps }) => ({
+                loading: loading || ownProps.loading,
+                setPreferences: (idealFrequency, idealPeriod, absoluteFrequency, absolutePeriod) => {
+                    return mutate({
+                        variables: {
+                            idealFrequency, 
+                            idealPeriod, 
+                            absoluteFrequency, 
+                            absolutePeriod
+                        }
+                    })
+                }
+            })
+        }),
     )(Status)
 
 export default StatusContainer

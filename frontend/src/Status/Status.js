@@ -23,11 +23,11 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 
 function PreferencesModal(props) {
-	const {close} = props
-	const [idealFreq, setIdealFreq] = React.useState(0);
-	const [idealPeriod, setIdealPeriod] = React.useState('days');
-	const [absoluteFreq, setAbsoluteFreq] = React.useState(0);
-	const [absolutePeriod, setAbsolutePeriod] = React.useState('days');
+	const {close, preferences: { preference } } = props
+	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
+	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
+	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
+	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
 
 	return (
 		<React.Fragment>
@@ -40,7 +40,7 @@ function PreferencesModal(props) {
 						label="Ideally no later than..."
 						type="number"
 						placeholder="frequency"
-						value={idealFreq} onChange={e => setIdealFreq(parseInt(e.target.value))}
+						value={idealFreq} onChange={e => setIdealFreq(e.target.value)}
 					/>
 					<NativeSelect value={idealPeriod} onChange={e => setIdealPeriod(e.target.value)}>
 						<option value="days">days ago</option>
@@ -53,7 +53,7 @@ function PreferencesModal(props) {
 						label="No later than..."
 						type="number"
 						placeholder="frequency"
-						value={absoluteFreq} onChange={e => setAbsoluteFreq(parseInt(e.target.value))}
+						value={absoluteFreq} onChange={e => setAbsoluteFreq(e.target.value)}
 					/>
 					<NativeSelect value={absolutePeriod} onChange={e => setAbsolutePeriod(e.target.value)}>
 						<option value="days">days ago</option>
@@ -67,12 +67,8 @@ function PreferencesModal(props) {
 					Cancel
 				</Button>
 				<Button onClick={() => {
-					console.log(idealFreq) 
-					console.log(idealPeriod)
-					console.log(absoluteFreq)
-					console.log(absolutePeriod)
+					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod)
 					close()
-					
 					}} color="primary">
 					Apply
 				</Button>
@@ -155,7 +151,6 @@ class Status extends React.Component {
 		this.props.subscribeToMore({
 			document: retrieveTasksSubscription,
 			updateQuery: (prev, { subscriptionData }) => {
-				console.log(subscriptionData)
 				if (!subscriptionData.data) return prev
 				return [...prev, subscriptionData.data]
 			}
@@ -216,7 +211,7 @@ class Status extends React.Component {
 							onClick={() => this.setState({modalOpen: true})}
 						/>	
 						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
-							<PreferencesModal close={() => this.setState({modalOpen: false})}/>
+							<PreferencesModal preferences={this.props.userPreferences} setPreferences={this.props.setPreferences} close={() => this.setState({modalOpen: false})}/>
 						</Dialog>
 						{/* {console.log(this.props.userPreferences)} */}
 					</div>
