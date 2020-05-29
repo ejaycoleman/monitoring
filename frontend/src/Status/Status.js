@@ -171,9 +171,11 @@ class Status extends React.Component {
 	}
 
 	determineChipColor = time => {
-		if (moment.unix(time).isBefore(moment().subtract(10, 'days'))) {
+		const [idealFrequency, idealPeriod] = this.props.userPreferences && this.props.userPreferences.preference ? this.props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
+		const [absoluteFrequency, absolutePeriod] = this.props.userPreferences && this.props.userPreferences.preference? this.props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
+		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
-		} else if (moment.unix(time).isSameOrAfter(moment().subtract(1, 'days'))) {
+		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
 			return 'green'
 		} 
 		return 'orange'
@@ -216,6 +218,7 @@ class Status extends React.Component {
 						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
 							<PreferencesModal close={() => this.setState({modalOpen: false})}/>
 						</Dialog>
+						{/* {console.log(this.props.userPreferences)} */}
 					</div>
 				</div>
 			</div>
