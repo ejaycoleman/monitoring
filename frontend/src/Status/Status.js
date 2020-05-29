@@ -67,8 +67,7 @@ function PreferencesModal(props) {
 					Cancel
 				</Button>
 				<Button onClick={() => {
-					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod)
-					close()
+					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close())
 					}} color="primary">
 					Apply
 				</Button>
@@ -109,7 +108,8 @@ class Status extends React.Component {
 			loading: true,
 			ranInTime: {},
 			mostRecentExecution: 0,
-			modalOpen: false
+			modalOpen: false,
+			chipColor: 'red'
 		}
 	}
 
@@ -159,18 +159,24 @@ class Status extends React.Component {
 		if (this.props.tasks !== prevProps.tasks) {
 			this.renderDataForTable()
 		}
+
+		const chipColor = this.determineChipColor()
+		if (this.state.chipColor !== chipColor) {
+			this.setState({chipColor})
+		}
 	}
 
 	componentDidMount() {
 		this.props.tasks && this.renderDataForTable()
+		this.determineChipColor()
 	}
 
-	determineChipColor = time => {
+	determineChipColor = () => {
 		const [idealFrequency, idealPeriod] = this.props.userPreferences && this.props.userPreferences.preference ? this.props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
 		const [absoluteFrequency, absolutePeriod] = this.props.userPreferences && this.props.userPreferences.preference? this.props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
-		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
+		if (moment.unix(this.state.mostRecentExecution).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
-		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
+		} else if (moment.unix(this.state.mostRecentExecution).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
 			return 'green'
 		} 
 		return 'orange'
@@ -205,7 +211,7 @@ class Status extends React.Component {
 						float: 'right'
 					}}>
 						<Chip 
-							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
+							icon={<WatchLaterIcon style={{color: this.state.chipColor}}/>} 
 							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
 							style={{backgroundColor: 'white'}} 
 							onClick={() => this.setState({modalOpen: true})}
@@ -213,7 +219,6 @@ class Status extends React.Component {
 						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
 							<PreferencesModal preferences={this.props.userPreferences} setPreferences={this.props.setPreferences} close={() => this.setState({modalOpen: false})}/>
 						</Dialog>
-						{/* {console.log(this.props.userPreferences)} */}
 					</div>
 				</div>
 			</div>

@@ -71,6 +71,15 @@ const StatusContainer =
                             idealPeriod, 
                             absoluteFrequency, 
                             absolutePeriod
+                        },
+                        update: (cache, { data: {setPreferences}}) => {
+                            const { currentUser } = cache.readQuery({ query: userExecutionPreferences })
+                            currentUser.preference.executionThresholdIdeal = setPreferences.executionThresholdIdeal
+                            currentUser.preference.executionThresholdAbsolute = setPreferences.executionThresholdAbsolute
+                            cache.writeQuery({
+                                query: userExecutionPreferences,
+                                data: {currentUser: {preference: {executionThresholdIdeal: setPreferences.executionThresholdIdeal, executionThresholdAbsolute: setPreferences.executionThresholdAbsolute, ...currentUser.preference}, ...currentUser}}
+                            })
                         }
                     })
                 }
