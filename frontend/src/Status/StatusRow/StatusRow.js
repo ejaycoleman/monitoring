@@ -17,6 +17,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useRowStyles = makeStyles({
 	root: {
@@ -100,6 +101,7 @@ function TaskTable(props) {
 export default function StatusRow(props) {
 	const { task, ranInTime, toggleNotification } = props;
 	const [open, setOpen] = React.useState(false);
+	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications.length !== 0);
 	const classes = useRowStyles();
 
@@ -135,7 +137,10 @@ export default function StatusRow(props) {
 				<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
 					onClick={() => 
 						toggleNotification(task.number.toString())
-						.then(() => setNotifications(!notifications))
+						.then(() => {
+							setNotifications(!notifications)
+							!notifications && setSnackBarErrorShow(true)
+						})
 						.catch(e => console.log(e))}>
 							{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 				</TableCell>
@@ -145,6 +150,12 @@ export default function StatusRow(props) {
 					<TaskTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarErrorShow}
+				onClose={() => setSnackBarErrorShow(false)}
+				message="⚠️ Emails not set up currently"
+			/>
 		</React.Fragment>
  	);
 }

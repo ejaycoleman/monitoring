@@ -21,6 +21,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
+import Snackbar from '@material-ui/core/Snackbar'
 
 function PreferencesModal(props) {
 	const {close, preferences: { preference } } = props
@@ -28,6 +29,8 @@ function PreferencesModal(props) {
 	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
 	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
 	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
+
+	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 
 	return (
 		<React.Fragment>
@@ -67,11 +70,22 @@ function PreferencesModal(props) {
 					Cancel
 				</Button>
 				<Button onClick={() => {
-					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close())
+					const multiplier = {days: 1, weeks: 7, months: 29}
+					if (parseInt(absoluteFreq) * multiplier[absolutePeriod] < parseInt(idealFreq) * multiplier[idealPeriod]) {
+						setSnackBarErrorShow(true)
+						return
+					}
+					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close()).catch(err => console.log(err))
 					}} color="primary">
 					Apply
 				</Button>
 			</DialogActions>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarErrorShow}
+				onClose={() => setSnackBarErrorShow(false)}
+				message="⚠️ Absolute must be greater than ideal!"
+			/>
 		</React.Fragment>
 	)
 }
