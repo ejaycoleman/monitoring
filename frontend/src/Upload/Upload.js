@@ -7,6 +7,9 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 
+import { addTask } from '../actions'
+import { useDispatch } from 'react-redux'
+
 const theme = {
 	scheme: 'monokai',
 	base00: '#292C33',
@@ -56,6 +59,7 @@ const Upload = props => {
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
 	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
 	const isAdmin = useSelector(state => state.isLogged.admin)
+	const reduxTasks = useSelector(state => state.tasks)
 	
 	return (
 		<div>
@@ -72,7 +76,7 @@ const Upload = props => {
 				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(error => {console.log(error)})}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
-			<JSONTree data={jsonTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
+			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
 			<FormGroup row>
 				<CssTextField
 					variant="outlined"

@@ -2,6 +2,8 @@ import Upload from './Upload'
 import { graphql } from 'react-apollo'
 import {flowRight as compose} from 'lodash'
 import gql from 'graphql-tag'
+import {store} from '../index'
+import { addTask } from '../actions'
 
 const uploadFileMutation = gql`
     mutation uploadTasksFile($tasks: String!) {
@@ -50,7 +52,7 @@ const UploadContainer =
             })
         }),
         graphql(createSingleTask, {
-            props: ({ loading, mutate, ownProps }) => ({
+            props: ({ loading, mutate, ownProps, ...idk}) => ({
                 loading: loading || ownProps.loading,
                 uploadSingleTask: ({number, command, frequency, period}) => {
                     return mutate({
@@ -59,6 +61,9 @@ const UploadContainer =
                             command, 
                             frequency: parseInt(frequency), 
                             period
+                        },
+                        update: (cache, {data: { uploadSingleTask }}) => {
+                            store.dispatch(addTask(uploadSingleTask))
                         }
                     })
                 }
@@ -66,9 +71,25 @@ const UploadContainer =
         }),
         graphql(retreiveTasks, {
 			props: ({ data: { loading, tasks }, ownProps }) => {
+                const currentTasksInStore = store.getState().tasks
+                if (!loading && tasks) {
+                    tasks.map(task => {
+                        let found = false
+                        currentTasksInStore.map(currentTask => {
+                            if (task.number === currentTask.number) {
+                                found = true
+                            }
+                        })
+
+                        if (found === false) {
+                            store.dispatch(addTask(task))
+                        }
+                        
+                    })
+                }
 				return ({
 					tasks,
-					loading
+                    loading,
 				})
 			},
 		})
