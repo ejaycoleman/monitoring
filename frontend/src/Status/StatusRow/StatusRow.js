@@ -106,9 +106,7 @@ export default function StatusRow(props) {
 	const [ranInTime, setRanInTime] = React.useState(false)
 	const classes = useRowStyles();
 
-	task.executions && task.executions.map((execution, index) => {
-		execution.index = index + 1
-	})
+	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
 
 	React.useEffect(() => {
 		task.executions.forEach(execution => {
@@ -117,7 +115,7 @@ export default function StatusRow(props) {
 				return
 			} 
 		})
-	}, [task.executions])
+	})
 
 	return (
 		<React.Fragment>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
-import { useSelector } from 'react-redux'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import NativeSelect from '@material-ui/core/NativeSelect';
@@ -8,7 +7,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 
 import { addTask } from '../actions'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const theme = {
 	scheme: 'monokai',
@@ -57,6 +56,10 @@ const Upload = props => {
 	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
+	const isAdmin = useSelector(state => state.isLogged.admin)
+	const reduxTasks = useSelector(state => state.tasks)
+	const dispatch = useDispatch();
+
 	useEffect(() =>{
 		setJsonTasks(props.tasks)
 		if (props.tasks) {
@@ -74,12 +77,8 @@ const Upload = props => {
 				
 			})
 		}
-	}, [props.tasks])
-	const isAdmin = useSelector(state => state.isLogged.admin)
-	const reduxTasks = useSelector(state => state.tasks)
+	}, [props.tasks, dispatch, reduxTasks])
 	
-	const dispatch = useDispatch();
-
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Upload JSON</h1>
@@ -136,8 +135,6 @@ const Upload = props => {
 					dispatch(addTask(data.uploadSingleTask))
 				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
-			
-			
 		</div>
 	) 
 }

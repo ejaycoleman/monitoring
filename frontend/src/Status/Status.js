@@ -6,7 +6,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import gql from 'graphql-tag'
 import moment from 'moment'
 import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
@@ -24,6 +23,9 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { store } from '../index'
+
+import { addTask } from '../actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 function PreferencesModal(props) {
 	const {close, preferences: { preference } } = props
@@ -97,14 +99,41 @@ export default function Status(props) {
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [tasks, setTasks] = React.useState([]);
 
+	const reduxTasks = useSelector(state => state.tasks)
+	const dispatch = useDispatch();
+
 	React.useEffect(() => {
+		if (props.tasks) {
+			props.tasks.map(task => {
+				let found = false
+				reduxTasks.map(currentTask => {
+					if (task.number === currentTask.number) {
+						found = true
+					}
+				})
+
+				if (found === false) {
+					dispatch(addTask(task))
+				}
+				
+			})
+		}
+
+		const currentTasksInStore = store.getState().tasks
+		setTasks(currentTasksInStore)
+		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
+
 		setTasks(store.getState().tasks)
-		const unsubscribe = store.subscribe(() => storeUpdated())
+		const unsubscribe = store.subscribe(() => {
+			setTasks(currentTasksInStore)
+			setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
+		})
 
 		return function cleanup() {
 			unsubscribe()
 		}
-	})
+
+	}, [props.tasks, reduxTasks, dispatch])
 
 	const getMostRecentExecution = tasks => {
 		let mostRecentExecution = 0
@@ -125,13 +154,7 @@ export default function Status(props) {
 			return 'green'
 		} 
 		return 'orange'
-	}
-
-	const storeUpdated = () => {
-		let currentTasksInStore = store.getState().tasks
-		setTasks(currentTasksInStore)
-		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
-	}
+	}	
 
 	return (
 		<div>
