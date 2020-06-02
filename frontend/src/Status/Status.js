@@ -12,87 +12,11 @@ import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import StatusRow from './StatusRow'
 
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Button from '@material-ui/core/Button';
-
-import TextField from '@material-ui/core/TextField';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import FormGroup from '@material-ui/core/FormGroup'
-import Snackbar from '@material-ui/core/Snackbar'
-
+import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
 
 import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
-
-function PreferencesModal(props) {
-	const {close, preferences: { preference } } = props
-	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
-	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
-	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
-	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
-
-	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
-
-	return (
-		<React.Fragment>
-			<DialogContent>
-				<DialogContentText>
-					Change the threshold for when to expect executions
-				</DialogContentText>
-				<FormGroup row>
-					<TextField
-						label="Ideally no later than..."
-						type="number"
-						placeholder="frequency"
-						value={idealFreq} onChange={e => setIdealFreq(e.target.value)}
-					/>
-					<NativeSelect value={idealPeriod} onChange={e => setIdealPeriod(e.target.value)}>
-						<option value="days">days ago</option>
-						<option value="weeks">weeks ago</option>
-						<option value="months">months ago</option>
-					</NativeSelect>
-				</FormGroup>
-				<FormGroup row>
-					<TextField
-						label="No later than..."
-						type="number"
-						placeholder="frequency"
-						value={absoluteFreq} onChange={e => setAbsoluteFreq(e.target.value)}
-					/>
-					<NativeSelect value={absolutePeriod} onChange={e => setAbsolutePeriod(e.target.value)}>
-						<option value="days">days ago</option>
-						<option value="weeks">weeks ago</option>
-						<option value="months">months ago</option>
-					</NativeSelect>
-				</FormGroup>
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={() => close()} color="primary">
-					Cancel
-				</Button>
-				<Button onClick={() => {
-					const multiplier = {days: 1, weeks: 7, months: 29}
-					if (parseInt(absoluteFreq) * multiplier[absolutePeriod] < parseInt(idealFreq) * multiplier[idealPeriod]) {
-						setSnackBarErrorShow(true)
-						return
-					}
-					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close()).catch(err => console.log(err))
-					}} color="primary">
-					Apply
-				</Button>
-			</DialogActions>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarErrorShow}
-				onClose={() => setSnackBarErrorShow(false)}
-				message="⚠️ Absolute must be greater than ideal!"
-			/>
-		</React.Fragment>
-	)
-}
 
 export default function Status(props) {
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0);
