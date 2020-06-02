@@ -74,7 +74,6 @@ const Upload = props => {
 				
 			})
 		}
-	
 	}, [props.tasks])
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)

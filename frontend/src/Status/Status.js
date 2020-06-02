@@ -92,110 +92,21 @@ function PreferencesModal(props) {
 	)
 }
 
-const retrieveExecutionsSubscription = gql`
-    subscription {
-        newExecution {
-            datetime,
-            task {
-                number
-            }
-        }
-    }
-`
+export default function Status(props) {
+	const [mostRecentExecution, setMostRecentExecution] = React.useState(0);
+	const [modalOpen, setModalOpen] = React.useState(false)
+	const [tasks, setTasks] = React.useState([]);
 
-const retrieveTasksSubscription = gql`
-    subscription {
-        newTask {
-            number,
-            command, 
-            frequency,
-            period,
-            executions {
-                datetime
-            }
-        }
-    }
-`
+	React.useEffect(() => {
+		setTasks(store.getState().tasks)
+		const unsubscribe = store.subscribe(() => storeUpdated())
 
-class Status extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			loading: true,
-			mostRecentExecution: 0,
-			modalOpen: false,
-			chipColor: 'red',
-			tasks: []
+		return function cleanup() {
+			unsubscribe()
 		}
-	}
+	})
 
-	// renderDataForTable = () => {
-	// 	let mostRecentExecution = ''
-	// 	this.currentTasksInStore && this.currentTasksInStore.forEach(task => {
-	// 		const hasRanInTime = this.state.ranInTime
-	// 		hasRanInTime[task.number] = false
-	// 		task.executions.forEach(execution => {
-	// 			if (mostRecentExecution === '') {
-	// 				mostRecentExecution = execution.datetime
-	// 			}
-	// 			mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
-	// 			if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
-	// 				hasRanInTime[task.number] = true
-	// 				return
-	// 			} 
-	// 		})        
-	// 		this.setState({ranInTime: hasRanInTime})        
-	// 	})
-	// 	this.setState({mostRecentExecution})
-	// }
-
-	// componentDidUpdate(prevProps) {
-	// 	this.props.subscribeToMore({
-	// 		document: retrieveExecutionsSubscription,
-	// 		updateQuery: (prev, { subscriptionData }) => {
-	// 			if (!subscriptionData.data) return prev
-	// 			const newExecution = subscriptionData.data.newExecution
-	// 			const existingTask = prev.tasks.find(({number})=> number === newExecution.task.number)
-	// 			if (!moment().startOf('day').subtract(existingTask.frequency, existingTask.period).isAfter(moment.unix(newExecution.datetime))) {
-	// 				const ranInTime = this.state.ranInTime
-	// 				ranInTime[newExecution.task.number] = true
-	// 				this.setState({ranInTime})
-	// 			}
-	// 		}
-	// 	})
-
-	// 	this.props.subscribeToMore({
-	// 		document: retrieveTasksSubscription,
-	// 		updateQuery: (prev, { subscriptionData }) => {
-	// 			if (!subscriptionData.data) return prev
-	// 			return [...prev, subscriptionData.data]
-	// 		}
-	// 	})
-
-	// 	if (this.currentTasksInStore && this.currentTasksInStore !== prevProps.tasks) {
-	// 		this.renderDataForTable()
-	// 	}
-
-	// 	const chipColor = this.determineChipColor()
-	// 	if (this.state.chipColor !== chipColor) {
-	// 		this.setState({chipColor})
-	// 	}
-	// }
-
-	componentDidMount() {
-		this.currentTasksInStore && this.currentTasksInStore && this.renderDataForTable()
-		this.determineChipColor()
-
-		let currentTasksInStore = store.getState().tasks
-		this.setState({tasks: currentTasksInStore})
-		this.unsubscribe = store.subscribe(() => this.storeUpdated())
-	}
-
-	componentWillUnmount() {
-		this.unsubscribe()
-	}
-
-	getMostRecentExecution(tasks) {
+	const getMostRecentExecution = tasks => {
 		let mostRecentExecution = 0
 		tasks.map(task => {
 			task.executions.forEach(execution => {
@@ -205,9 +116,9 @@ class Status extends React.Component {
 		return mostRecentExecution
 	}
 
-	determineChipColor = time => {
-		const [idealFrequency, idealPeriod] = this.props.userPreferences && this.props.userPreferences.preference ? this.props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
-		const [absoluteFrequency, absolutePeriod] = this.props.userPreferences && this.props.userPreferences.preference? this.props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
+	const determineChipColor = time => {
+		const [idealFrequency, idealPeriod] = props.userPreferences && props.userPreferences.preference ? props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
+		const [absoluteFrequency, absolutePeriod] = props.userPreferences && props.userPreferences.preference? props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
 		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
 		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
@@ -216,56 +127,50 @@ class Status extends React.Component {
 		return 'orange'
 	}
 
-	storeUpdated = () => {
+	const storeUpdated = () => {
 		let currentTasksInStore = store.getState().tasks
-		this.setState({
-			tasks: currentTasksInStore,
-			mostRecentExecution: this.getMostRecentExecution(currentTasksInStore)
-		})
+		setTasks(currentTasksInStore)
+		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
 	}
 
-	render() {		
-		return (
-			<div>
-				<h1 style={{color: 'white'}}>Status</h1>
-				<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto'}}>
-					<TableContainer component={Paper} >
-						<Table aria-label="collapsible table">
-							<TableHead>
-								<TableRow>
-									<TableCell style={{width: 30}}/>
-									<TableCell>Task Number</TableCell>
-									<TableCell align="right">Frequency</TableCell>
-									<TableCell align="right" style={{width: 30}}>Status</TableCell>
-									<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{
-									this.state.tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))
-								}
-							</TableBody>
-						</Table>
-					</TableContainer>
-					<div style={{ 
-						marginTop: 20,
-						marginBottom: 20, 
-						float: 'right'
-					}}>
-						<Chip 
-							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
-							label={this.state.mostRecentExecution ? `Last received ${moment.unix(this.state.mostRecentExecution).fromNow()}` : 'Never Received'} 
-							style={{backgroundColor: 'white'}} 
-							onClick={() => this.setState({modalOpen: true})}
-						/>	
-						<Dialog open={this.state.modalOpen} onClose={() => this.setState({modalOpen: false})}>
-							<PreferencesModal preferences={this.props.userPreferences} setPreferences={this.props.setPreferences} close={() => this.setState({modalOpen: false})}/>
-						</Dialog>
-					</div>
+	return (
+		<div>
+			<h1 style={{color: 'white'}}>Status</h1>
+			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto'}}>
+				<TableContainer component={Paper} >
+					<Table aria-label="collapsible table">
+						<TableHead>
+							<TableRow>
+								<TableCell style={{width: 30}}/>
+								<TableCell>Task Number</TableCell>
+								<TableCell align="right">Frequency</TableCell>
+								<TableCell align="right" style={{width: 30}}>Status</TableCell>
+								<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{
+								tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))
+							}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				<div style={{ 
+					marginTop: 20,
+					marginBottom: 20, 
+					float: 'right'
+				}}>
+					<Chip 
+						icon={<WatchLaterIcon style={{color: determineChipColor(mostRecentExecution)}}/>} 
+						label={mostRecentExecution ? `Last received ${moment.unix(mostRecentExecution).fromNow()}` : 'Never Received'} 
+						style={{backgroundColor: 'white'}} 
+						onClick={() => setModalOpen(true)}
+					/>	
+					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+						<PreferencesModal preferences={props.userPreferences} setPreferences={props.setPreferences} close={() => setModalOpen(false)}/>
+					</Dialog>
 				</div>
 			</div>
-		) 
-	}
+		</div>
+	) 
 }
-
-export default Status
