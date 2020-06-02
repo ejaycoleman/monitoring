@@ -60,7 +60,7 @@ function TaskTable(props) {
 	return (
 		<Collapse in={open} timeout="auto" unmountOnExit>
 			<Box margin={1}>
-				{task.executions.length > 0 ? (
+				{task.executions && task.executions.length > 0 ? (
 					<div>
 						<h3 style={{textAlign: 'center'}}>
 							{task.executions.length === 1 ? `1 Execution` : `${task.executions.length} Executions`}
@@ -99,15 +99,25 @@ function TaskTable(props) {
 }
 
 export default function StatusRow(props) {
-	const { task, ranInTime, toggleNotification } = props;
+	const { task, toggleNotification } = props;
 	const [open, setOpen] = React.useState(false);
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
-	const [notifications, setNotifications] = React.useState(task.notifications.length !== 0);
+	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
+	const [ranInTime, setRanInTime] = React.useState(false)
 	const classes = useRowStyles();
 
-	task.executions.map((execution, index) => {
+	task.executions && task.executions.map((execution, index) => {
 		execution.index = index + 1
 	})
+
+	React.useEffect(() => {
+		task.executions.forEach(execution => {
+			if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
+				setRanInTime(true)
+				return
+			} 
+		})
+	}, [task.executions])
 
 	return (
 		<React.Fragment>
@@ -124,7 +134,7 @@ export default function StatusRow(props) {
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
 				<TableCell align="right" style={{textAlign: 'center'}}>
-					{task.executions.length === 0 ? 
+					{(!task.executions || task.executions.length === 0) ? 
 						<HelpIcon style={{color: 'grey'}}/> 
 					: 
 						(ranInTime ? 

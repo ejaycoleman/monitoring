@@ -57,10 +57,30 @@ const Upload = props => {
 	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
-	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
+	useEffect(() =>{
+		setJsonTasks(props.tasks)
+		if (props.tasks) {
+			props.tasks.map(task => {
+				let found = false
+				reduxTasks.map(currentTask => {
+					if (task.number === currentTask.number) {
+						found = true
+					}
+				})
+
+				if (found === false) {
+					dispatch(addTask(task))
+				}
+				
+			})
+		}
+	
+	}, [props.tasks])
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	
+	const dispatch = useDispatch();
+
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Upload JSON</h1>
@@ -112,9 +132,10 @@ const Upload = props => {
 					frequency: 
 					newTaskFrequency, 
 					period: newTaskPeriod 
-				}).then(({data}) => isAdmin && setJsonTasks(
-					[...jsonTasks, data.uploadSingleTask]
-				)).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
+				}).then(({data}) => {
+					isAdmin && setJsonTasks([...jsonTasks, data.uploadSingleTask])	
+					dispatch(addTask(data.uploadSingleTask))
+				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
 			
 			

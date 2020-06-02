@@ -2,6 +2,8 @@ import Status from './Status'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import {flowRight as compose} from 'lodash'
+import { store } from '../index'
+import { addTask } from '../actions'
 
 const retreiveTasks = gql` {
     tasks {
@@ -46,6 +48,22 @@ const StatusContainer =
     compose(
         graphql(retreiveTasks, {
             props: ({ data: { loading, tasks, subscribeToMore }, ownProps }) => {
+                const currentTasksInStore = store.getState().tasks
+                if (!loading && tasks) {
+                    tasks.map(task => {
+                        let found = false
+                        currentTasksInStore.map(currentTask => {
+                            if (task.number === currentTask.number) {
+                                found = true
+                            }
+                        })
+
+                        if (found === false) {
+                            store.dispatch(addTask(task))
+                        }
+                        
+                    })
+                }
                 return ({
                     tasks,
                     loading,

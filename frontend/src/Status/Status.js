@@ -23,6 +23,8 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 
+import { store } from '../index'
+
 function PreferencesModal(props) {
 	const {close, preferences: { preference } } = props
 	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
@@ -120,83 +122,109 @@ class Status extends React.Component {
 		super(props);
 		this.state = {
 			loading: true,
-			ranInTime: {},
 			mostRecentExecution: 0,
 			modalOpen: false,
-			chipColor: 'red'
+			chipColor: 'red',
+			tasks: []
 		}
 	}
 
-	renderDataForTable = () => {
-		let mostRecentExecution = ''
-		this.props.tasks.forEach(task => {
-			const hasRanInTime = this.state.ranInTime
-			hasRanInTime[task.number] = false
-			task.executions.forEach(execution => {
-				if (mostRecentExecution === '') {
-					mostRecentExecution = execution.datetime
-				}
-				mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
-				if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
-					hasRanInTime[task.number] = true
-					return
-				} 
-			})        
-			this.setState({ranInTime: hasRanInTime})        
-		})
-		this.setState({mostRecentExecution})
-	}
+	// renderDataForTable = () => {
+	// 	let mostRecentExecution = ''
+	// 	this.currentTasksInStore && this.currentTasksInStore.forEach(task => {
+	// 		const hasRanInTime = this.state.ranInTime
+	// 		hasRanInTime[task.number] = false
+	// 		task.executions.forEach(execution => {
+	// 			if (mostRecentExecution === '') {
+	// 				mostRecentExecution = execution.datetime
+	// 			}
+	// 			mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
+	// 			if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
+	// 				hasRanInTime[task.number] = true
+	// 				return
+	// 			} 
+	// 		})        
+	// 		this.setState({ranInTime: hasRanInTime})        
+	// 	})
+	// 	this.setState({mostRecentExecution})
+	// }
 
-	componentDidUpdate(prevProps) {
-		this.props.subscribeToMore({
-			document: retrieveExecutionsSubscription,
-			updateQuery: (prev, { subscriptionData }) => {
-				if (!subscriptionData.data) return prev
-				const newExecution = subscriptionData.data.newExecution
-				const existingTask = prev.tasks.find(({number})=> number === newExecution.task.number)
-				if (!moment().startOf('day').subtract(existingTask.frequency, existingTask.period).isAfter(moment.unix(newExecution.datetime))) {
-					const ranInTime = this.state.ranInTime
-					ranInTime[newExecution.task.number] = true
-					this.setState({ranInTime})
-				}
-			}
-		})
+	// componentDidUpdate(prevProps) {
+	// 	this.props.subscribeToMore({
+	// 		document: retrieveExecutionsSubscription,
+	// 		updateQuery: (prev, { subscriptionData }) => {
+	// 			if (!subscriptionData.data) return prev
+	// 			const newExecution = subscriptionData.data.newExecution
+	// 			const existingTask = prev.tasks.find(({number})=> number === newExecution.task.number)
+	// 			if (!moment().startOf('day').subtract(existingTask.frequency, existingTask.period).isAfter(moment.unix(newExecution.datetime))) {
+	// 				const ranInTime = this.state.ranInTime
+	// 				ranInTime[newExecution.task.number] = true
+	// 				this.setState({ranInTime})
+	// 			}
+	// 		}
+	// 	})
 
-		this.props.subscribeToMore({
-			document: retrieveTasksSubscription,
-			updateQuery: (prev, { subscriptionData }) => {
-				if (!subscriptionData.data) return prev
-				return [...prev, subscriptionData.data]
-			}
-		})
+	// 	this.props.subscribeToMore({
+	// 		document: retrieveTasksSubscription,
+	// 		updateQuery: (prev, { subscriptionData }) => {
+	// 			if (!subscriptionData.data) return prev
+	// 			return [...prev, subscriptionData.data]
+	// 		}
+	// 	})
 
-		if (this.props.tasks !== prevProps.tasks) {
-			this.renderDataForTable()
-		}
+	// 	if (this.currentTasksInStore && this.currentTasksInStore !== prevProps.tasks) {
+	// 		this.renderDataForTable()
+	// 	}
 
-		const chipColor = this.determineChipColor()
-		if (this.state.chipColor !== chipColor) {
-			this.setState({chipColor})
-		}
-	}
+	// 	const chipColor = this.determineChipColor()
+	// 	if (this.state.chipColor !== chipColor) {
+	// 		this.setState({chipColor})
+	// 	}
+	// }
 
 	componentDidMount() {
-		this.props.tasks && this.renderDataForTable()
+		this.currentTasksInStore && this.currentTasksInStore && this.renderDataForTable()
 		this.determineChipColor()
+
+		let currentTasksInStore = store.getState().tasks
+		this.setState({tasks: currentTasksInStore})
+		this.unsubscribe = store.subscribe(() => this.storeUpdated())
 	}
 
-	determineChipColor = () => {
+	componentWillUnmount() {
+		this.unsubscribe()
+	}
+
+	getMostRecentExecution(tasks) {
+		let mostRecentExecution = 0
+		tasks.map(task => {
+			task.executions.forEach(execution => {
+				mostRecentExecution =  Math.max(execution.datetime, mostRecentExecution)
+			})
+		})
+		return mostRecentExecution
+	}
+
+	determineChipColor = time => {
 		const [idealFrequency, idealPeriod] = this.props.userPreferences && this.props.userPreferences.preference ? this.props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
 		const [absoluteFrequency, absolutePeriod] = this.props.userPreferences && this.props.userPreferences.preference? this.props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
-		if (moment.unix(this.state.mostRecentExecution).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
+		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
-		} else if (moment.unix(this.state.mostRecentExecution).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
+		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
 			return 'green'
 		} 
 		return 'orange'
 	}
 
-	render() {
+	storeUpdated = () => {
+		let currentTasksInStore = store.getState().tasks
+		this.setState({
+			tasks: currentTasksInStore,
+			mostRecentExecution: this.getMostRecentExecution(currentTasksInStore)
+		})
+	}
+
+	render() {		
 		return (
 			<div>
 				<h1 style={{color: 'white'}}>Status</h1>
@@ -213,9 +241,9 @@ class Status extends React.Component {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{Object.keys(this.state.ranInTime).map((row, index) => (
-									<StatusRow key={index} task={this.props.tasks[index]} ranInTime={this.state.ranInTime[row]} />
-								))}
+								{
+									this.state.tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))
+								}
 							</TableBody>
 						</Table>
 					</TableContainer>
@@ -225,8 +253,8 @@ class Status extends React.Component {
 						float: 'right'
 					}}>
 						<Chip 
-							icon={<WatchLaterIcon style={{color: this.state.chipColor}}/>} 
-							label={`Last recieved ${moment.unix(this.state.mostRecentExecution).fromNow()}`} 
+							icon={<WatchLaterIcon style={{color: this.determineChipColor(this.state.mostRecentExecution)}}/>} 
+							label={this.state.mostRecentExecution ? `Last received ${moment.unix(this.state.mostRecentExecution).fromNow()}` : 'Never Received'} 
 							style={{backgroundColor: 'white'}} 
 							onClick={() => this.setState({modalOpen: true})}
 						/>	
