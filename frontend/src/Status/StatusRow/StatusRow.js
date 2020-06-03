@@ -53,6 +53,9 @@ export default function StatusRow(props) {
 				<TableCell component="th" scope="row">
 					{task.number}
 				</TableCell>
+				<TableCell component="th" scope="row">
+					{task.command}
+				</TableCell>
 				<TableCell align="right">
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
@@ -79,7 +82,7 @@ export default function StatusRow(props) {
 				</TableCell>
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>

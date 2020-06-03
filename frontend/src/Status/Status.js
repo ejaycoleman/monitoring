@@ -112,6 +112,7 @@ export default function Status(props) {
 							<TableRow>
 								<TableCell style={{width: 30}}/>
 								<TableCell>Task Number</TableCell>
+								<TableCell>Command</TableCell>
 								<TableCell align="right">Frequency</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
 								<TableCell align="right" style={{width: 30}}>Notifications</TableCell>

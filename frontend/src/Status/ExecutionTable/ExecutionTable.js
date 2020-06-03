@@ -45,7 +45,7 @@ export default function ExecutionTable(props) {
 				{task.executions && task.executions.length > 0 ? (
 					<div>
 						<h3 style={{textAlign: 'center'}}>
-							{task.executions.length === 1 ? `1 Execution` : `${task.executions.length} Executions`}
+                            {`The command '${task.command}' has been run ${task.executions.length} ${task.executions.length === 1 ? `time` : `times`}`}
 						</h3>
 						<Table style={{width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
 							<TableHead>
