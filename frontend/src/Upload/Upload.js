@@ -98,7 +98,7 @@ const Upload = props => {
 				}).catch(error => {console.log(error)})}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
-			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
+			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<FormGroup row>
 				<CssTextField
 					variant="outlined"
