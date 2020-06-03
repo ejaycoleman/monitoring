@@ -21,7 +21,17 @@ const approveTaskMutation = gql`
     mutation approveTask($id: ID!) {
         approveTask(id: $id) {
             number,
-            approved
+            command,
+            frequency,
+            period,
+            executions {
+            datetime
+            },
+            notifications {
+                user {
+                    id
+                }
+            }
         }
     }
 `

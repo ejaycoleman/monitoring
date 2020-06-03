@@ -51,7 +51,6 @@ const CssTextField = withStyles({
 
 const Upload = props => {
 	const [ tasks, setTasks ] = useState("");		
-	const [ jsonTasks, setJsonTasks ] = useState([]);
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0);	
 	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
@@ -61,7 +60,6 @@ const Upload = props => {
 	const dispatch = useDispatch();
 
 	useEffect(() =>{
-		setJsonTasks(props.tasks)
 		if (props.tasks) {
 			props.tasks.map(task => {
 				let found = false
@@ -91,7 +89,13 @@ const Upload = props => {
 					type="text"
 					placeholder="Enter the task json file"
 				/>
-				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(error => {console.log(error)})}>UPLOAD</Button>	
+				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => {
+					if (isAdmin) {
+						data.uploadTasksFile.map(task => {
+							dispatch(addTask(task))
+						})
+					}
+				}).catch(error => {console.log(error)})}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
@@ -130,9 +134,8 @@ const Upload = props => {
 					frequency: 
 					newTaskFrequency, 
 					period: newTaskPeriod 
-				}).then(({data}) => {
-					isAdmin && setJsonTasks([...jsonTasks, data.uploadSingleTask])	
-					dispatch(addTask(data.uploadSingleTask))
+				}).then(({data}) => {	
+					isAdmin && dispatch(addTask(data.uploadSingleTask))
 				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
 		</div>
