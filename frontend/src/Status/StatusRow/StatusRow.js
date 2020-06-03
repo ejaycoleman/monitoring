@@ -11,8 +11,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { useSelector } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar';
-
 import ExecutionTable from '../ExecutionTable'
 
 const useRowStyles = makeStyles({
@@ -29,6 +29,7 @@ export default function StatusRow(props) {
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
+	const { authed } = useSelector(state => state.isLogged)
 	const classes = useRowStyles();
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
@@ -70,16 +71,18 @@ export default function StatusRow(props) {
 						) 
 					}
 				</TableCell>
-				<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
-					onClick={() => 
-						toggleNotification(task.number.toString())
-						.then(() => {
-							setNotifications(!notifications)
-							!notifications && setSnackBarErrorShow(true)
-						})
-						.catch(e => console.log(e))}>
-							{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
-				</TableCell>
+				{authed && 
+					<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
+						onClick={() => 
+							toggleNotification(task.number.toString())
+							.then(() => {
+								setNotifications(!notifications)
+								!notifications && setSnackBarErrorShow(true)
+							})
+							.catch(e => console.log(e))}>
+								{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
+					</TableCell>
+				}
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>

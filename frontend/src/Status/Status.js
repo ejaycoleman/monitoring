@@ -37,6 +37,7 @@ export default function Status(props) {
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [tasks, setTasks] = React.useState([]);
 
+	const { authed } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch();
 
@@ -115,7 +116,7 @@ export default function Status(props) {
 								<TableCell>Command</TableCell>
 								<TableCell align="right">Frequency</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
-								<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
+								{authed && <TableCell align="right" style={{width: 30}}>Notifications</TableCell>}
 							</TableRow>
 						</TableHead>
 						<TableBody>
