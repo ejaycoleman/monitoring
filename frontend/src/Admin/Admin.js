@@ -9,12 +9,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button'
 
+import { addTask } from '../actions'
+import { useDispatch } from 'react-redux'
+
 const Admin = props => {
 	const [ tasks, setTasks ] = useState("");		
-
     useEffect(() =>setTasks(props.tasks), [props.tasks])
+    const dispatch = useDispatch();
 
-	
 	return (
 		<div>
             <h1 style={{color: 'white'}}>Approve the tasks below</h1>
@@ -57,6 +59,7 @@ const Admin = props => {
                                             let values = [...tasks]
                                             values.splice(index, 1)
                                             setTasks(values)
+                                            dispatch(addTask(data.approveTask))
                                         }).catch(error => console.log(error))}>Approve</Button>
                                     </TableCell>
                                 </TableRow>

@@ -58,7 +58,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const store = createStore(rootReducer)
+export const store = createStore(rootReducer)
 const AppRouter = () => {
   const dispatch = useDispatch()
   const session = jwt.decode(localStorage.getItem('AUTH_TOKEN'))

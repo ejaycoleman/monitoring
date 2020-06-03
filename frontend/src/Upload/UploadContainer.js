@@ -9,7 +9,15 @@ const uploadFileMutation = gql`
             number,
             command,
             frequency,
-            period
+            period,
+            executions {
+            datetime
+            },
+            notifications {
+                user {
+                    id
+                }
+            }
         }
     }
 `
@@ -20,7 +28,15 @@ const createSingleTask = gql`
             number,
             command,
             frequency,
-            period
+            period,
+            executions {
+            datetime
+            },
+            notifications {
+                user {
+                    id
+                }
+            }
         }
     }
 `
@@ -28,9 +44,17 @@ const createSingleTask = gql`
 const retreiveTasks = gql` {
     tasks {
         number,
-        command, 
+        command,
         frequency,
-        period
+        period,
+        executions {
+        datetime
+        },
+        notifications {
+            user {
+                id
+            }
+        }
     }
 }
 `
@@ -50,7 +74,7 @@ const UploadContainer =
             })
         }),
         graphql(createSingleTask, {
-            props: ({ loading, mutate, ownProps }) => ({
+            props: ({ loading, mutate, ownProps, ...idk}) => ({
                 loading: loading || ownProps.loading,
                 uploadSingleTask: ({number, command, frequency, period}) => {
                     return mutate({
@@ -68,7 +92,7 @@ const UploadContainer =
 			props: ({ data: { loading, tasks }, ownProps }) => {
 				return ({
 					tasks,
-					loading
+                    loading,
 				})
 			},
 		})

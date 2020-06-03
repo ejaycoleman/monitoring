@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
-import { useSelector } from 'react-redux'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
+
+import { addTask } from '../actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const theme = {
 	scheme: 'monokai',
@@ -49,13 +51,31 @@ const CssTextField = withStyles({
 
 const Upload = props => {
 	const [ tasks, setTasks ] = useState("");		
-	const [ jsonTasks, setJsonTasks ] = useState([]);
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0);	
 	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
-	useEffect(() =>setJsonTasks(props.tasks), [props.tasks])
 	const isAdmin = useSelector(state => state.isLogged.admin)
+	const reduxTasks = useSelector(state => state.tasks)
+	const dispatch = useDispatch();
+
+	useEffect(() =>{
+		if (props.tasks) {
+			props.tasks.map(task => {
+				let found = false
+				reduxTasks.map(currentTask => {
+					if (task.number === currentTask.number) {
+						found = true
+					}
+				})
+
+				if (found === false) {
+					dispatch(addTask(task))
+				}
+				
+			})
+		}
+	}, [props.tasks, dispatch, reduxTasks])
 	
 	return (
 		<div>
@@ -69,10 +89,16 @@ const Upload = props => {
 					type="text"
 					placeholder="Enter the task json file"
 				/>
-				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => setJsonTasks(data.uploadTasksFile)).catch(error => {console.log(error)})}>UPLOAD</Button>	
+				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => {
+					if (isAdmin) {
+						data.uploadTasksFile.map(task => {
+							dispatch(addTask(task))
+						})
+					}
+				}).catch(error => {console.log(error)})}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
-			<JSONTree data={jsonTasks || []} theme={theme} invertTheme={false} shouldExpandNode={()=>true}/>
+			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<FormGroup row>
 				<CssTextField
 					variant="outlined"
@@ -108,12 +134,10 @@ const Upload = props => {
 					frequency: 
 					newTaskFrequency, 
 					period: newTaskPeriod 
-				}).then(({data}) => isAdmin && setJsonTasks(
-					[...jsonTasks, data.uploadSingleTask]
-				)).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
+				}).then(({data}) => {	
+					isAdmin && dispatch(addTask(data.uploadSingleTask))
+				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
-			
-			
 		</div>
 	) 
 }
