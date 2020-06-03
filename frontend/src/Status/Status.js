@@ -15,16 +15,38 @@ import Dialog from '@material-ui/core/Dialog';
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
 
-import { addTask } from '../actions'
+import { addTask, addExecution } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
+import gql from 'graphql-tag'
+
+const retrieveExecutionsSubscription = gql`
+    subscription {
+        newExecution {
+            datetime,
+            task {
+                number
+            }
+        }
+    }
+`
+
 export default function Status(props) {
+	const { subscribeToMore } = props;
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0);
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [tasks, setTasks] = React.useState([]);
 
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch();
+
+	subscribeToMore({
+		document: retrieveExecutionsSubscription,
+		updateQuery: (prev, { subscriptionData }) => {
+			const newExecution = subscriptionData.data.newExecution
+			dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
+		}
+	})
 
 	React.useEffect(() => {
 		if (props.tasks) {
@@ -97,7 +119,7 @@ export default function Status(props) {
 						</TableHead>
 						<TableBody>
 							{
-								tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))
+								tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
 							}
 						</TableBody>
 					</Table>

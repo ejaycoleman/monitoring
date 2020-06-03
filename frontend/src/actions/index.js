@@ -11,3 +11,8 @@ export const addTask = value => ({
     type: 'ADD_TASK',
     value
 })
+
+export const addExecution = value => ({
+    type: 'ADD_EXECUTION',
+    value
+})
