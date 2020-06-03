@@ -20,6 +20,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import gql from 'graphql-tag'
 
+import Snackbar from '@material-ui/core/Snackbar'
+
 const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
@@ -36,7 +38,9 @@ export default function Status(props) {
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0);
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [tasks, setTasks] = React.useState([]);
+	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 
+	const { authed } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch();
 
@@ -115,7 +119,7 @@ export default function Status(props) {
 								<TableCell>Command</TableCell>
 								<TableCell align="right">Frequency</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
-								<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
+								{authed && <TableCell align="right" style={{width: 30}}>Notifications</TableCell>}
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -134,11 +138,17 @@ export default function Status(props) {
 						icon={<WatchLaterIcon style={{color: determineChipColor(mostRecentExecution)}}/>} 
 						label={mostRecentExecution ? `Last received ${moment.unix(mostRecentExecution).fromNow()}` : 'Never Received'} 
 						style={{backgroundColor: 'white'}} 
-						onClick={() => setModalOpen(true)}
+						onClick={() => authed ? setModalOpen(true) : setSnackBarErrorShow(true)}
 					/>	
 					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={props.userPreferences} setPreferences={props.setPreferences} close={() => setModalOpen(false)}/>
 					</Dialog>
+					<Snackbar
+						anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+						open={snackBarErrorShow}
+						onClose={() => setSnackBarErrorShow(false)}
+						message="⚠️ Login to change threshold preferences"
+					/>
 				</div>
 			</div>
 		</div>
