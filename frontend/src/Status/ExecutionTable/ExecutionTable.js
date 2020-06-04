@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment'
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import Table from '@material-ui/core/Table';
@@ -7,11 +8,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import moment from 'moment'
+import TablePagination from '@material-ui/core/TablePagination';
 
 export default function ExecutionTable(props) {
 	const { task, open } = props;
-    const [order, setOrder] = React.useState('asc');
+	const [order, setOrder] = React.useState('asc');
+	
+	const [page, setPage] = React.useState(0);
     
     const descendingComparator = (a, b, orderBy) => {
         if (b[orderBy] < a[orderBy]) {
@@ -58,7 +61,7 @@ export default function ExecutionTable(props) {
 							</TableRow>
 							</TableHead>
 							<TableBody>
-							{stableSort(task.executions, getComparator(order, 'datetime')).map((execution) => (
+							{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * 2, page * 2 + 2).map((execution) => (
 								<TableRow key={execution.datetime}>
 									<TableCell component="th" scope="row">
 										{execution.index}
@@ -69,6 +72,13 @@ export default function ExecutionTable(props) {
 								</TableRow>
 							))}
 							</TableBody>
+							<TablePagination 
+								rowsPerPageOptions={false}
+								count={task.executions.length}
+								onChangePage={(_event, newPage) => setPage(newPage)}
+								rowsPerPage={2}
+								page={page}
+							/>
 						</Table>
 					</div>
 					) 

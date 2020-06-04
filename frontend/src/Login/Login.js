@@ -10,9 +10,8 @@ const Login = props => {
 	const dispatch = useDispatch();
 	const [ email, setEmail ] = useState("");
 	const [ password, setPassword ] = useState("");
-
 	const [ error, setError ] = useState(false)
-		
+
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Login</h1>
@@ -24,7 +23,6 @@ const Login = props => {
 						onChange={e => setEmail(e.target.value)}
 						type="text"
 						placeholder="Your email address"
-
 						error={error}
 						helperText={error && "Invalid Credentials"}
 					/>
@@ -34,7 +32,6 @@ const Login = props => {
 						onChange={e => setPassword(e.target.value)}
 						type="password"
 						placeholder="Enter password"
-
 						error={error}
 						helperText={error && "Invalid Credentials"}
 					/>
@@ -48,7 +45,7 @@ const Login = props => {
 				</FormGroup>
 			</Card>
 		</div>
-	) 
+	)
 }
 
 export default Login

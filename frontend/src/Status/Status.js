@@ -1,26 +1,24 @@
-import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import React from 'react'
+import gql from 'graphql-tag'
 import moment from 'moment'
-import Chip from '@material-ui/core/Chip';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
+import Paper from '@material-ui/core/Paper'
+import Chip from '@material-ui/core/Chip'
+import WatchLaterIcon from '@material-ui/icons/WatchLater'
+import Snackbar from '@material-ui/core/Snackbar'
 import StatusRow from './StatusRow'
-
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-
 import { addTask, addExecution } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
-import gql from 'graphql-tag'
-
-import Snackbar from '@material-ui/core/Snackbar'
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -34,15 +32,17 @@ const retrieveExecutionsSubscription = gql`
 `
 
 export default function Status(props) {
-	const { subscribeToMore } = props;
-	const [mostRecentExecution, setMostRecentExecution] = React.useState(0);
+	const { subscribeToMore } = props
+	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
-	const [tasks, setTasks] = React.useState([]);
+	const [tasks, setTasks] = React.useState([])
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
+	const [order, setOrder] = React.useState('asc')
+  	const [orderBy, setOrderBy] = React.useState('Task Number')
 
 	const { authed } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks)
-	const dispatch = useDispatch();
+	const dispatch = useDispatch()
 
 	subscribeToMore({
 		document: retrieveExecutionsSubscription,
@@ -106,6 +106,43 @@ export default function Status(props) {
 		return 'orange'
 	}	
 
+	const descendingComparator = (a, b, orderBy) => {
+		let first = a[orderBy]
+		let second = b[orderBy]
+		const conv = {
+			days: '1',
+			weeks: '7',
+			months: '30'
+		}
+		if (orderBy === 'frequency') {
+			first *= conv[a['period']]
+			second *= conv[b['period']]
+		}
+		if (second < first) {
+			return -1
+		}
+		if (second > first) {
+			return 1
+		}
+		return 0
+	}
+	  
+	const getComparator = (order, orderBy) => {
+		return order === 'desc'
+			? (a, b) => descendingComparator(a, b, orderBy)
+			: (a, b) => -descendingComparator(a, b, orderBy)
+	}
+	  
+	const stableSort = (array, comparator) => {
+		const stabilizedThis = array.map((el, index) => [el, index])
+		stabilizedThis.sort((a, b) => {
+			const order = comparator(a[0], b[0])
+			if (order !== 0) return order
+			return a[1] - b[1]
+		})
+		return stabilizedThis.map((el) => el[0])
+	}
+
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Status</h1>
@@ -115,16 +152,34 @@ export default function Status(props) {
 						<TableHead>
 							<TableRow>
 								<TableCell style={{width: 30}}/>
-								<TableCell>Task Number</TableCell>
-								<TableCell>Command</TableCell>
-								<TableCell align="right">Frequency</TableCell>
+								<TableCell>
+									Task Number
+									<TableSortLabel active direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
+										setOrder(order === 'asc' ? 'desc' : 'asc')
+										setOrderBy('number')	
+									}} />	
+								</TableCell>
+								<TableCell>
+									Command
+									<TableSortLabel active direction={order} active={orderBy === 'Command'} onClick={() => { 
+										setOrder(order === 'asc' ? 'desc' : 'asc')
+										setOrderBy('command')
+									}} />		
+								</TableCell>
+								<TableCell align="right">
+									Frequency
+									<TableSortLabel active direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
+										setOrder(order === 'asc' ? 'desc' : 'asc')
+										setOrderBy('frequency')	
+									}} />
+								</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
 								{authed && <TableCell align="right" style={{width: 30}}>Notifications</TableCell>}
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{
-								tasks.map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
+								stableSort(tasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
 							}
 						</TableBody>
 					</Table>
