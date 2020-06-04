@@ -1,4 +1,6 @@
 import React from 'react';
+import gql from 'graphql-tag'
+import moment from 'moment'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -6,21 +8,16 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import moment from 'moment'
 import Chip from '@material-ui/core/Chip';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import Snackbar from '@material-ui/core/Snackbar'
 import StatusRow from './StatusRow'
-
 import Dialog from '@material-ui/core/Dialog';
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-
 import { addTask, addExecution } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
-import gql from 'graphql-tag'
-
-import Snackbar from '@material-ui/core/Snackbar'
 
 const retrieveExecutionsSubscription = gql`
     subscription {
