@@ -126,25 +126,27 @@ const Upload = props => {
 					onChange={e => setNewTaskFrequency(e.target.value)}
 					type="number"
 					placeholder="frequency"
+					error={snackBarErrorShow && newTaskFrequency <= 0}
 				/>
 				<NativeSelect style={{backgroundColor: '#E0E0E0'}} value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
 					<option value="days">days</option>
 					<option value="weeks">weeks</option>
 					<option value="months">months</option>
 				</NativeSelect>
-				<Button variant="contained" onClick={() => props.uploadSingleTask({ 
-					number: newTaskNumber, 
-					command: newTaskCommand, 
-					frequency: 
-					newTaskFrequency, 
-					period: newTaskPeriod 
-				}).then(({data}) => {	
-					if (isAdmin) {
-						dispatch(addTask(data.uploadSingleTask))
-					} else {
-						setSnackBarFeedbackShow(true)
-					}
-				}).catch(error => setSnackBarErrorShow(true))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
+				<Button variant="contained" onClick={() => {
+					props.uploadSingleTask({ 
+						number: newTaskNumber, 
+						command: newTaskCommand, 
+						frequency: newTaskFrequency, 
+						period: newTaskPeriod 
+					}).then(({data}) => {	
+						if (isAdmin) {
+							dispatch(addTask(data.uploadSingleTask))
+						} else {
+							setSnackBarFeedbackShow(true)
+						}
+					}).catch(error => setSnackBarErrorShow(true))
+				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
