@@ -48,13 +48,15 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     }
     const fullUser = await prisma.user({id: user.id})
     
-    if (!fullUser.isAdmin) {
-        throw new Error('Incorrect Privileges')
-    }
-    
     try {
         myTasks = JSON.parse(args.tasks)   
         const promises = myTasks.tasks.map(async task => {
+            if (task.frequency === 0) {
+                throw new Error('Frequency must not be 0')
+            }
+            if (!['days', 'weeks', 'months'].includes(task.period)) {
+                throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+            }
             const result = await prisma.createTask({
                 author: { connect: { id: user.id } },
                 approved: fullUser.isAdmin,
@@ -69,8 +71,7 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
         return Promise.all(promises)
     }
     catch(e) {
-        console.log("Unexpected Input")
-        return []
+        throw new Error('Expected a JSON file')
     }
     
 }
@@ -81,6 +82,13 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
     }
 
     const fullUser = await prisma.user({id: user.id})
+
+    if (frequency === 0) {
+        throw new Error('Frequency must not be 0')
+    }
+    if (!['days', 'weeks', 'months'].includes(period)) {
+        throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+    }
 
     return prisma.createTask({
         author: { connect: { id: user.id } },

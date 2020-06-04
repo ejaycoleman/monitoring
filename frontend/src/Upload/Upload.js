@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup';
+import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 
 import { addTask } from '../actions'
@@ -54,7 +55,9 @@ const Upload = props => {
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0);	
 	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
-	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
+	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days");	
+	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
+	const [ snackBarErrorShow, setSnackBarErrorShow] = useState(false)
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch();
@@ -94,8 +97,10 @@ const Upload = props => {
 						data.uploadTasksFile.map(task => {
 							dispatch(addTask(task))
 						})
+					} else {
+						setSnackBarFeedbackShow(true)
 					}
-				}).catch(error => {console.log(error)})}>UPLOAD</Button>	
+				}).catch(error => setSnackBarErrorShow(true))}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
@@ -123,7 +128,6 @@ const Upload = props => {
 					placeholder="frequency"
 				/>
 				<NativeSelect style={{backgroundColor: '#E0E0E0'}} value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
-					<option value="hours">hours</option>
 					<option value="days">days</option>
 					<option value="weeks">weeks</option>
 					<option value="months">months</option>
@@ -135,9 +139,25 @@ const Upload = props => {
 					newTaskFrequency, 
 					period: newTaskPeriod 
 				}).then(({data}) => {	
-					isAdmin && dispatch(addTask(data.uploadSingleTask))
-				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
+					if (isAdmin) {
+						dispatch(addTask(data.uploadSingleTask))
+					} else {
+						setSnackBarFeedbackShow(true)
+					}
+				}).catch(error => setSnackBarErrorShow(true))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarFeedbackShow}
+				onClose={() => setSnackBarFeedbackShow(false)}
+				message="Requested ✅"
+			/>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarErrorShow}
+				onClose={() => setSnackBarErrorShow(false)}
+				message="⚠️ There was an error"
+			/>
 		</div>
 	) 
 }
