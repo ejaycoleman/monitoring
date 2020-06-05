@@ -23,7 +23,7 @@ const uploadFileMutation = gql`
 `
 
 const createSingleTask = gql`
-    mutation uploadSingleTask($number: Int!, $command: String!, $frequency: Int!, $period: String!) {
+    mutation uploadSingleTask($number: Int!, $command: String!, $frequency: Int!, $period: Period!) {
         uploadSingleTask(number: $number, command: $command, frequency: $frequency, period: $period) {
             number,
             command,

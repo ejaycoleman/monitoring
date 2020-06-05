@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import FormGroup from '@material-ui/core/FormGroup';
-import { withStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import NativeSelect from '@material-ui/core/NativeSelect'
+import FormGroup from '@material-ui/core/FormGroup'
+import Snackbar from '@material-ui/core/Snackbar'
+import { withStyles } from '@material-ui/core/styles'
 
 import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,7 +28,7 @@ const theme = {
 	base0D: '#66d9ef',
 	base0E: '#ae81ff',
 	base0F: '#cc6633'
-};
+}
 
 const CssTextField = withStyles({
 	root: {
@@ -47,17 +48,19 @@ const CssTextField = withStyles({
 		}
 	  },
 	},
-  })(TextField);
+  })(TextField)
 
 const Upload = props => {
-	const [ tasks, setTasks ] = useState("");		
-	const [ newTaskNumber, setNewTaskNumber ] = useState(0);	
-	const [ newTaskCommand, setNewTaskCommand ] = useState("");	
-	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0);			
-	const [ newTaskPeriod, setNewTaskPeriod ] = useState("hours");	
+	const [ jsonFile, setJsonFile ] = useState('')
+	const [ newTaskNumber, setNewTaskNumber ] = useState(0)
+	const [ newTaskCommand, setNewTaskCommand ] = useState("")
+	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)		
+	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
+	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
+	const [ snackBarError, setSnackBarError] = useState("")
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
-	const dispatch = useDispatch();
+	const dispatch = useDispatch()
 
 	useEffect(() =>{
 		if (props.tasks) {
@@ -76,26 +79,38 @@ const Upload = props => {
 			})
 		}
 	}, [props.tasks, dispatch, reduxTasks])
+
+	const readFileUploaded = file => {
+		const fileReader = new FileReader()
+		fileReader.onloadend = (e) => {
+			const content = fileReader.result
+			setJsonFile(content)
+		}
+		fileReader.readAsText(file)
+	}
 	
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Upload JSON</h1>
 			<div className="flex flex-column">
 			<FormGroup row>
-				<CssTextField
-					variant="outlined"
-					value={tasks}
-					onChange={e => setTasks(e.target.value)}
-					type="text"
-					placeholder="Enter the task json file"
-				/>
-				<Button variant="contained" onClick={() => props.uploadMutation({ tasks }).then(({data}) => {
-					if (isAdmin) {
-						data.uploadTasksFile.map(task => {
-							dispatch(addTask(task))
-						})
+				<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
+				<Button variant="contained" onClick={() =>	{
+					try {
+						JSON.parse(jsonFile)
+					} catch(e) {
+						setSnackBarError("Invalid JSON file")
+						return false
 					}
-				}).catch(error => {console.log(error)})}>UPLOAD</Button>	
+					props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
+						if (isAdmin) {
+							data.uploadTasksFile.map(task => {
+								dispatch(addTask(task))
+							})
+						} else {
+							setSnackBarFeedbackShow(true)
+						}
+					}).catch(error => setSnackBarError("Invalid JSON file"))}}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
@@ -106,6 +121,7 @@ const Upload = props => {
 					onChange={e => setNewTaskNumber(e.target.value)}
 					type="number"
 					placeholder="number"
+					error={snackBarError === 'Task number should be unique'}
 				/>
 				<CssTextField 
 					variant="outlined"
@@ -114,6 +130,7 @@ const Upload = props => {
 					onChange={e => setNewTaskCommand(e.target.value)}
 					type="text"
 					placeholder="command"
+					error={snackBarError === 'Command cannot be empty'}
 				/>
 				<CssTextField
 					variant="outlined"
@@ -121,23 +138,53 @@ const Upload = props => {
 					onChange={e => setNewTaskFrequency(e.target.value)}
 					type="number"
 					placeholder="frequency"
+					error={snackBarError === 'Frequency needs to be postitive integer'}
 				/>
 				<NativeSelect style={{backgroundColor: '#E0E0E0'}} value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
-					<option value="hours">hours</option>
 					<option value="days">days</option>
 					<option value="weeks">weeks</option>
 					<option value="months">months</option>
 				</NativeSelect>
-				<Button variant="contained" onClick={() => props.uploadSingleTask({ 
-					number: newTaskNumber, 
-					command: newTaskCommand, 
-					frequency: 
-					newTaskFrequency, 
-					period: newTaskPeriod 
-				}).then(({data}) => {	
-					isAdmin && dispatch(addTask(data.uploadSingleTask))
-				}).catch(error => console.log(error))}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
+				<Button variant="contained" onClick={() => {
+					if (reduxTasks.filter(task => task.number === parseInt(newTaskNumber)).length !== 0) {
+						setSnackBarError("Task number should be unique")
+						return
+					}
+					if (newTaskCommand === '') {
+						setSnackBarError("Command cannot be empty")
+						return
+					}
+					if (newTaskFrequency <= 0) {
+						setSnackBarError("Frequency needs to be postitive integer")
+						return
+					}
+					props.uploadSingleTask({ 
+						number: newTaskNumber, 
+						command: newTaskCommand, 
+						frequency: newTaskFrequency, 
+						period: newTaskPeriod 
+					}).then(({data}) => {	
+						if (isAdmin) {
+							dispatch(addTask(data.uploadSingleTask))
+						} else {
+							setSnackBarFeedbackShow(true)
+						}
+					}).catch(error => {
+						setSnackBarError("Invalid upload")})
+				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarFeedbackShow}
+				onClose={() => setSnackBarFeedbackShow(false)}
+				message="Requested ✅"
+			/>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={snackBarError}
+				onClose={() => setSnackBarError("")}
+				message={`⚠️ ${snackBarError}`}
+			/>
 		</div>
 	) 
 }
