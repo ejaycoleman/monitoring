@@ -51,6 +51,9 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     try {
         myTasks = JSON.parse(args.tasks)   
         const promises = myTasks.tasks.map(async task => {
+            if (task.command === '') {
+                throw new Error('Command must not be empty')
+            }
             if (task.frequency === 0) {
                 throw new Error('Frequency must not be 0')
             }
@@ -83,6 +86,9 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
 
     const fullUser = await prisma.user({id: user.id})
 
+    if (command === '') {
+        throw new Error('Command must not be empty')
+    }
     if (frequency === 0) {
         throw new Error('Frequency must not be 0')
     }
