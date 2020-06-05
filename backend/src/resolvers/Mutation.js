@@ -119,6 +119,19 @@ async function approveTask(parent, { id }, {user, prisma}) {
     return prisma.updateTask({where: {id}, data: {approved: true}})
 }
 
+async function rejectTask(parent, { id }, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+    const fullUser = await prisma.user({id: user.id})
+    
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    return prisma.deleteTask({id})
+}
+
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -160,6 +173,7 @@ module.exports = {
     uploadTasksFile,
     uploadSingleTask,
     approveTask,
+    rejectTask,
     toggleNotification,
     setPreferences
 }

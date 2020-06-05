@@ -9,6 +9,7 @@ type Mutation {
   uploadTasksFile(tasks: String!): [Task]
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
   approveTask(id: ID!): Task
+  rejectTask(id: ID!): Task
   toggleNotification(taskNumber: String!): TaskNotification
   setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
 }
