@@ -107,7 +107,7 @@ export default function StatusRow(props) {
 				message="⚠️ Emails not set up currently"
 			/>
 			<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-				<TaskSettingsModal close={() => setModalOpen(false)}/>
+				<TaskSettingsModal task={task} close={() => setModalOpen(false)}/>
 			</Dialog>
 		</React.Fragment>
  	);
