@@ -175,6 +175,7 @@ export default function Status(props) {
 								</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
 								{authed && <TableCell align="right" style={{width: 30}}>Notifications</TableCell>}
+								{authed && <TableCell align="right" style={{width: 30}}>Settings</TableCell>}
 							</TableRow>
 						</TableHead>
 						<TableBody>

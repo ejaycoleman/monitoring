@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import Dialog from '@material-ui/core/Dialog'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import moment from 'moment'
@@ -11,9 +12,11 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { useSelector } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
+import TaskSettingsModal from '../TaskSettingsModal'
 
 const useRowStyles = makeStyles({
 	root: {
@@ -29,6 +32,9 @@ export default function StatusRow(props) {
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
+
+	const [modalOpen, setModalOpen] = React.useState(false)
+
 	const { authed } = useSelector(state => state.isLogged)
 	const classes = useRowStyles();
 
@@ -72,20 +78,25 @@ export default function StatusRow(props) {
 					}
 				</TableCell>
 				{authed && 
-					<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
-						onClick={() => 
-							toggleNotification(task.number.toString())
-							.then(() => {
-								setNotifications(!notifications)
-								!notifications && setSnackBarErrorShow(true)
-							})
-							.catch(e => console.log(e))}>
-								{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
-					</TableCell>
+					<React.Fragment>
+						<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} 
+							onClick={() => 
+								toggleNotification(task.number.toString())
+								.then(() => {
+									setNotifications(!notifications)
+									!notifications && setSnackBarErrorShow(true)
+								})
+								.catch(e => console.log(e))}>
+									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
+						</TableCell>
+						<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
+							<SettingsIcon />
+						</TableCell>
+					</React.Fragment>
 				}
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
@@ -95,6 +106,9 @@ export default function StatusRow(props) {
 				onClose={() => setSnackBarErrorShow(false)}
 				message="⚠️ Emails not set up currently"
 			/>
+			<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+				<TaskSettingsModal close={() => setModalOpen(false)}/>
+			</Dialog>
 		</React.Fragment>
  	);
 }
