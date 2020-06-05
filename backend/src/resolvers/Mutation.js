@@ -124,11 +124,16 @@ async function rejectTask(parent, { id }, {user, prisma}) {
         throw new Error('Not Authenticated')
     }
     const fullUser = await prisma.user({id: user.id})
+    const fullTask = await prisma.task({id: user.id})
     
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
     }
 
+    if (fullTask.approved) {
+        throw new Error('Task already approved')
+    }
+    
     return prisma.deleteTask({id})
 }
 
