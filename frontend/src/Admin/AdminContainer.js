@@ -36,6 +36,14 @@ const approveTaskMutation = gql`
     }
 `
 
+const rejectTaskMutation = gql`
+    mutation rejectTask($id: ID!) {
+        rejectTask(id: $id) {
+            number
+        }
+    }
+`
+
 const AdminContainer =
     compose(
         graphql(retreiveTasks, {
@@ -58,6 +66,18 @@ const AdminContainer =
                 }
             })
         }),
+        graphql(rejectTaskMutation, {
+            props: ({ loading, mutate, ownProps }) => ({
+                loading: loading || ownProps.loading,
+                rejectTask: ({id}) => {
+                    return mutate({
+                        variables: {
+                            id
+                        }
+                    })
+                }
+            })
+        })
     )(Admin)
 
 export default AdminContainer

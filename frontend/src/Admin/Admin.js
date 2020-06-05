@@ -32,6 +32,7 @@ const Admin = props => {
                                 <TableCell>Period</TableCell>
                                 <TableCell>Author</TableCell>
                                 <TableCell style={{width: '10%'}} align="right"></TableCell>
+                                <TableCell style={{width: '10%'}} align="right"></TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -61,6 +62,15 @@ const Admin = props => {
                                             setTasks(values)
                                             dispatch(addTask(data.approveTask))
                                         }).catch(error => console.log(error))}>Approve</Button>
+                                    </TableCell>
+                                    <TableCell style={{width: '10%'}} align="right">
+                                        <Button variant="contained" onClick={() => props.rejectTask({ 
+                                            id: row.id
+                                        }).then(({data}) => {
+                                            let values = [...tasks]
+                                            values.splice(index, 1)
+                                            setTasks(values)
+                                        }).catch(error => console.log(error))}>Reject</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
