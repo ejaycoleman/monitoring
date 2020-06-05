@@ -57,7 +57,7 @@ const Upload = props => {
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)		
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
-	const [ snackBarErrorShow, setSnackBarErrorShow] = useState(false)
+	const [ snackBarError, setSnackBarError] = useState("")
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
@@ -99,7 +99,7 @@ const Upload = props => {
 					try {
 						JSON.parse(jsonFile)
 					} catch(e) {
-						console.log('Invalid JSON uploaded')
+						setSnackBarError("Invalid JSON file")
 						return false
 					}
 					props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
@@ -110,7 +110,7 @@ const Upload = props => {
 						} else {
 							setSnackBarFeedbackShow(true)
 						}
-					}).catch(error => setSnackBarErrorShow(true))}}>UPLOAD</Button>	
+					}).catch(error => setSnackBarError("Invalid JSON file"))}}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
@@ -121,6 +121,7 @@ const Upload = props => {
 					onChange={e => setNewTaskNumber(e.target.value)}
 					type="number"
 					placeholder="number"
+					error={snackBarError === 'Task number should be unique'}
 				/>
 				<CssTextField 
 					variant="outlined"
@@ -129,6 +130,7 @@ const Upload = props => {
 					onChange={e => setNewTaskCommand(e.target.value)}
 					type="text"
 					placeholder="command"
+					error={snackBarError === 'Command cannot be empty'}
 				/>
 				<CssTextField
 					variant="outlined"
@@ -136,7 +138,7 @@ const Upload = props => {
 					onChange={e => setNewTaskFrequency(e.target.value)}
 					type="number"
 					placeholder="frequency"
-					error={snackBarErrorShow && newTaskFrequency <= 0}
+					error={snackBarError === 'Frequency needs to be postitive integer'}
 				/>
 				<NativeSelect style={{backgroundColor: '#E0E0E0'}} value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
 					<option value="days">days</option>
@@ -144,6 +146,18 @@ const Upload = props => {
 					<option value="months">months</option>
 				</NativeSelect>
 				<Button variant="contained" onClick={() => {
+					if (reduxTasks.filter(task => task.number === parseInt(newTaskNumber)).length !== 0) {
+						setSnackBarError("Task number should be unique")
+						return
+					}
+					if (newTaskCommand === '') {
+						setSnackBarError("Command cannot be empty")
+						return
+					}
+					if (newTaskFrequency <= 0) {
+						setSnackBarError("Frequency needs to be postitive integer")
+						return
+					}
 					props.uploadSingleTask({ 
 						number: newTaskNumber, 
 						command: newTaskCommand, 
@@ -155,7 +169,8 @@ const Upload = props => {
 						} else {
 							setSnackBarFeedbackShow(true)
 						}
-					}).catch(error => setSnackBarErrorShow(true))
+					}).catch(error => {
+						setSnackBarError("Invalid upload")})
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
 			<Snackbar
@@ -166,9 +181,9 @@ const Upload = props => {
 			/>
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarErrorShow}
-				onClose={() => setSnackBarErrorShow(false)}
-				message="⚠️ There was an error"
+				open={snackBarError}
+				onClose={() => setSnackBarError("")}
+				message={`⚠️ ${snackBarError}`}
 			/>
 		</div>
 	) 
