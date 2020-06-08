@@ -9,6 +9,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 
+import Dialog from '@material-ui/core/Dialog'
 import { modifyTask } from '../../actions'
 import { useDispatch } from 'react-redux'
 
@@ -19,6 +20,8 @@ export default function TaskSettingsModal(props) {
 	const [frequency, setFrequency] = React.useState(task.frequency);
 	const [period, setPeriod] = React.useState(task.period);
 	const [active, setActive] = React.useState(true);
+
+	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
 
 	const dispatch = useDispatch()
 
@@ -55,7 +58,7 @@ export default function TaskSettingsModal(props) {
 					name="checkedB"
 					inputProps={{ 'aria-label': 'primary checkbox' }}
 				/>
-				<Button style={{float: 'right'}} onClick={() => close()} variant="contained" color="secondary">
+				<Button style={{float: 'right'}} onClick={() => setDeleteConfirmDialog(true)} variant="contained" color="secondary">
 					Delete Task
 				</Button>
 			</DialogContent>
@@ -75,6 +78,27 @@ export default function TaskSettingsModal(props) {
 					</Button>
 				)}
 			</DialogActions>
+			<Dialog
+				open={deleteConfirmDialog}
+				onClose={() => setDeleteConfirmDialog(false)}
+			>
+				<DialogContent>
+					<DialogContentText>
+						Are you sure you want to delete task #{task.number}?
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setDeleteConfirmDialog(false)} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={() => {
+						setDeleteConfirmDialog(false)
+						close()	
+					}} variant="contained" color="secondary">
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</React.Fragment>
 	)
 }
