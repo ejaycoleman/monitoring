@@ -1,2 +1,2 @@
-import TaskSettingsModal from './TaskSettingsModal'
-export default TaskSettingsModal;
+import TaskSettingsModalContainer from './TaskSettingsModalContainer'
+export default TaskSettingsModalContainer;

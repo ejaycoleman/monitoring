@@ -12,6 +12,7 @@ type Mutation {
   rejectTask(id: ID!): Task
   toggleNotification(taskNumber: String!): TaskNotification
   setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
+  modifyTask(number: Int!, command: String, frequency: Int, period: Period): Task
 }
 
 type User {

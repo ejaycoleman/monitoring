@@ -59,7 +59,10 @@ export default function TaskSettingsModal(props) {
 					Cancel
 				</Button>
 				{ (command !== task.command || frequency !== task.frequency || period !== task.period || active !== true) && (
-					<Button onClick={() => close()}>
+					<Button onClick={() => {
+						console.log(task)
+						props.modifyTask(task.number, command, frequency, period).then(() => console.log("DONE")).catch(e => console.log(e))
+					}}>
 						Apply
 					</Button>
 				)}
