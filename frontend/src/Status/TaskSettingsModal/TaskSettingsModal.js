@@ -9,6 +9,9 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 
+import { modifyTask } from '../../actions'
+import { useDispatch } from 'react-redux'
+
 export default function TaskSettingsModal(props) {
 	const { close, task } = props
 
@@ -16,6 +19,8 @@ export default function TaskSettingsModal(props) {
 	const [frequency, setFrequency] = React.useState(task.frequency);
 	const [period, setPeriod] = React.useState(task.period);
 	const [active, setActive] = React.useState(true);
+
+	const dispatch = useDispatch()
 
 	return (
 		<React.Fragment>
@@ -61,7 +66,10 @@ export default function TaskSettingsModal(props) {
 				{ (command !== task.command || frequency !== task.frequency || period !== task.period || active !== true) && (
 					<Button onClick={() => {
 						console.log(task)
-						props.modifyTask(task.number, command, frequency, period).then(() => console.log("DONE")).catch(e => console.log(e))
+						props.modifyTask(task.number, command, frequency, period).then(({data: { modifyTask: {number, command, frequency, period} }}) => {
+							dispatch(modifyTask({number, command, frequency, period}))
+							close()
+						}).catch(e => console.log(e))
 					}}>
 						Apply
 					</Button>
