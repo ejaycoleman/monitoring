@@ -24,6 +24,16 @@ const tasks = (state = [], action) => {
             existingTask.period = action.value.period
 
             return tasks
+        case 'REMOVE_TASK':
+            tasks = state.map(a => ({...a}))
+            existingTask = tasks.findIndex(({number})=> number === action.value)
+
+            if (existingTask === -1) {
+                return state
+            }
+
+            tasks.splice(existingTask, 1)
+            return tasks
         default:
             return state
     }

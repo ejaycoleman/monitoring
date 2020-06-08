@@ -10,7 +10,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 
 import Dialog from '@material-ui/core/Dialog'
-import { modifyTask } from '../../actions'
+import { modifyTask, removeTask } from '../../actions'
 import { useDispatch } from 'react-redux'
 
 export default function TaskSettingsModal(props) {
@@ -92,6 +92,7 @@ export default function TaskSettingsModal(props) {
 						Cancel
 					</Button>
 					<Button onClick={() => {
+						dispatch(removeTask(task.number))
 						props.removeTask(task.number).then(data => console.log(data)).catch(e => console.log(e))
 						setDeleteConfirmDialog(false)
 						close()	
