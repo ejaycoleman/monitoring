@@ -45,7 +45,9 @@ export default function StatusRow(props) {
 			if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
 				setRanInTime(true)
 				return
-			} 
+			} else {
+				setRanInTime(false)
+			}
 		})
 	})
 
