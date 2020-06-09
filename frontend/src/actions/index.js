@@ -26,3 +26,7 @@ export const removeTask = value => ({
     type: 'REMOVE_TASK',
     value
 })
+
+export const resetTasks = () => ({
+    type: 'RESET_TASKS'
+})

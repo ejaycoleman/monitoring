@@ -54,7 +54,7 @@ const Upload = props => {
 	const [ jsonFile, setJsonFile ] = useState('')
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0)
 	const [ newTaskCommand, setNewTaskCommand ] = useState("")
-	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)		
+	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
 	const [ snackBarError, setSnackBarError] = useState("")
@@ -63,21 +63,7 @@ const Upload = props => {
 	const dispatch = useDispatch()
 
 	useEffect(() =>{
-		if (props.tasks) {
-			props.tasks.map(task => {
-				let found = false
-				reduxTasks.map(currentTask => {
-					if (task.number === currentTask.number) {
-						found = true
-					}
-				})
-
-				if (found === false) {
-					dispatch(addTask(task))
-				}
-				
-			})
-		}
+		props.tasks && props.tasks.map(task => dispatch(addTask(task)))
 	}, [props.tasks, dispatch, reduxTasks])
 
 	const readFileUploaded = file => {

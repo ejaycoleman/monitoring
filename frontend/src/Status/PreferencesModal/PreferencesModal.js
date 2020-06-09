@@ -55,7 +55,7 @@ export default function PreferencesModal(props) {
 					Cancel
 				</Button>
 				<Button onClick={() => {
-					const multiplier = {days: 1, weeks: 7, months: 29}
+					const multiplier = {days: 1, weeks: 7, months: 30}
 					if (parseInt(absoluteFreq) * multiplier[absolutePeriod] < parseInt(idealFreq) * multiplier[idealPeriod]) {
 						setSnackBarErrorShow(true)
 						return

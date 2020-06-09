@@ -16,9 +16,8 @@ import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-import { addTask, addExecution } from '../actions'
+import { addTask, addExecution, resetTasks } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
-
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -32,13 +31,12 @@ const retrieveExecutionsSubscription = gql`
 `
 
 export default function Status(props) {
-	const { subscribeToMore } = props
+	const { subscribeToMore, refetch } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
-	const [tasks, setTasks] = React.useState([])
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [order, setOrder] = React.useState('asc')
-  	const [orderBy, setOrderBy] = React.useState('Task Number')
+  	const [orderBy, setOrderBy] = React.useState('number')
 
 	const { authed } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks)
@@ -53,29 +51,17 @@ export default function Status(props) {
 	})
 
 	React.useEffect(() => {
-		if (props.tasks) {
-			props.tasks.map(task => {
-				let found = false
-				reduxTasks.map(currentTask => {
-					if (task.number === currentTask.number) {
-						found = true
-					}
-				})
-
-				if (found === false) {
-					dispatch(addTask(task))
-				}
-				
+		if (reduxTasks.length === 0) {
+			refetch().then(({data}) => {
+				data.tasks.length === 0 && dispatch(resetTasks())
+				data.tasks && data.tasks.map(task => dispatch(addTask(task)))
 			})
 		}
 
 		const currentTasksInStore = store.getState().tasks
-		setTasks(currentTasksInStore)
 		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
 
-		setTasks(store.getState().tasks)
 		const unsubscribe = store.subscribe(() => {
-			setTasks(currentTasksInStore)
 			setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
 		})
 
@@ -109,14 +95,10 @@ export default function Status(props) {
 	const descendingComparator = (a, b, orderBy) => {
 		let first = a[orderBy]
 		let second = b[orderBy]
-		const conv = {
-			days: '1',
-			weeks: '7',
-			months: '30'
-		}
+		const multiplier = {days: 1, weeks: 7, months: 30}
 		if (orderBy === 'frequency') {
-			first *= conv[a['period']]
-			second *= conv[b['period']]
+			first *= multiplier[a['period']]
+			second *= multiplier[b['period']]
 		}
 		if (second < first) {
 			return -1
@@ -180,7 +162,7 @@ export default function Status(props) {
 						</TableHead>
 						<TableBody>
 							{
-								stableSort(tasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
+								stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
 							}
 						</TableBody>
 					</Table>

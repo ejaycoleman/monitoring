@@ -68,7 +68,6 @@ export default function TaskSettingsModal(props) {
 				</Button>
 				{(command !== task.command || frequency !== task.frequency || period !== task.period || active !== true) && (
 					<Button onClick={() => {
-						console.log(task)
 						props.modifyTask(task.number, command, frequency, period).then(({data: { modifyTask: {number, command, frequency, period} }}) => {
 							dispatch(modifyTask({number, command, frequency, period}))
 							close()
@@ -93,7 +92,7 @@ export default function TaskSettingsModal(props) {
 					</Button>
 					<Button onClick={() => {
 						dispatch(removeTask(task.number))
-						props.removeTask(task.number).then(data => console.log(data)).catch(e => console.log(e))
+						props.removeTask(task.number).then(data => true).catch(e => console.log(e))
 						setDeleteConfirmDialog(false)
 						close()	
 					}} variant="contained" color="secondary">
