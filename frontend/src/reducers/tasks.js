@@ -2,6 +2,9 @@ const tasks = (state = [], action) => {
     let tasks, existingTask
     switch (action.type) {
         case 'ADD_TASK':
+            if (state.filter(task => task.number === action.value.number).length !== 0) {
+                return state
+            }
             return [...state, action.value]
         case 'ADD_EXECUTION':
             tasks = [...state]
