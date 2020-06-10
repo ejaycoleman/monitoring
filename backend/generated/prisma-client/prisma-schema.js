@@ -29,7 +29,7 @@ type BatchPayload {
 
 type Execution {
   id: ID!
-  task: Task
+  task: Task!
   datetime: Int!
 }
 
@@ -41,7 +41,7 @@ type ExecutionConnection {
 
 input ExecutionCreateInput {
   id: ID
-  task: TaskCreateOneWithoutExecutionsInput
+  task: TaskCreateOneWithoutExecutionsInput!
   datetime: Int!
 }
 
@@ -119,7 +119,7 @@ input ExecutionSubscriptionWhereInput {
 }
 
 input ExecutionUpdateInput {
-  task: TaskUpdateOneWithoutExecutionsInput
+  task: TaskUpdateOneRequiredWithoutExecutionsInput
   datetime: Int
 }
 
@@ -834,12 +834,10 @@ input TaskUpdateManyWithWhereNestedInput {
   data: TaskUpdateManyDataInput!
 }
 
-input TaskUpdateOneWithoutExecutionsInput {
+input TaskUpdateOneRequiredWithoutExecutionsInput {
   create: TaskCreateWithoutExecutionsInput
   update: TaskUpdateWithoutExecutionsDataInput
   upsert: TaskUpsertWithoutExecutionsInput
-  delete: Boolean
-  disconnect: Boolean
   connect: TaskWhereUniqueInput
 }
 
