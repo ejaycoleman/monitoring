@@ -24,7 +24,7 @@ const useRowStyles = makeStyles({
 			borderBottom: 'unset',
 		},
 	},
-});
+})
 
 export default function StatusRow(props) {
 	const { task, toggleNotification } = props;
@@ -41,14 +41,13 @@ export default function StatusRow(props) {
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
 
 	React.useEffect(() => {
+		let ranInTime = false
 		task.executions.forEach(execution => {
 			if (!moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(execution.datetime))) {
-				setRanInTime(true)
-				return
-			} else {
-				setRanInTime(false)
+				ranInTime = true
 			}
 		})
+		setRanInTime(ranInTime)
 	})
 
 	return (

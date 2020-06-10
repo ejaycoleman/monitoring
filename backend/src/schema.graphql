@@ -57,6 +57,16 @@ type Execution {
 type Subscription {
   newExecution: Execution
   newTask: Task
+  taskDeleted: TaskPreviousValues
+}
+
+type TaskPreviousValues {
+  id: ID!
+  approved: Boolean
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
 }
 
 type TaskNotification {

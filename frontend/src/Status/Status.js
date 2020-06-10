@@ -16,7 +16,7 @@ import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-import { addTask, addExecution, resetTasks } from '../actions'
+import { addTask, addExecution, resetTasks, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 const retrieveExecutionsSubscription = gql`
@@ -30,8 +30,16 @@ const retrieveExecutionsSubscription = gql`
     }
 `
 
+const taskDeletedSubscription = gql`
+    subscription {
+        taskDeleted {
+			number
+		}
+    }
+`
+
 export default function Status(props) {
-	const { subscribeToMore, refetch } = props
+	const { tasks, subscribeToMore, refetch } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
@@ -50,14 +58,18 @@ export default function Status(props) {
 		}
 	})
 
-	React.useEffect(() => {
-		if (reduxTasks.length === 0) {
-			refetch().then(({data}) => {
-				data.tasks.length === 0 && dispatch(resetTasks())
-				data.tasks && data.tasks.map(task => dispatch(addTask(task)))
-			})
+	subscribeToMore({
+		document: taskDeletedSubscription,
+		updateQuery: (prev, { subscriptionData: { data: { taskDeleted: { number }} } }) => {
+			dispatch(removeTask(number))
 		}
+	})
 
+	React.useEffect(() => {
+		tasks && tasks.map(task => dispatch(addTask(task)))
+	}, [tasks])
+
+	React.useEffect(() => {
 		const currentTasksInStore = store.getState().tasks
 		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
 

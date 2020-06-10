@@ -6,7 +6,7 @@ import NativeSelect from '@material-ui/core/NativeSelect'
 import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 import { withStyles } from '@material-ui/core/styles'
-
+import { store } from '../index'
 import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -64,6 +64,10 @@ const Upload = props => {
 
 	useEffect(() =>{
 		props.tasks && props.tasks.map(task => dispatch(addTask(task)))
+		const unsubscribe = store.subscribe(() => true)
+		return function cleanup() {
+			unsubscribe()
+		}
 	}, [props.tasks, dispatch, reduxTasks])
 
 	const readFileUploaded = file => {
@@ -167,7 +171,7 @@ const Upload = props => {
 			/>
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarError}
+				open={!!snackBarError}
 				onClose={() => setSnackBarError("")}
 				message={`⚠️ ${snackBarError}`}
 			/>
