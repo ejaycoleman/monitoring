@@ -16,13 +16,13 @@ type Task {
   command: String!,
   frequency: Int!,
   period: String!,
-  executions: [Execution!],
+  executions: [Execution!] @relation(name: "TaskExecution", onDelete: CASCADE, link: TABLE),
   notifications: [TaskNotification]
 }
 
 type Execution {
   id: ID! @id,
-  task: Task,
+  task: Task! @relation(name: "TaskExecution", onDelete: SET_NULL),
   datetime: Int!
 }
 

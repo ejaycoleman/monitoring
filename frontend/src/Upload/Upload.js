@@ -6,7 +6,7 @@ import NativeSelect from '@material-ui/core/NativeSelect'
 import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 import { withStyles } from '@material-ui/core/styles'
-
+import { store } from '../index'
 import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -54,7 +54,7 @@ const Upload = props => {
 	const [ jsonFile, setJsonFile ] = useState('')
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0)
 	const [ newTaskCommand, setNewTaskCommand ] = useState("")
-	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)		
+	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
 	const [ snackBarError, setSnackBarError] = useState("")
@@ -63,22 +63,17 @@ const Upload = props => {
 	const dispatch = useDispatch()
 
 	useEffect(() =>{
-		if (props.tasks) {
-			props.tasks.map(task => {
-				let found = false
-				reduxTasks.map(currentTask => {
-					if (task.number === currentTask.number) {
-						found = true
-					}
-				})
-
-				if (found === false) {
-					dispatch(addTask(task))
-				}
-				
-			})
+		const unsubscribe = store.subscribe(() => true)
+		return function cleanup() {
+			unsubscribe()
 		}
 	}, [props.tasks, dispatch, reduxTasks])
+
+	useEffect(() => {
+		props.refetch().then(({data: { tasks }}) => {
+			tasks && tasks.map(task => dispatch(addTask(task)))
+		})
+	}, [])
 
 	const readFileUploaded = file => {
 		const fileReader = new FileReader()
@@ -181,7 +176,7 @@ const Upload = props => {
 			/>
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarError}
+				open={!!snackBarError}
 				onClose={() => setSnackBarError("")}
 				message={`⚠️ ${snackBarError}`}
 			/>

@@ -172,6 +172,35 @@ async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFre
     }
 }
 
+async function modifyTask(parent, { number, command, frequency, period }, { user, prisma }) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    const fullUser = await prisma.user({id: user.id})
+
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    return prisma.updateTask({where: {number}, data: {command, frequency, period}})
+}
+
+async function removeTask(parent, { taskNumber }, { user, prisma }) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    const fullUser = await prisma.user({id: user.id})
+    const fullTask = await prisma.tasks({where: {number: parseInt(taskNumber)}})
+
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    return prisma.deleteTask({id: fullTask[0].id})
+}
+
 module.exports = {
     register,
     login,
@@ -180,5 +209,7 @@ module.exports = {
     approveTask,
     rejectTask,
     toggleNotification,
-    setPreferences
+    setPreferences,
+    modifyTask,
+    removeTask
 }

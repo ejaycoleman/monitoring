@@ -563,7 +563,7 @@ export interface PreferenceSubscriptionWhereInput {
 }
 
 export interface ExecutionUpdateInput {
-  task?: Maybe<TaskUpdateOneWithoutExecutionsInput>;
+  task?: Maybe<TaskUpdateOneRequiredWithoutExecutionsInput>;
   datetime?: Maybe<Int>;
 }
 
@@ -573,12 +573,10 @@ export interface UserUpdateManyMutationInput {
   password?: Maybe<String>;
 }
 
-export interface TaskUpdateOneWithoutExecutionsInput {
+export interface TaskUpdateOneRequiredWithoutExecutionsInput {
   create?: Maybe<TaskCreateWithoutExecutionsInput>;
   update?: Maybe<TaskUpdateWithoutExecutionsDataInput>;
   upsert?: Maybe<TaskUpsertWithoutExecutionsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
   connect?: Maybe<TaskWhereUniqueInput>;
 }
 
@@ -750,7 +748,7 @@ export interface ExecutionUpdateManyWithoutTaskInput {
 
 export interface ExecutionCreateInput {
   id?: Maybe<ID_Input>;
-  task?: Maybe<TaskCreateOneWithoutExecutionsInput>;
+  task: TaskCreateOneWithoutExecutionsInput;
   datetime: Int;
 }
 

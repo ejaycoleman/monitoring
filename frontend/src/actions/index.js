@@ -16,3 +16,17 @@ export const addExecution = value => ({
     type: 'ADD_EXECUTION',
     value
 })
+
+export const modifyTask = value => ({
+    type: 'MODIFY_TASK',
+    value
+})
+
+export const removeTask = value => ({
+    type: 'REMOVE_TASK',
+    value
+})
+
+export const resetTasks = () => ({
+    type: 'RESET_TASKS'
+})

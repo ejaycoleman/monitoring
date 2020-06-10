@@ -1,0 +1,2 @@
+import TaskSettingsModalContainer from './TaskSettingsModalContainer'
+export default TaskSettingsModalContainer;

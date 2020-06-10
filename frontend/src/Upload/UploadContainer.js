@@ -89,10 +89,11 @@ const UploadContainer =
             })
         }),
         graphql(retreiveTasks, {
-			props: ({ data: { loading, tasks }, ownProps }) => {
+			props: ({ data: { loading, tasks, refetch }, ownProps }) => {
 				return ({
 					tasks,
                     loading,
+                    refetch
 				})
 			},
 		})

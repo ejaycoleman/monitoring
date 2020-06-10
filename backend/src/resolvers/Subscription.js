@@ -16,7 +16,17 @@ const newTask = {
     },
 }
 
+const taskDeleted = {
+    subscribe: (parent, args, context, info) => {
+        return context.prisma.$subscribe.task({ mutation_in: ['DELETED'] }).previousValues()
+    },
+    resolve: payload => {
+        return payload
+    }
+}
+
 module.exports = {
     newExecution,
-    newTask
+    newTask,
+    taskDeleted
 }
