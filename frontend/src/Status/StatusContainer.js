@@ -45,12 +45,11 @@ const userSetExecutionPreferences = gql`
 const StatusContainer =
     compose(
         graphql(retreiveTasks, {
-            props: ({ data: { loading, tasks, subscribeToMore, refetch }, ownProps }) => {
+            props: ({ data: { loading, tasks, subscribeToMore }, ownProps }) => {
                 return ({
                     tasks,
                     loading,
-                    subscribeToMore,
-                    refetch
+                    subscribeToMore
                 })
             },
         }),

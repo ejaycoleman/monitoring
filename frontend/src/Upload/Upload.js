@@ -63,12 +63,17 @@ const Upload = props => {
 	const dispatch = useDispatch()
 
 	useEffect(() =>{
-		props.tasks && props.tasks.map(task => dispatch(addTask(task)))
 		const unsubscribe = store.subscribe(() => true)
 		return function cleanup() {
 			unsubscribe()
 		}
 	}, [props.tasks, dispatch, reduxTasks])
+
+	useEffect(() => {
+		props.refetch().then(({data: { tasks }}) => {
+			tasks && tasks.map(task => dispatch(addTask(task)))
+		})
+	}, [])
 
 	const readFileUploaded = file => {
 		const fileReader = new FileReader()

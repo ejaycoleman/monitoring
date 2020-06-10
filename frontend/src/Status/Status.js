@@ -39,7 +39,7 @@ const taskDeletedSubscription = gql`
 `
 
 export default function Status(props) {
-	const { tasks, subscribeToMore, refetch } = props
+	const { tasks, subscribeToMore } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
