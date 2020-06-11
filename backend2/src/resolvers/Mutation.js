@@ -3,16 +3,18 @@ const jwt = require('jsonwebtoken')
 
 async function register(parent, { isAdmin, email, password }, context) {
     const hashedPassword = await bcrypt.hash(password, 10)
-    const user = await context.prisma.createUser({
-        isAdmin,
-        email,
-        password: hashedPassword
+    const user = await context.prisma.user.create({
+        data: {
+            isAdmin,
+            email,
+            password: hashedPassword
+        }
     })
     return user
 }
 
 async function login(parent, {email, password}, context) {
-    const user = await context.prisma.user({email})
+    const user = await context.prisma.user.findOne({where: {email}})
 
     if (!user) {
         throw new Error("Invalid Login")
