@@ -48,7 +48,7 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
-    const fullUser = await prisma.user({id: user.id})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
     
     try {
         myTasks = JSON.parse(args.tasks)   
@@ -62,13 +62,19 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
             if (!['days', 'weeks', 'months'].includes(task.period)) {
                 throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
             }
-            const result = await prisma.createTask({
-                author: { connect: { id: user.id } },
-                approved: fullUser.isAdmin,
-                number: task.number,
-                command: task.command,
-                frequency: task.frequency,
-                period: task.period
+            const result = await prisma.task.create({
+                data: {
+                    author: { 
+                        connect: { 
+                            id: user.id 
+                        } 
+                    },
+                    approved: fullUser.isAdmin,
+                    number: task.number,
+                    command: task.command,
+                    frequency: task.frequency,
+                    period: task.period
+                }
             })
             return result        
         })
@@ -86,7 +92,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
         throw new Error('Not Authenticated')
     }
 
-    const fullUser = await prisma.user({id: user.id})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
 
     if (command === '') {
         throw new Error('Command must not be empty')
@@ -98,13 +104,15 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
         throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
     }
 
-    return prisma.createTask({
-        author: { connect: { id: user.id } },
-        approved: fullUser.isAdmin,
-        number,
-        command,
-        frequency,
-        period
+    return prisma.task.create({
+        data: {
+            author: { connect: { id: user.id } },
+            approved: fullUser.isAdmin,
+            number,
+            command,
+            frequency,
+            period
+        }
     })
 }
 
@@ -112,21 +120,21 @@ async function approveTask(parent, { id }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
-    const fullUser = await prisma.user({id: user.id})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
     
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.updateTask({where: {id}, data: {approved: true}})
+    return prisma.task.update({where: {id}, data: {approved: true}})
 }
 
 async function rejectTask(parent, { id }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
-    const fullUser = await prisma.user({id: user.id})
-    const fullTask = await prisma.task({id: user.id})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findOne({where: {id: user.id}})
     
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
@@ -136,7 +144,7 @@ async function rejectTask(parent, { id }, {user, prisma}) {
         throw new Error('Task already approved')
     }
     
-    return prisma.deleteTask({id})
+    return prisma.task.delete({where: {id}})
 }
 
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
@@ -144,18 +152,23 @@ async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
         throw new Error('Not Authenticated')
     }
 
-    const fullUser = await prisma.user({id: user.id})
-    const fullTask = await prisma.tasks({where: {number: parseInt(taskNumber)}})
-    const existing = await prisma.taskNotifications({where: {AND: [{user: fullUser}, {task: fullTask[0]}]}})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findMany({where: {number: parseInt(taskNumber)}})
+    const existing = await prisma.taskNotification.findMany({where: {AND: [{user: fullUser}, {task: fullTask[0]}]}})
+
+    console.log('------------------')
+    console.log(existing)
     
     if (existing.length === 0) {
-        return prisma.createTaskNotification({
-            user: { connect: {id: fullUser.id}}, 
-            task: { connect: {id: fullTask[0].id}}
+        return prisma.taskNotification.create({
+            data: {
+                user: { connect: {id: fullUser.id}}, 
+                task: { connect: {id: fullTask[0].id}}
+            }
         })
     }
 
-    return prisma.deleteTaskNotification({id: existing[0].id})
+    return prisma.taskNotification.delete({where: {id: existing[0].id}})
 }
 
 async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFrequency, absolutePeriod }, {user, prisma}) {
@@ -163,14 +176,14 @@ async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFre
         throw new Error('Not Authenticated')
     }
 
-    const userPreference = await prisma.user({id: user.id}).preference()
+    const userPreference = await prisma.user.findOne({where: {id: user.id}}).preference
     const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
     const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
 
     if (userPreference === null) {
-        return prisma.createPreference({forUser: {connect: { id: user.id }}, executionThresholdIdeal, executionThresholdAbsolute})
+        return prisma.preference.create({data: {forUser: {connect: { id: user.id }}, executionThresholdIdeal, executionThresholdAbsolute}})
     } else {
-        return prisma.updatePreference({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
+        return prisma.preference.update({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
     }
 }
 
@@ -179,13 +192,13 @@ async function modifyTask(parent, { number, command, frequency, period }, { user
         throw new Error('Not Authenticated')
     }
 
-    const fullUser = await prisma.user({id: user.id})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
 
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.updateTask({where: {number}, data: {command, frequency, period}})
+    return prisma.task.update({where: {number}, data: {command, frequency, period}})
 }
 
 async function removeTask(parent, { taskNumber }, { user, prisma }) {
@@ -193,14 +206,14 @@ async function removeTask(parent, { taskNumber }, { user, prisma }) {
         throw new Error('Not Authenticated')
     }
 
-    const fullUser = await prisma.user({id: user.id})
-    const fullTask = await prisma.tasks({where: {number: parseInt(taskNumber)}})
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findMany({where: {number: parseInt(taskNumber)}})
 
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.deleteTask({id: fullTask[0].id})
+    return prisma.task.delete({where: {id: fullTask[0].id}})
 }
 
 module.exports = {

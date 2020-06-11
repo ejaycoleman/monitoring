@@ -1,13 +1,13 @@
 function tasks(parent, args, context) {
-    return context.prisma.user({ id: parent.id }).tasks()
+    return context.prisma.user.findOne({where: { id: parent.id }}).tasks
 }
 
 function notifications(parent, args, context) {
-    return context.prisma.user({ id: parent.id }).notifications()
+    return context.prisma.user.findOne({where: { id: parent.id }}).notifications
 }
 
 function preference(parent, args, context) {
-    return context.prisma.user({ id: parent.id }).preference()
+    return context.prisma.user.findOne({where: { id: parent.id }}).preference.findOne()
 }
 
 module.exports = {
