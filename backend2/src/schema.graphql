@@ -1,0 +1,81 @@
+type Query {
+  currentUser: User!
+  tasks(approved: Boolean): [Task]
+}
+
+type Mutation {
+  register(email: String!, password: String!, isAdmin: Boolean!): User
+  login(email: String!, password: String!): LoginResponse
+  uploadTasksFile(tasks: String!): [Task]
+  uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
+  approveTask(id: ID!): Task
+  rejectTask(id: ID!): Task
+  toggleNotification(taskNumber: String!): TaskNotification
+  setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
+  modifyTask(number: Int!, command: String, frequency: Int, period: Period): Task
+  removeTask(taskNumber: Int): Task
+}
+
+type User {
+  id: ID!
+  email: String!
+  isAdmin: Boolean!
+  tasks: [Task]
+  notifications: [TaskNotification]
+  preference: Preference
+}
+
+type LoginResponse {
+  token: String
+  user: User
+}
+
+type Task {
+  id: ID!
+  approved: Boolean!
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: Period!
+  author: User
+  executions: [Execution!]
+  notifications: [TaskNotification]
+}
+
+enum Period {
+  days,
+  weeks,
+  months
+}
+
+type Execution {
+  id: ID!,
+  datetime: Int!,
+  task: Task
+}
+
+type Subscription {
+  newExecution: Execution
+  newTask: Task
+  taskDeleted: TaskPreviousValues
+}
+
+type TaskPreviousValues {
+  id: ID!
+  approved: Boolean
+  number: Int!
+  command: String!
+  frequency: Int!
+  period: String!
+}
+
+type TaskNotification {
+  user: User,
+  task: Task
+}
+
+type Preference {
+  forUser: User,
+  executionThresholdIdeal: String,
+  executionThresholdAbsolute: String
+}
