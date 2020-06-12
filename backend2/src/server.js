@@ -1,9 +1,8 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { resolvers } = require('./resolvers') 
-// const { FileWatcher } = require('./utils')
-
+const fs = require('fs')
+const path = require('path');
 const CronJob = require('cron').CronJob;
-
 const { createContext, pubsub, prisma } = require('./context')
 
 const server = new GraphQLServer({
@@ -12,19 +11,39 @@ const server = new GraphQLServer({
     context: createContext
 })
 
-// const watchMyFiles = new FileWatcher('*/5 * * * * *')
-// watchMyFiles.job.start();
+const sendEmail = (email, task) => {
+    console.log(`Sending an email to ${email} for task #${task}`)
+}
+ 
+async function postExecution(taskId, datetime) {
+    const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
+    const associatedNotifications = await prisma.task.findOne({where: {number: taskId}}).notifications().user()
+    if (associatedTask && associatedTask.executions && associatedTask.executions.filter(execution => execution.datetime === datetime).length === 0) {
+        associatedNotifications && associatedNotifications.map(notification => {
+            sendEmail(notification.user.email, associatedTask.number)
+        })
 
-// pubsub.pubslish
+        const newExecution = await prisma.execution.create({data: {
+            datetime,
+            task: { connect: { id: associatedTask.id } },
+        }})
+        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+            newExecution
+        })
+    }
+}
 
 
-const myCron = new CronJob('*/5 * * * * *', async function() {
-    // const associatedTask = await prisma.task.findOne({where: {number: 17}})
-    const execution = await prisma.execution.findOne({where: {id: 1}, include: {task: true}})
-    pubsub.publish('PUBSUB_NEW_MESSAGE', {
-        newExecution: execution
-    })
+const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
+    fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {
+        files.forEach(file => {
+            const [ taskDate, taskExecution, last ] = file.split("_")
+            const taskId = last && last.match(/\d+/)[0]
+            if (!isNaN(Date.parse(taskDate)) && !isNaN(taskExecution) && taskId !== null) {
+                postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
+            }
+        });
+    });
 })
-myCron.start()
-
+fileReaderCron.start()
 server.start(() => console.log('Server is running on http://localhost:4000'))
