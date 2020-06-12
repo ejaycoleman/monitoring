@@ -56,8 +56,8 @@ type Execution {
 
 type Subscription {
   newExecution: Execution
-  newTask: Task
-  taskDeleted: TaskPreviousValues
+  # newTask: Task
+  # taskDeleted: TaskPreviousValues
 }
 
 type TaskPreviousValues {

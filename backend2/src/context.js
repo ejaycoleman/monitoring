@@ -1,22 +1,26 @@
 const { PrismaClient } = require('@prisma/client')
+const { PubSub } = require('graphql-yoga')
 const jwt = require('jsonwebtoken')
 
 const prisma = new PrismaClient()
+const pubsub = new PubSub()
 
 const getUser = token => {
     try {
         if (token) {
             return jwt.verify(token, 'the-project-secret')
         }
-        return null
-    } catch(err) {
+    } finally {
         return null
     }
 }
 
 const createContext = ({request}) => {
     if (!request) {
-        return { prisma }
+        return { 
+            prisma, 
+            pubsub 
+        }
     }
     
     const tokenWithBearer = request.headers.authorization || ''
@@ -25,10 +29,13 @@ const createContext = ({request}) => {
 
     return {
         user,
-        prisma
+        prisma,
+        pubsub
     }
 }
 
 module.exports = {
-    createContext
+    createContext,
+    pubsub,
+    prisma
 }
