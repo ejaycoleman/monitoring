@@ -126,7 +126,7 @@ async function approveTask(parent, { id }, {user, prisma}) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.update({where: {id}, data: {approved: true}})
+    return prisma.task.update({where: {id: parseInt(id)}, data: {approved: true}})
 }
 
 async function rejectTask(parent, { id }, {user, prisma}) {
@@ -134,7 +134,7 @@ async function rejectTask(parent, { id }, {user, prisma}) {
         throw new Error('Not Authenticated')
     }
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findOne({where: {id: parseInt(id)}})
     
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
@@ -144,7 +144,7 @@ async function rejectTask(parent, { id }, {user, prisma}) {
         throw new Error('Task already approved')
     }
     
-    return prisma.task.delete({where: {id}})
+    return prisma.task.delete({where: {id: parseInt(id)}})
 }
 
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
@@ -156,9 +156,6 @@ async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     const fullTask = await prisma.task.findMany({where: {number: parseInt(taskNumber)}})
     const existing = await prisma.taskNotification.findMany({where: {AND: [{user: fullUser}, {task: fullTask[0]}]}})
 
-    console.log('------------------')
-    console.log(existing)
-    
     if (existing.length === 0) {
         return prisma.taskNotification.create({
             data: {
