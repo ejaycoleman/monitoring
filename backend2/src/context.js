@@ -10,7 +10,8 @@ const getUser = token => {
         if (token) {
             return jwt.verify(token, 'the-project-secret')
         }
-    } finally {
+        return null
+    } catch(err) {
         return null
     }
 }

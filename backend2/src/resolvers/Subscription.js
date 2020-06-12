@@ -1,38 +1,23 @@
-// const newExecution = {
-//     subscribe: (parent, args, context, info) => {
-//         return context.prisma.$subscribe.execution({ mutation_in: ['CREATED'] }).node()
-//     },
-//     resolve: payload => {
-//         return payload
-//     },
-// }
-
 const newExecution = {
     subscribe: (parent, args, { pubsub }) => {
         return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
     }
 }
 
-// const newTask = {
-//     subscribe: (parent, args, context, info) => {
-//         return context.prisma.$subscribe.task({ mutation_in: ['CREATED'] }).node()
-//     },
-//     resolve: payload => {
-//         return payload
-//     },
-// }
+const newTask = {
+    subscribe: (parent, args, { pubsub }) => {
+        return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
+    }
+}
 
-// const taskDeleted = {
-//     subscribe: (parent, args, context, info) => {
-//         return context.prisma.$subscribe.task({ mutation_in: ['DELETED'] }).previousValues()
-//     },
-//     resolve: payload => {
-//         return payload
-//     }
-// }
+const taskDeleted = {
+    subscribe: (parent, args, { pubsub }) => {
+        return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
+    }
+}
 
 module.exports = {
     newExecution,
-    // newTask,
-    // taskDeleted
+    newTask,
+    taskDeleted
 }

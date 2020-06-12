@@ -21,11 +21,6 @@ const server = new GraphQLServer({
 const myCron = new CronJob('*/5 * * * * *', async function() {
     // const associatedTask = await prisma.task.findOne({where: {number: 17}})
     const execution = await prisma.execution.findOne({where: {id: 1}, include: {task: true}})
-
-    console.log(execution)
-    execution.datetime += count
-    count += 1000
-
     pubsub.publish('PUBSUB_NEW_MESSAGE', {
         newExecution: execution
     })

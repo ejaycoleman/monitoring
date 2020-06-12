@@ -44,7 +44,7 @@ async function login(parent, {email, password}, context) {
     }
 }
 
-async function uploadTasksFile(parent, args, {user, prisma}) {
+async function uploadTasksFile(parent, args, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -76,6 +76,9 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
                     period: task.period
                 }
             })
+            pubsub.publish('PUBSUB_NEW_MESSAGE', {
+                newTask: result
+            })
             return result        
         })
 
@@ -87,7 +90,7 @@ async function uploadTasksFile(parent, args, {user, prisma}) {
     
 }
 
-async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma}) {
+async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -104,7 +107,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
         throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
     }
 
-    return prisma.task.create({
+    const newTask = await prisma.task.create({
         data: {
             author: { connect: { id: user.id } },
             approved: fullUser.isAdmin,
@@ -114,6 +117,12 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
             period
         }
     })
+
+    pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        newTask
+    })
+
+    return newTask
 }
 
 async function approveTask(parent, { id }, {user, prisma}) {
@@ -129,7 +138,7 @@ async function approveTask(parent, { id }, {user, prisma}) {
     return prisma.task.update({where: {id: parseInt(id)}, data: {approved: true}})
 }
 
-async function rejectTask(parent, { id }, {user, prisma}) {
+async function rejectTask(parent, { id }, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -144,7 +153,13 @@ async function rejectTask(parent, { id }, {user, prisma}) {
         throw new Error('Task already approved')
     }
     
-    return prisma.task.delete({where: {id: parseInt(id)}})
+    const task = await prisma.task.delete({where: {id: parseInt(id)}})
+
+    pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        taskDeleted: fullTask
+    })
+
+    return task
 }
 
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
@@ -198,19 +213,27 @@ async function modifyTask(parent, { number, command, frequency, period }, { user
     return prisma.task.update({where: {number}, data: {command, frequency, period}})
 }
 
-async function removeTask(parent, { taskNumber }, { user, prisma }) {
+async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findMany({where: {number: parseInt(taskNumber)}})
+    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}})
+    
 
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.delete({where: {id: fullTask[0].id}})
+    const task = await prisma.task.delete({where: {id: fullTask.id}})
+
+    pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        taskDeleted: fullTask
+    })
+
+
+    return task
 }
 
 module.exports = {
