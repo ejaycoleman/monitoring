@@ -1,13 +1,13 @@
-async function currentUser(parent, args, {user, prisma}) {
+async function currentUser(parent, args, { user, prisma }) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
-    return prisma.user({ id: user.id })
+    return prisma.user.findOne({where: { id: user.id }})
 }
 
-async function tasks(parent, args, {user, prisma}) {
+async function tasks(parent, args, { prisma }) {
     const approved = args.approved === undefined ? true : args.approved
-    return prisma.tasks({where: {approved}})
+    return prisma.task.findMany({where: {approved}})
 }
 
 module.exports = {

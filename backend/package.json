@@ -1,17 +1,25 @@
 {
-    "name": "backend",
-    "scripts": {
-        "start": "nodemon --watch src src/server.js",
-        "prisma": "prisma"
-    },
-    "dependencies": {
-        "bcryptjs": "^2.4.3",
-        "cron": "^1.8.2",
-        "graphql-yoga": "1.18.3",
-        "jsonwebtoken": "^8.5.1",
-        "prisma-client-lib": "1.34.10"
-    },
-    "devDependencies": {
-        "prisma": "1.34.10"
-    }
+  "name": "script",
+  "license": "MIT",
+  "devDependencies": {
+    
+  },
+  "scripts": {
+    "start": "node src/server",
+    "dev": "ts-node ./script.ts"
+  },
+  "dependencies": {
+    "@prisma/cli": "2.0.0",
+    "ts-node": "8.7.0",
+    "typescript": "3.8.3",
+    "@prisma/client": "2.0.0",
+    "bcryptjs": "^2.4.3",
+    "cron": "^1.8.2",
+    "graphql-yoga": "1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "prisma-client-lib": "1.34.10"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }
