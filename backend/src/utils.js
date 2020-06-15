@@ -1,4 +1,4 @@
-const { prisma } = require('../generated/prisma-client')
+// const { prisma } = require('../generated/prisma-client')
 const CronJob = require('cron').CronJob;
 const fs = require('fs')
 const path = require('path');
