@@ -14,6 +14,7 @@ type Mutation {
   setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
   modifyTask(number: Int!, command: String, frequency: Int, period: Period): Task
   removeTask(taskNumber: Int): Task
+  toggleEnabled(taskNumber: Int): Task
 }
 
 type User {
@@ -40,6 +41,7 @@ type Task {
   author: User
   executions: [Execution!]
   notifications: [TaskNotification]
+  enabled: Boolean
 }
 
 enum Period {

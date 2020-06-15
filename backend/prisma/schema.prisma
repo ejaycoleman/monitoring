@@ -28,6 +28,7 @@ model Task {
   period String
   executions Execution[]
   notifications TaskNotification[]
+  enabled Boolean @default(true)
 }
 
 model Execution {

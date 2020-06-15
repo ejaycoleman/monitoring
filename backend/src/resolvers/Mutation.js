@@ -236,6 +236,21 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     return task
 }
 
+async function toggleEnabled(parent, { taskNumber }, { user, prisma }) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    const fullUser = await prisma.user.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}})
+
+    if (!fullUser.isAdmin) {
+        throw new Error('Incorrect Privileges')
+    }
+
+    return prisma.task.update({where: {number}, data: {enabled: !fullTask.enabled}})
+}
+
 module.exports = {
     register,
     login,
@@ -246,5 +261,6 @@ module.exports = {
     toggleNotification,
     setPreferences,
     modifyTask,
-    removeTask
+    removeTask,
+    toggleEnabled
 }
