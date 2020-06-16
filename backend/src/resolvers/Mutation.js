@@ -248,7 +248,7 @@ async function toggleEnabled(parent, { taskNumber }, { user, prisma }) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.update({where: {number}, data: {enabled: !fullTask.enabled}})
+    return prisma.task.update({where: {number: parseInt(taskNumber)}, data: {enabled: !fullTask.enabled}})
 }
 
 module.exports = {

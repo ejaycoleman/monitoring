@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
 import TaskSettingsModal from '../TaskSettingsModal'
+import Switch from '@material-ui/core/Switch'
 
 const useRowStyles = makeStyles({
 	root: {
@@ -27,12 +28,12 @@ const useRowStyles = makeStyles({
 })
 
 export default function StatusRow(props) {
-	const { task, toggleNotification } = props;
+	const { task, toggleNotification, toggleEnabled } = props;
 	const [open, setOpen] = React.useState(false);
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
-
+	const [taskEnabled, setTaskEnabled] = React.useState(task.enabled)
 	const [modalOpen, setModalOpen] = React.useState(false)
 
 	const { authed } = useSelector(state => state.isLogged)
@@ -95,12 +96,21 @@ export default function StatusRow(props) {
 						</TableCell>
 					</React.Fragment>
 				}
+				<TableCell>
+					<Switch checked={taskEnabled} onChange={() => {
+						toggleEnabled(task.number.toString()).then(() => {
+							setTaskEnabled(!taskEnabled)
+						}).catch(e => console.log(e))
+						
+						}} />
+				</TableCell>
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
+			
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				open={snackBarErrorShow}

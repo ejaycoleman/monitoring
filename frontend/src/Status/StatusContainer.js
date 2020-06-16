@@ -17,6 +17,7 @@ const retreiveTasks = gql` {
                 id
             }
         }
+        enabled
     }
 }
 `
@@ -84,7 +85,7 @@ const StatusContainer =
                     })
                 }
             })
-        }),
+        })
     )(Status)
 
 export default StatusContainer

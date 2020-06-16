@@ -18,6 +18,7 @@ const uploadFileMutation = gql`
                     id
                 }
             }
+            enabled
         }
     }
 `
@@ -37,6 +38,7 @@ const createSingleTask = gql`
                     id
                 }
             }
+            enabled
         }
     }
 `
@@ -55,6 +57,7 @@ const retreiveTasks = gql` {
                 id
             }
         }
+        enabled
     }
 }
 `
