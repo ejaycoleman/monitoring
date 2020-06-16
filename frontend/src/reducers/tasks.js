@@ -30,12 +30,12 @@ const tasks = (state = [], action) => {
         case REMOVE_TASK:
             return state.filter(({number}) => number !== action.value)
         case RESET_TASKS:
+            return []
+        case TOGGLE_TASK_ENABLED:
             tasks = state.map(a => ({...a}))
             existingTask = tasks.find(({number})=> number === action.value.number)
             existingTask.enabled = action.value.enabled
             return tasks
-        case TOGGLE_TASK_ENABLED:
-            return state
         default:
             return state
     }

@@ -18,6 +18,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
 import TaskSettingsModal from '../TaskSettingsModal'
 import Switch from '@material-ui/core/Switch'
+import { useDispatch } from 'react-redux'
+import { toggleTaskEnabled } from '../../actions'
 
 const useRowStyles = makeStyles({
 	root: {
@@ -33,13 +35,13 @@ export default function StatusRow(props) {
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
-	const [taskEnabled, setTaskEnabled] = React.useState(task.enabled)
 	const [modalOpen, setModalOpen] = React.useState(false)
 
 	const { authed, admin } = useSelector(state => state.isLogged)
 	const classes = useRowStyles();
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
+	const dispatch = useDispatch()
 
 	React.useEffect(() => {
 		let ranInTime = false
@@ -97,9 +99,9 @@ export default function StatusRow(props) {
 									<SettingsIcon />
 								</TableCell> 
 								<TableCell>
-									<Switch checked={taskEnabled} onChange={() => {
+									<Switch checked={task.enabled} onChange={() => {
 										toggleEnabled(task.number.toString()).then(() => {
-											setTaskEnabled(!taskEnabled)
+											dispatch(toggleTaskEnabled({number: task.number, enabled: !task.enabled}))
 										}).catch(e => console.log(e))
 										
 										}} />
