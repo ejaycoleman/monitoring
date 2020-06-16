@@ -19,8 +19,10 @@ import { login } from './actions'
 import Navigation from './Navigation';
 import './index.css';
 
+import { AUTH_TOKEN } from './constants'
+
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('AUTH_TOKEN')
+  const token = localStorage.getItem(AUTH_TOKEN)
   return {
     headers: {
       ...headers,
@@ -34,7 +36,7 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: localStorage.getItem('AUTH_TOKEN'),
+      authToken: localStorage.getItem(AUTH_TOKEN),
     }
   }
 })
@@ -61,11 +63,11 @@ const client = new ApolloClient({
 export const store = createStore(rootReducer)
 const AppRouter = () => {
   const dispatch = useDispatch()
-  const session = jwt.decode(localStorage.getItem('AUTH_TOKEN'))
+  const session = jwt.decode(localStorage.getItem(AUTH_TOKEN))
   if (session && new Date().getTime() / 1000 < session.exp ) {
     dispatch(login(session.admin))
   } else {
-    localStorage.removeItem('AUTH_TOKEN')
+    localStorage.removeItem(AUTH_TOKEN)
   }
 
   return (
