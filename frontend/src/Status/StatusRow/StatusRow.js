@@ -36,7 +36,7 @@ export default function StatusRow(props) {
 	const [taskEnabled, setTaskEnabled] = React.useState(task.enabled)
 	const [modalOpen, setModalOpen] = React.useState(false)
 
-	const { authed } = useSelector(state => state.isLogged)
+	const { authed, admin } = useSelector(state => state.isLogged)
 	const classes = useRowStyles();
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
@@ -91,19 +91,24 @@ export default function StatusRow(props) {
 								.catch(e => console.log(e))}>
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</TableCell>
-						<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
-							<SettingsIcon />
-						</TableCell>
+						{ admin && 
+							<React.Fragment>
+								<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
+									<SettingsIcon />
+								</TableCell> 
+								<TableCell>
+									<Switch checked={taskEnabled} onChange={() => {
+										toggleEnabled(task.number.toString()).then(() => {
+											setTaskEnabled(!taskEnabled)
+										}).catch(e => console.log(e))
+										
+										}} />
+								</TableCell>
+							</React.Fragment>
+						}
 					</React.Fragment>
 				}
-				<TableCell>
-					<Switch checked={taskEnabled} onChange={() => {
-						toggleEnabled(task.number.toString()).then(() => {
-							setTaskEnabled(!taskEnabled)
-						}).catch(e => console.log(e))
-						
-						}} />
-				</TableCell>
+
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
