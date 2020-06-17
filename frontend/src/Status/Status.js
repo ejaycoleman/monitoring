@@ -19,6 +19,9 @@ import { store } from '../index'
 import { addTask, addExecution, resetTasks, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
+
+import Visualisations from './Visualisations'
+
 const retrieveExecutionsSubscription = gql`
     subscription {
         newExecution {
@@ -208,6 +211,9 @@ export default function Status(props) {
 						message="⚠️ Login to change threshold preferences"
 					/>
 				</div>
+			</div>
+			<div style={{marginTop: 10}}>
+				<Visualisations></Visualisations>
 			</div>
 		</div>
 	) 
