@@ -1,7 +1,6 @@
 # Server Monitoring Project Overview
 ## Prerequisites
 - docker and docker-compose
-- prisma (sudo npm i -g prisma)
 
 ## Overview
 The system is comprised of two systems: the frontend (localhost:3000) and the backend (localhost:4000). The backend, written in Node, stores data in a mysql database, using prisma to support GraphQL queries. The frontend is written in React.
@@ -11,7 +10,9 @@ The system is comprised of two systems: the frontend (localhost:3000) and the ba
 In the project directory, run: <br>
 `docker-compose build` <br> 
 `docker-compose up` <br> 
-(If this project has been run before, ensure you run `docker-compose down` and `docker-compose build --no-cache` to recreate the prisma scheme)
+(If this project has been run before, ensure you run `docker-compose down` and `docker-compose build --no-cache` to recreate the prisma scheme) You may also need to prune the old containers due to the prisma v1->v2 upgrade. <br>
+
+If you continue to get errors, you may need to clear the mysql databse: `docker exec -it mysql bash`, followed by `mysql -u root -p` then enter the root password (it should be prisma). Finally, run `DROP DATABASE prisma`. After this, re-build and run the containers. 
 
 ## Create a user
 go to [localhost:4000](http://localhost:4000) in your browser
@@ -28,40 +29,9 @@ mutation user {
 ## Upload configuration
 First, go to [localhost:3000/login](http://localhost:3000/login) and enter email: `admin` and password: `admin`.
 
-Then, go to [localhost:3000/upload](http://localhost:3000/upload) to upload the json below:
-```
-{
-    "tasks":
-        [
-            {
-                "number": 17,
-                "command": "retrievelogs",
-                "frequency": 1,
-                "period": "weeks"
-            },
-            {
-                "number": 23,
-                "command": "retrievestats",
-                "frequency": 1,
-                "period": "days"
-            },
-            {
-                "number": 35,
-                "command": "refreshcache",
-                "frequency": 1,
-                "period": "months"
-            },
-            {
-                "number": 49,
-                "command": "obtainupdates",
-                "frequency": 2,
-                "period": "weeks"
-            }
-        ]
-}
-```
+Then, go to [localhost:3000/upload](http://localhost:3000/upload) and upload [tasks.json](./tasks.json)
 
-Finally, go to [localhost:3000/status](http://localhost:3000/status), and monitor the status of each task. This page relies on websockets to automatically get updates from the server, so you shouldn't need to refresh it. 
+Finally, go to [localhost:3000](http://localhost:3000), and monitor the status of each task. This page relies on websockets to automatically get updates from the server, so you shouldn't need to refresh it. 
 
 ## Updating status of tasks
 Task executions are saved in the `backend/ingress` directory. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page. 
@@ -76,3 +46,6 @@ mutation {
   }
 }
 ```
+<br>
+
+To view the raw data stored in the database, you can visit [localhost:5555](http://localhost:5555)
