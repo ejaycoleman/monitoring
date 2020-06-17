@@ -15,6 +15,7 @@ export default function ExecutionTable(props) {
 	const [order, setOrder] = React.useState('asc');
 	
 	const [page, setPage] = React.useState(0);
+	const numberOfPages = 5
     
     const descendingComparator = (a, b, orderBy) => {
         if (b[orderBy] < a[orderBy]) {
@@ -53,7 +54,9 @@ export default function ExecutionTable(props) {
 						<Table style={{width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
 							<TableHead>
 							<TableRow>
-								<TableCell />
+								<TableCell>
+									Order of execution
+								</TableCell>
 								<TableCell align="right">
 									Datetime
 									<TableSortLabel active direction={order} onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')} />
@@ -61,7 +64,7 @@ export default function ExecutionTable(props) {
 							</TableRow>
 							</TableHead>
 							<TableBody>
-							{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * 2, page * 2 + 2).map((execution) => (
+							{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * numberOfPages, page * numberOfPages + numberOfPages).map((execution) => (
 								<TableRow key={execution.datetime}>
 									<TableCell component="th" scope="row">
 										{execution.index}
