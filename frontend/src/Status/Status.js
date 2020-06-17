@@ -45,9 +45,8 @@ export default function Status(props) {
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
-
 	const { authed, admin } = useSelector(state => state.isLogged)
-	const reduxTasks = useSelector(state => state.tasks)
+	const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
 	const dispatch = useDispatch()
 
 	subscribeToMore({
