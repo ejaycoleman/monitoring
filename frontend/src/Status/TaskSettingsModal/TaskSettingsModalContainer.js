@@ -18,6 +18,7 @@ const modifyTask = gql`
                     id
                 }
             }
+            enabled
         }
     }
 `

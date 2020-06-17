@@ -1,0 +1,10 @@
+export const LOGIN_USER = 'LOGIN_USER'
+export const LOGOUT_USER = 'LOGOUT_USER'
+export const ADD_TASK = 'ADD_TASK'
+export const ADD_EXECUTION = 'ADD_EXECUTION'
+export const MODIFY_TASK = 'MODIFY_TASK'
+export const REMOVE_TASK = 'REMOVE_TASK'
+export const RESET_TASKS = 'RESET_TASKS'
+export const TOGGLE_TASK_ENABLED = 'TOGGLE_TASK_ENABLED'
+
+export const AUTH_TOKEN = 'AUTH_TOKEN'

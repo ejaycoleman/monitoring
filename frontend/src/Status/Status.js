@@ -46,7 +46,7 @@ export default function Status(props) {
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
 
-	const { authed } = useSelector(state => state.isLogged)
+	const { authed, admin } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
 
@@ -168,8 +168,17 @@ export default function Status(props) {
 									}} />
 								</TableCell>
 								<TableCell align="right" style={{width: 30}}>Status</TableCell>
-								{authed && <TableCell align="right" style={{width: 30}}>Notifications</TableCell>}
-								{authed && <TableCell align="right" style={{width: 30}}>Settings</TableCell>}
+								{authed && 
+									<React.Fragment>
+										<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
+										{ admin &&
+											<React.Fragment>
+												<TableCell align="right" style={{width: 30}}>Settings</TableCell>
+												<TableCell align="right" style={{width: 30}}>Enabled</TableCell>
+											</React.Fragment>
+										}
+									</React.Fragment>	
+								}
 							</TableRow>
 						</TableHead>
 						<TableBody>

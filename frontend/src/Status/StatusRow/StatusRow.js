@@ -17,6 +17,9 @@ import { useSelector } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
 import TaskSettingsModal from '../TaskSettingsModal'
+import Switch from '@material-ui/core/Switch'
+import { useDispatch } from 'react-redux'
+import { toggleTaskEnabled } from '../../actions'
 
 const useRowStyles = makeStyles({
 	root: {
@@ -27,18 +30,18 @@ const useRowStyles = makeStyles({
 })
 
 export default function StatusRow(props) {
-	const { task, toggleNotification } = props;
+	const { task, toggleNotification, toggleEnabled } = props;
 	const [open, setOpen] = React.useState(false);
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
-
 	const [modalOpen, setModalOpen] = React.useState(false)
 
-	const { authed } = useSelector(state => state.isLogged)
+	const { authed, admin } = useSelector(state => state.isLogged)
 	const classes = useRowStyles();
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
+	const dispatch = useDispatch()
 
 	React.useEffect(() => {
 		let ranInTime = false
@@ -90,17 +93,31 @@ export default function StatusRow(props) {
 								.catch(e => console.log(e))}>
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</TableCell>
-						<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
-							<SettingsIcon />
-						</TableCell>
+						{ admin && 
+							<React.Fragment>
+								<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
+									<SettingsIcon />
+								</TableCell> 
+								<TableCell>
+									<Switch checked={task.enabled} onChange={() => {
+										toggleEnabled(task.number.toString()).then(() => {
+											dispatch(toggleTaskEnabled({number: task.number, enabled: !task.enabled}))
+										}).catch(e => console.log(e))
+										
+										}} />
+								</TableCell>
+							</React.Fragment>
+						}
 					</React.Fragment>
 				}
+
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
+			
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				open={snackBarErrorShow}

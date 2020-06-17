@@ -15,12 +15,14 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
+import { AUTH_TOKEN } from './constants'
+
 function Navigation() {
     const dispatch = useDispatch();
     const location = useLocation();
     const signOut = () => {
         dispatch(logout())
-        localStorage.removeItem('AUTH_TOKEN')
+        localStorage.removeItem(AUTH_TOKEN)
         return <Redirect to="/" />
     }
 

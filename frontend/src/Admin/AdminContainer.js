@@ -32,6 +32,7 @@ const approveTaskMutation = gql`
                     id
                 }
             }
+            enabled
         }
     }
 `
