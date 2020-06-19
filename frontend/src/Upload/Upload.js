@@ -58,6 +58,9 @@ const Upload = props => {
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
 	const [ snackBarError, setSnackBarError] = useState("")
+	const [ errors, setErrors ] = useState([])
+	// const [progress, setProgress] = useState(0);
+
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
@@ -88,51 +91,55 @@ const Upload = props => {
 		<div>
 			<h1 style={{color: 'white'}}>Upload JSON</h1>
 			<div className="flex flex-column">
-			<FormGroup row>
-				<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
-				<Button variant="contained" onClick={() =>	{
-					try {
-						JSON.parse(jsonFile)
-					} catch(e) {
-						setSnackBarError("Invalid JSON file")
-						return false
-					}
-
-					console.log(JSON.parse(jsonFile).tasks.map(task => {
-						if (task.command === '') {
-							throw new Error('Command must not be empty')
-						}
-						if (task.frequency === 0) {
-							throw new Error('Frequency must not be 0')
-						}
-						if (!['days', 'weeks', 'months'].includes(task.period)) {
-							throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+				<FormGroup row>
+					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
+					<Button variant="contained" onClick={() =>	{
+						try {
+							JSON.parse(jsonFile)
+						} catch(e) {
+							setSnackBarError("Invalid JSON file")
+							return false
 						}
 
-						// console.log(task)
-						props.uploadSingleTask(task).then(({data}) => {
-							console.log('successful')
-							if (isAdmin) {
-								dispatch(addTask(data.uploadSingleTask))
-							} else {
-								setSnackBarFeedbackShow(true)
+						let toSetErrors = []
+
+						JSON.parse(jsonFile).tasks.map((task, index, array) => {
+							// setProgress(progress + (100 / array.length))
+							// console.log(progress).
+
+							// console.log(task)
+							try {
+								props.uploadSingleTask(task).then(({data}) => {
+									console.log('successful')
+									if (isAdmin) {
+										dispatch(addTask(data.uploadSingleTask))
+									} else {
+										setSnackBarFeedbackShow(true)
+									}
+								}).catch(e => {
+									console.log(e)
+								})
+							} catch(e) {
+								// console.log(e.message)
+								toSetErrors.push(e.message)
 							}
-						}).catch(e => {
-							console.log(e)
+							
 						})
-					}))
-					// props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
-					// 	if (isAdmin) {
-					// 		data.uploadTasksFile.map(task => {
-					// 			dispatch(addTask(task))
-					// 		})
-					// 	} else {
-					// 		setSnackBarFeedbackShow(true)
-					// 	}
-					// }).catch(error => setSnackBarError("Invalid JSON file"))}
-				
-				}}>UPLOAD</Button>	
-			</FormGroup>
+
+						setErrors(toSetErrors)
+						// props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
+						// 	if (isAdmin) {
+						// 		data.uploadTasksFile.map(task => {
+						// 			dispatch(addTask(task))
+						// 		})
+						// 	} else {
+						// 		setSnackBarFeedbackShow(true)
+						// 	}
+						// }).catch(error => setSnackBarError("Invalid JSON file"))}
+					
+					}}>UPLOAD</Button>	
+				</FormGroup>
+				<h2>{errors.join(', ')}</h2>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<FormGroup row>
