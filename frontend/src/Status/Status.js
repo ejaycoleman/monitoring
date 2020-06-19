@@ -211,7 +211,7 @@ export default function Status(props) {
 				</div>
 			</div>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
-				<Visualisations></Visualisations>
+				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
 		</div>
 	) 
