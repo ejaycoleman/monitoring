@@ -16,10 +16,8 @@ import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-import { addTask, addExecution, resetTasks, removeTask } from '../actions'
+import { addTask, addExecution, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
-
-
 import Visualisations from './Visualisations'
 
 const retrieveExecutionsSubscription = gql`
@@ -212,7 +210,7 @@ export default function Status(props) {
 					/>
 				</div>
 			</div>
-			<div style={{marginTop: 10}}>
+			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
 				<Visualisations></Visualisations>
 			</div>
 		</div>
