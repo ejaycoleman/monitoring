@@ -79,7 +79,7 @@ export default function ExecutionTable(props) {
 								rowsPerPageOptions={false}
 								count={task.executions.length}
 								onChangePage={(_event, newPage) => setPage(newPage)}
-								rowsPerPage={2}
+								rowsPerPage={5}
 								page={page}
 							/>
 						</Table>

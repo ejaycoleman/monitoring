@@ -16,8 +16,9 @@ import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-import { addTask, addExecution, resetTasks, removeTask } from '../actions'
+import { addTask, addExecution, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
+import Visualisations from './Visualisations'
 
 const retrieveExecutionsSubscription = gql`
     subscription {
@@ -208,6 +209,9 @@ export default function Status(props) {
 						message="⚠️ Login to change threshold preferences"
 					/>
 				</div>
+			</div>
+			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
+				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
 		</div>
 	) 
