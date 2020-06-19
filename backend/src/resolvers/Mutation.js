@@ -44,52 +44,6 @@ async function login(parent, {email, password}, context) {
     }
 }
 
-async function uploadTasksFile(parent, args, {user, prisma, pubsub}) {
-    if (!user) {
-        throw new Error('Not Authenticated')
-    }
-    const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    
-    try {
-        myTasks = JSON.parse(args.tasks)   
-        const promises = myTasks.tasks.map(async task => {
-            if (task.command === '') {
-                throw new Error('Command must not be empty')
-            }
-            if (task.frequency === 0) {
-                throw new Error('Frequency must not be 0')
-            }
-            if (!['days', 'weeks', 'months'].includes(task.period)) {
-                throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
-            }
-            const result = await prisma.task.create({
-                data: {
-                    author: { 
-                        connect: { 
-                            id: user.id 
-                        } 
-                    },
-                    approved: fullUser.isAdmin,
-                    number: task.number,
-                    command: task.command,
-                    frequency: task.frequency,
-                    period: task.period
-                }
-            })
-            pubsub.publish('PUBSUB_NEW_MESSAGE', {
-                newTask: result
-            })
-            return result        
-        })
-
-        return Promise.all(promises)
-    }
-    catch(e) {
-        throw new Error('Expected a JSON file')
-    }
-    
-}
-
 async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
