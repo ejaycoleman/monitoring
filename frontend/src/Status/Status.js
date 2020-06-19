@@ -54,7 +54,7 @@ export default function Status(props) {
 		document: retrieveExecutionsSubscription,
 		updateQuery: (prev, { subscriptionData }) => {
 			const newExecution = subscriptionData.data.newExecution
-			dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
+			newExecution && dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
 		}
 	})
 
