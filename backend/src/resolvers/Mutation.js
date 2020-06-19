@@ -226,6 +226,7 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
         throw new Error('Incorrect Privileges')
     }
 
+    await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: fullTask.id}})
 
     pubsub.publish('PUBSUB_NEW_MESSAGE', {

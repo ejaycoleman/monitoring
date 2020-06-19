@@ -97,15 +97,41 @@ const Upload = props => {
 						setSnackBarError("Invalid JSON file")
 						return false
 					}
-					props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
-						if (isAdmin) {
-							data.uploadTasksFile.map(task => {
-								dispatch(addTask(task))
-							})
-						} else {
-							setSnackBarFeedbackShow(true)
+
+					console.log(JSON.parse(jsonFile).tasks.map(task => {
+						if (task.command === '') {
+							throw new Error('Command must not be empty')
 						}
-					}).catch(error => setSnackBarError("Invalid JSON file"))}}>UPLOAD</Button>	
+						if (task.frequency === 0) {
+							throw new Error('Frequency must not be 0')
+						}
+						if (!['days', 'weeks', 'months'].includes(task.period)) {
+							throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+						}
+
+						// console.log(task)
+						props.uploadSingleTask(task).then(({data}) => {
+							console.log('successful')
+							if (isAdmin) {
+								dispatch(addTask(data.uploadSingleTask))
+							} else {
+								setSnackBarFeedbackShow(true)
+							}
+						}).catch(e => {
+							console.log(e)
+						})
+					}))
+					// props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
+					// 	if (isAdmin) {
+					// 		data.uploadTasksFile.map(task => {
+					// 			dispatch(addTask(task))
+					// 		})
+					// 	} else {
+					// 		setSnackBarFeedbackShow(true)
+					// 	}
+					// }).catch(error => setSnackBarError("Invalid JSON file"))}
+				
+				}}>UPLOAD</Button>	
 			</FormGroup>
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
