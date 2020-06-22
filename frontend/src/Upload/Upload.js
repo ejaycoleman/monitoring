@@ -57,7 +57,6 @@ const Upload = props => {
 	const [ newTaskFrequency, setNewTaskFrequency ] = useState(0)
 	const [ newTaskPeriod, setNewTaskPeriod ] = useState("days")
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
-	const [ snackBarError, setSnackBarError] = useState("")
 	const [ errors, setErrors ] = useState([])
 	const toSetErrors = []
 	const isAdmin = useSelector(state => state.isLogged.admin)
@@ -94,40 +93,32 @@ const Upload = props => {
 					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
 					<Button variant="contained" onClick={() =>	{
 						try {
-							JSON.parse(jsonFile)
+							JSON.parse(jsonFile).tasks.map((task) => {
+								try {
+									props.uploadSingleTask(task).then(({data}) => {
+										if (isAdmin) {
+											dispatch(addTask(data.uploadSingleTask))
+										} else {
+											setSnackBarFeedbackShow(true)
+										}
+									}).catch(e => {
+										toSetErrors.push(e.message.split(':')[1])
+										setErrors([...toSetErrors])
+									})
+								} catch(e) {
+									toSetErrors.push(e.message)
+								}
+							})
 						} catch(e) {
-							setSnackBarError("Invalid JSON file")
-							return false
+							toSetErrors.push(`invalid json - ${e}`)
+						} finally {
+							setErrors(toSetErrors)
 						}
-
-						JSON.parse(jsonFile).tasks.map((task, _index, array) => {
-							try {
-								props.uploadSingleTask(task).then(({data}) => {
-									console.log('successful')
-									if (isAdmin) {
-										dispatch(addTask(data.uploadSingleTask))
-									} else {
-										setSnackBarFeedbackShow(true)
-									}
-								}).catch(e => {
-									toSetErrors.push(e.message.split(':')[1])
-									setErrors([...toSetErrors])
-								})
-							} catch(e) {
-								toSetErrors.push(e.message)
-							}
-						})
-
-						setErrors(toSetErrors)
 					}}>UPLOAD</Button>	
 				</FormGroup>
 				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
 					<h2 style={{paddingTop: 10}}>⚠️ errors:</h2>
-					{
-						errors.map((e, i) => 
-							<h3>{i + 1}. {e}</h3>
-						)
-					}
+					{errors.map((e, i) => <h3>{i + 1}. {e}</h3>)}
 				</div>}
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
@@ -138,7 +129,6 @@ const Upload = props => {
 					onChange={e => setNewTaskNumber(e.target.value)}
 					type="number"
 					placeholder="number"
-					error={snackBarError === 'Task number should be unique'} 
 				/>
 				<CssTextField 
 					variant="outlined"
@@ -147,7 +137,6 @@ const Upload = props => {
 					onChange={e => setNewTaskCommand(e.target.value)}
 					type="text"
 					placeholder="command"
-					error={snackBarError === 'Command cannot be empty'}
 				/>
 				<CssTextField
 					variant="outlined"
@@ -155,7 +144,6 @@ const Upload = props => {
 					onChange={e => setNewTaskFrequency(e.target.value)}
 					type="number"
 					placeholder="frequency"
-					error={snackBarError === 'Frequency needs to be postitive integer'}
 				/>
 				<NativeSelect style={{backgroundColor: '#E0E0E0'}} value={newTaskPeriod} onChange={e => setNewTaskPeriod(e.target.value)}>
 					<option value="days">days</option>
@@ -186,18 +174,11 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
-			
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				open={snackBarFeedbackShow}
 				onClose={() => setSnackBarFeedbackShow(false)}
 				message="Requested ✅"
-			/>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={!!snackBarError}
-				onClose={() => setSnackBarError("")}
-				message={`⚠️ ${snackBarError}`}
 			/>
 		</div>
 	) 
