@@ -49,13 +49,13 @@ const UploadContainer =
                 loading: loading || ownProps.loading,
                 uploadSingleTask: ({number, command, frequency, period}) => {
                     if (command === '') {
-                        throw new Error('Command must not be empty')
+                        throw new Error(`task #${number}: command is empty`)
                     }
                     if (frequency === 0) {
-                        throw new Error('Frequency must not be 0')
+                        throw new Error(`task #${number}: frequency is 0`)
                     }
                     if (!['days', 'weeks', 'months'].includes(period)) {
-                        throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+                        throw new Error(`task #${number}: invalid period '${period}'`)
                     }
 
                     return mutate({

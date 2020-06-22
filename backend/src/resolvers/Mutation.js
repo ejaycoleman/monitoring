@@ -61,16 +61,24 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
         throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
     }
 
-    const newTask = await prisma.task.create({
-        data: {
-            author: { connect: { id: user.id } },
-            approved: fullUser.isAdmin,
-            number,
-            command,
-            frequency,
-            period
+    try {
+        const newTask = await prisma.task.create({
+            data: {
+                author: { connect: { id: user.id } },
+                approved: fullUser.isAdmin,
+                number,
+                command,
+                frequency,
+                period
+            }
+        })
+    } catch (e) {
+        if (e.message.includes('Unique constraint failed on the constraint: `number`')) {
+            throw new Error(`Task #${number} already present`)
+        } else {
+            throw new Error(e.message)
         }
-    })
+    }
 
     pubsub.publish('PUBSUB_NEW_MESSAGE', {
         newTask
@@ -209,7 +217,6 @@ async function toggleEnabled(parent, { taskNumber }, { user, prisma }) {
 module.exports = {
     register,
     login,
-    uploadTasksFile,
     uploadSingleTask,
     approveTask,
     rejectTask,

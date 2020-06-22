@@ -59,7 +59,6 @@ const Upload = props => {
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
 	const [ snackBarError, setSnackBarError] = useState("")
 	const [ errors, setErrors ] = useState([])
-	// const [progress, setProgress] = useState(0);
 
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
@@ -102,12 +101,7 @@ const Upload = props => {
 						}
 
 						let toSetErrors = []
-
-						JSON.parse(jsonFile).tasks.map((task, index, array) => {
-							// setProgress(progress + (100 / array.length))
-							// console.log(progress).
-
-							// console.log(task)
+						JSON.parse(jsonFile).tasks.map((task, _index, array) => {
 							try {
 								props.uploadSingleTask(task).then(({data}) => {
 									console.log('successful')
@@ -117,26 +111,16 @@ const Upload = props => {
 										setSnackBarFeedbackShow(true)
 									}
 								}).catch(e => {
-									console.log(e)
+									toSetErrors.push(e.message.split(':')[1])
+									setErrors([...toSetErrors])
 								})
 							} catch(e) {
-								// console.log(e.message)
 								toSetErrors.push(e.message)
 							}
 							
 						})
 
-						setErrors(toSetErrors)
-						// props.uploadMutation({ tasks: jsonFile }).then(({data}) => {
-						// 	if (isAdmin) {
-						// 		data.uploadTasksFile.map(task => {
-						// 			dispatch(addTask(task))
-						// 		})
-						// 	} else {
-						// 		setSnackBarFeedbackShow(true)
-						// 	}
-						// }).catch(error => setSnackBarError("Invalid JSON file"))}
-					
+						setErrors(toSetErrors)					
 					}}>UPLOAD</Button>	
 				</FormGroup>
 				<h2>{errors.join(', ')}</h2>
@@ -201,6 +185,7 @@ const Upload = props => {
 						setSnackBarError("Invalid upload")})
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				open={snackBarFeedbackShow}
