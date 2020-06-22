@@ -48,11 +48,14 @@ const UploadContainer =
             props: ({ loading, mutate, ownProps}) => ({
                 loading: loading || ownProps.loading,
                 uploadSingleTask: ({number, command, frequency, period}) => {
+                    if (!Number.isInteger(parseInt(number)) || number <= 0) {
+                        throw new Error(`Task number (${number}) must be a positive integer`)
+                    }
                     if (command === '') {
                         throw new Error(`task #${number}: command is empty`)
                     }
-                    if (frequency === 0) {
-                        throw new Error(`task #${number}: frequency is 0`)
+                    if (!Number.isInteger(parseInt(frequency)) || frequency <= 0) {
+                        throw new Error(`task #${number}: frequency should be positive integer`)
                     }
                     if (!['days', 'weeks', 'months'].includes(period)) {
                         throw new Error(`task #${number}: invalid period '${period}'`)

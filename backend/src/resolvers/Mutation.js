@@ -51,14 +51,17 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
 
-    if (command === '') {
-        throw new Error('Command must not be empty')
+    if (!Number.isInteger(number) || number <= 0) {
+        throw new Error(`Task number (${number}) must be a positive integer`)
     }
-    if (frequency === 0) {
-        throw new Error('Frequency must not be 0')
+    if (command === '') {
+        throw new Error(`Task #${number} - command must not be empty`)
+    }
+    if (!Number.isInteger(frequency) || frequency <= 0) {
+        throw new Error(`Task #${number} - frequency must be a positive integer (got ${frequency})`)
     }
     if (!['days', 'weeks', 'months'].includes(period)) {
-        throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+        throw new Error(`Period must be either 'days', 'weeks', or 'months' (got ${period})`)
     }
 
     try {
@@ -72,6 +75,12 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
                 period
             }
         })
+
+        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+            newTask
+        })
+    
+        return newTask
     } catch (e) {
         if (e.message.includes('Unique constraint failed on the constraint: `number`')) {
             throw new Error(`Task #${number} already present`)
@@ -79,12 +88,6 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
             throw new Error(e.message)
         }
     }
-
-    pubsub.publish('PUBSUB_NEW_MESSAGE', {
-        newTask
-    })
-
-    return newTask
 }
 
 async function approveTask(parent, { id }, {user, prisma}) {

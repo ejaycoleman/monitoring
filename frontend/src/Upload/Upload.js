@@ -59,7 +59,7 @@ const Upload = props => {
 	const [ snackBarFeedbackShow, setSnackBarFeedbackShow ] = useState(false)
 	const [ snackBarError, setSnackBarError] = useState("")
 	const [ errors, setErrors ] = useState([])
-
+	const toSetErrors = []
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
@@ -100,7 +100,6 @@ const Upload = props => {
 							return false
 						}
 
-						let toSetErrors = []
 						JSON.parse(jsonFile).tasks.map((task, _index, array) => {
 							try {
 								props.uploadSingleTask(task).then(({data}) => {
@@ -117,13 +116,19 @@ const Upload = props => {
 							} catch(e) {
 								toSetErrors.push(e.message)
 							}
-							
 						})
 
-						setErrors(toSetErrors)					
+						setErrors(toSetErrors)
 					}}>UPLOAD</Button>	
 				</FormGroup>
-				<h2>{errors.join(', ')}</h2>
+				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
+					<h2 style={{paddingTop: 10}}>⚠️ errors:</h2>
+					{
+						errors.map((e, i) => 
+							<h3>{i + 1}. {e}</h3>
+						)
+					}
+				</div>}
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<FormGroup row>
@@ -133,7 +138,7 @@ const Upload = props => {
 					onChange={e => setNewTaskNumber(e.target.value)}
 					type="number"
 					placeholder="number"
-					error={snackBarError === 'Task number should be unique'}
+					error={snackBarError === 'Task number should be unique'} 
 				/>
 				<CssTextField 
 					variant="outlined"
@@ -158,31 +163,27 @@ const Upload = props => {
 					<option value="months">months</option>
 				</NativeSelect>
 				<Button variant="contained" onClick={() => {
-					if (reduxTasks.filter(task => task.number === parseInt(newTaskNumber)).length !== 0) {
-						setSnackBarError("Task number should be unique")
-						return
+					try {
+						props.uploadSingleTask({ 
+							number: newTaskNumber, 
+							command: newTaskCommand, 
+							frequency: newTaskFrequency, 
+							period: newTaskPeriod 
+						}).then(({data}) => {
+							console.log('successful')
+							if (isAdmin) {
+								dispatch(addTask(data.uploadSingleTask))
+							} else {
+								setSnackBarFeedbackShow(true)
+							}
+						}).catch(e => {
+							toSetErrors.push(e.message.split(':')[1])
+							setErrors([...toSetErrors])
+						})
+					} catch(e) {
+						toSetErrors.push(e.message)
 					}
-					if (newTaskCommand === '') {
-						setSnackBarError("Command cannot be empty")
-						return
-					}
-					if (newTaskFrequency <= 0) {
-						setSnackBarError("Frequency needs to be postitive integer")
-						return
-					}
-					props.uploadSingleTask({ 
-						number: newTaskNumber, 
-						command: newTaskCommand, 
-						frequency: newTaskFrequency, 
-						period: newTaskPeriod 
-					}).then(({data}) => {	
-						if (isAdmin) {
-							dispatch(addTask(data.uploadSingleTask))
-						} else {
-							setSnackBarFeedbackShow(true)
-						}
-					}).catch(error => {
-						setSnackBarError("Invalid upload")})
+					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
 			
