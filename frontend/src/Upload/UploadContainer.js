@@ -1,46 +1,7 @@
 import Upload from './Upload'
 import { graphql } from 'react-apollo'
-import {flowRight as compose} from 'lodash'
-import gql from 'graphql-tag'
-
-const createSingleTask = gql`
-    mutation uploadSingleTask($number: Int!, $command: String!, $frequency: Int!, $period: Period!) {
-        uploadSingleTask(number: $number, command: $command, frequency: $frequency, period: $period) {
-            number,
-            command,
-            frequency,
-            period,
-            executions {
-            datetime
-            },
-            notifications {
-                user {
-                    id
-                }
-            }
-            enabled
-        }
-    }
-`
-
-const retreiveTasks = gql` {
-    tasks {
-        number,
-        command,
-        frequency,
-        period,
-        executions {
-        datetime
-        },
-        notifications {
-            user {
-                id
-            }
-        }
-        enabled
-    }
-}
-`
+import { flowRight as compose } from 'lodash'
+import { createSingleTask, retreiveTasks } from '../gql'
 
 const UploadContainer =
     compose(

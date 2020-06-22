@@ -9,17 +9,14 @@ import { ApolloProvider } from 'react-apollo';
 import { setContext } from 'apollo-link-context'
 import { Provider, useDispatch } from 'react-redux'
 import { createStore } from 'redux'
-
 import { split } from 'apollo-link'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
-
-import rootReducer from './reducers'
 import { login } from './actions'
+import { AUTH_TOKEN, BACKEND_URL } from './constants'
+import rootReducer from './reducers'
 import Navigation from './Navigation';
 import './index.css';
-
-import { AUTH_TOKEN } from './constants'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem(AUTH_TOKEN)
@@ -32,7 +29,7 @@ const authLink = setContext((_, { headers }) => {
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
+  uri: `ws://${BACKEND_URL}`,
   options: {
     reconnect: true,
     connectionParams: {
@@ -43,7 +40,7 @@ const wsLink = new WebSocketLink({
 
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000',
+  uri: `http://${BACKEND_URL}`,
 })
 
 const link = split(

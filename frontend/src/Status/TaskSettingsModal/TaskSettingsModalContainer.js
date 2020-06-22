@@ -1,35 +1,7 @@
 import TaskSettingsModal from './TaskSettingsModal'
 import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import { flowRight as compose } from 'lodash'
-
-const modifyTask = gql`
-    mutation modifyTask($number: Int!, $command: String, $frequency: Int, $period: Period) {
-        modifyTask(number: $number, command: $command, frequency: $frequency, period: $period) {
-            number,
-            command,
-            frequency,
-            period,
-            executions {
-            datetime
-            },
-            notifications {
-                user {
-                    id
-                }
-            }
-            enabled
-        }
-    }
-`
-
-const removeTask = gql`
-    mutation removeTask($taskNumber: Int!) {
-        removeTask(taskNumber: $taskNumber) {
-            number
-        }
-    }
-`
+import { modifyTask, removeTask } from '../../gql'
 
 const TaskSettingsModalContainer =
     compose(

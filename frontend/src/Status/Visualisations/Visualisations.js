@@ -2,9 +2,7 @@ import React from 'react';
 import CanvasJSReact from './canvasjs.react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { first } from 'lodash';
 const CanvasJSChart = CanvasJSReact.CanvasJSChart
-
 
 export default function Visualisations(props) {
     const options = {
