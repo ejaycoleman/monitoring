@@ -36,16 +36,6 @@ Finally, go to [localhost:3000](http://localhost:3000), and monitor the status o
 ## Updating status of tasks
 Task executions are saved in the `backend/ingress` directory. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page. 
 
-## Clearing the status (for debugging)
-On the Prisma backend [localhost:4466](http://localhost:4466), enter the following query to remove all executions. 
-
-```
-mutation {
-  deleteManyExecutions(where:{id_not: 0}) {
-    count
-  }
-}
-```
 <br>
 
 To view the raw data stored in the database, you can visit [localhost:5555](http://localhost:5555)
