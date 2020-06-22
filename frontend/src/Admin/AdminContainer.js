@@ -1,53 +1,11 @@
 import Admin from './Admin'
 import { graphql } from 'react-apollo'
 import {flowRight as compose} from 'lodash'
-import gql from 'graphql-tag'
-
-const retreiveTasks = gql` {
-    tasks(approved: false) {
-        id,
-        number,
-        command, 
-        frequency,
-        period,
-        author {
-            email
-        }
-    }
-}
-`
-
-const approveTaskMutation = gql`
-    mutation approveTask($id: ID!) {
-        approveTask(id: $id) {
-            number,
-            command,
-            frequency,
-            period,
-            executions {
-            datetime
-            },
-            notifications {
-                user {
-                    id
-                }
-            }
-            enabled
-        }
-    }
-`
-
-const rejectTaskMutation = gql`
-    mutation rejectTask($id: ID!) {
-        rejectTask(id: $id) {
-            number
-        }
-    }
-`
+import {retreiveDisapprovedTasks, approveTaskMutation, rejectTaskMutation} from '../gql'
 
 const AdminContainer =
     compose(
-        graphql(retreiveTasks, {
+        graphql(retreiveDisapprovedTasks, {
 			props: ({ data: { loading, tasks }, ownProps }) => {
 				return ({
 					tasks,

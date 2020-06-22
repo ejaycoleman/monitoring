@@ -1,5 +1,4 @@
 import React from 'react'
-import gql from 'graphql-tag'
 import moment from 'moment'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -19,25 +18,7 @@ import { store } from '../index'
 import { addTask, addExecution, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
-
-const retrieveExecutionsSubscription = gql`
-    subscription {
-        newExecution {
-            datetime,
-            task {
-                number
-            }
-        }
-    }
-`
-
-const taskDeletedSubscription = gql`
-    subscription {
-        taskDeleted {
-			number
-		}
-    }
-`
+import { retrieveExecutionsSubscription, taskDeletedSubscription } from '../gql'
 
 export default function Status(props) {
 	const { tasks, subscribeToMore } = props
@@ -54,7 +35,7 @@ export default function Status(props) {
 		document: retrieveExecutionsSubscription,
 		updateQuery: (prev, { subscriptionData }) => {
 			const newExecution = subscriptionData.data.newExecution
-			dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
+			newExecution && dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
 		}
 	})
 

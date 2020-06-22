@@ -44,52 +44,6 @@ async function login(parent, {email, password}, context) {
     }
 }
 
-async function uploadTasksFile(parent, args, {user, prisma, pubsub}) {
-    if (!user) {
-        throw new Error('Not Authenticated')
-    }
-    const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    
-    try {
-        myTasks = JSON.parse(args.tasks)   
-        const promises = myTasks.tasks.map(async task => {
-            if (task.command === '') {
-                throw new Error('Command must not be empty')
-            }
-            if (task.frequency === 0) {
-                throw new Error('Frequency must not be 0')
-            }
-            if (!['days', 'weeks', 'months'].includes(task.period)) {
-                throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
-            }
-            const result = await prisma.task.create({
-                data: {
-                    author: { 
-                        connect: { 
-                            id: user.id 
-                        } 
-                    },
-                    approved: fullUser.isAdmin,
-                    number: task.number,
-                    command: task.command,
-                    frequency: task.frequency,
-                    period: task.period
-                }
-            })
-            pubsub.publish('PUBSUB_NEW_MESSAGE', {
-                newTask: result
-            })
-            return result        
-        })
-
-        return Promise.all(promises)
-    }
-    catch(e) {
-        throw new Error('Expected a JSON file')
-    }
-    
-}
-
 async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -97,32 +51,43 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
 
-    if (command === '') {
-        throw new Error('Command must not be empty')
+    if (!Number.isInteger(number) || number <= 0) {
+        throw new Error(`Task number (${number}) must be a positive integer`)
     }
-    if (frequency === 0) {
-        throw new Error('Frequency must not be 0')
+    if (command === '') {
+        throw new Error(`Task #${number} - command must not be empty`)
+    }
+    if (!Number.isInteger(frequency) || frequency <= 0) {
+        throw new Error(`Task #${number} - frequency must be a positive integer (got ${frequency})`)
     }
     if (!['days', 'weeks', 'months'].includes(period)) {
-        throw new Error(`Period must be either 'days', 'weeks', or 'months'`)
+        throw new Error(`Period must be either 'days', 'weeks', or 'months' (got ${period})`)
     }
 
-    const newTask = await prisma.task.create({
-        data: {
-            author: { connect: { id: user.id } },
-            approved: fullUser.isAdmin,
-            number,
-            command,
-            frequency,
-            period
+    try {
+        const newTask = await prisma.task.create({
+            data: {
+                author: { connect: { id: user.id } },
+                approved: fullUser.isAdmin,
+                number,
+                command,
+                frequency,
+                period
+            }
+        })
+
+        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+            newTask
+        })
+    
+        return newTask
+    } catch (e) {
+        if (e.message.includes('Unique constraint failed on the constraint: `number`')) {
+            throw new Error(`Task #${number} already present`)
+        } else {
+            throw new Error(e.message)
         }
-    })
-
-    pubsub.publish('PUBSUB_NEW_MESSAGE', {
-        newTask
-    })
-
-    return newTask
+    }
 }
 
 async function approveTask(parent, { id }, {user, prisma}) {
@@ -226,6 +191,7 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
         throw new Error('Incorrect Privileges')
     }
 
+    await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: fullTask.id}})
 
     pubsub.publish('PUBSUB_NEW_MESSAGE', {
@@ -254,7 +220,6 @@ async function toggleEnabled(parent, { taskNumber }, { user, prisma }) {
 module.exports = {
     register,
     login,
-    uploadTasksFile,
     uploadSingleTask,
     approveTask,
     rejectTask,

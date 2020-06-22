@@ -6,7 +6,6 @@ type Query {
 type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
   login(email: String!, password: String!): LoginResponse
-  uploadTasksFile(tasks: String!): [Task]
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
   approveTask(id: ID!): Task
   rejectTask(id: ID!): Task

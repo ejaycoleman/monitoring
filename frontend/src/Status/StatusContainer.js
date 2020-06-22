@@ -1,47 +1,7 @@
 import Status from './Status'
 import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import {flowRight as compose} from 'lodash'
-
-const retreiveTasks = gql` {
-    tasks {
-        number,
-        command, 
-        frequency,
-        period,
-        executions {
-            datetime
-        },
-        notifications {
-            user {
-                id
-            }
-        }
-        enabled
-    }
-}
-`
-
-const userExecutionPreferences = gql` {
-    currentUser {
-        preference {
-            executionThresholdIdeal,
-            executionThresholdAbsolute
-        }
-    }
-}`
-
-const userSetExecutionPreferences = gql`
-    mutation setPreferences($idealFrequency: String!, $idealPeriod: String!, $absoluteFrequency: String!, $absolutePeriod: String!) {
-        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {
-            forUser {
-                email,
-            },
-            executionThresholdIdeal,
-            executionThresholdAbsolute
-        }
-    }
-`
+import { flowRight as compose } from 'lodash'
+import { retreiveTasks, userExecutionPreferences, userSetExecutionPreferences } from '../gql'
 
 const StatusContainer =
     compose(

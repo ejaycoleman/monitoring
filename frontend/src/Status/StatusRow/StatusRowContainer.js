@@ -1,25 +1,7 @@
 import StatusRow from './StatusRow'
 import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import { flowRight as compose } from 'lodash'
-
-const toggleNotification = gql`
-    mutation toggleNotification($taskNumber: String!) {
-        toggleNotification(taskNumber: $taskNumber) {
-            user {
-                isAdmin
-            }
-        }
-    }
-`
-
-const toggleEnabled = gql`
-    mutation toggleEnabled($taskNumber: Int!) {
-        toggleEnabled(taskNumber: $taskNumber) {
-            number
-        }
-    }
-`
+import { toggleNotification, toggleEnabled } from '../../gql'
 
 const StatusRowContainer =
 compose(

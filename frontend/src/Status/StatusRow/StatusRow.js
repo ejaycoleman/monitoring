@@ -117,7 +117,6 @@ export default function StatusRow(props) {
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
-			
 			<Snackbar
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				open={snackBarErrorShow}
