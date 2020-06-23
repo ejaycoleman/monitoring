@@ -76,7 +76,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
             }
         })
 
-        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        pubsub.publish('NEW_TASK', {
             newTask
         })
     
@@ -120,7 +120,7 @@ async function rejectTask(parent, { id }, {user, prisma, pubsub}) {
     
     const task = await prisma.task.delete({where: {id: parseInt(id)}})
 
-    pubsub.publish('PUBSUB_NEW_MESSAGE', {
+    pubsub.publish('TASK_REJECTED', {
         taskDeleted: fullTask
     })
 
@@ -194,10 +194,9 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: fullTask.id}})
 
-    pubsub.publish('PUBSUB_NEW_MESSAGE', {
+    pubsub.publish('TASK_REMOVED', {
         taskDeleted: fullTask
     })
-
 
     return task
 }

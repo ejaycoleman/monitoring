@@ -27,12 +27,11 @@ async function postExecution(taskId, datetime) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
-        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        pubsub.publish('NEW_EXECUTION', {
             newExecution
         })
     }
 }
-
 
 const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
     fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {
