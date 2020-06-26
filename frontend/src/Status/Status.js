@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
 
 export default function Status(props) {
-	const { tasks, subscribeToMore } = props
+	const { tasks } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)

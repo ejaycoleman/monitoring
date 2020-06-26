@@ -18,16 +18,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
 import TaskSettingsModal from '../TaskSettingsModal'
 
-const useRowStyles = makeStyles({
-	root: {
-		'& > *': {
-			borderBottom: 'unset',
-		},
-	},
-})
-
 export default function StatusRow(props) {
-	const { task, toggleNotification, toggleEnabled } = props;
+	const { task, toggleNotification } = props;
 	const [open, setOpen] = React.useState(false);
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
@@ -35,6 +27,16 @@ export default function StatusRow(props) {
 	const [modalOpen, setModalOpen] = React.useState(false)
 
 	const { authed, admin } = useSelector(state => state.isLogged)
+	
+	const useRowStyles = makeStyles({
+		root: {
+			'& > *': {
+				borderBottom: 'unset',
+			},
+			backgroundColor: task.enabled ? '#FFFFFF' : '#EEEEEE'
+		},
+	})
+
 	const classes = useRowStyles();
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
