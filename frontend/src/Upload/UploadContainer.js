@@ -34,11 +34,12 @@ const UploadContainer =
             })
         }),
         graphql(retreiveTasks, {
-			props: ({ data: { loading, tasks, refetch }, ownProps }) => {
+			props: ({ data: { loading, tasks, refetch, subscribeToMore }, ownProps }) => {
 				return ({
 					tasks,
                     loading,
-                    refetch
+                    refetch,
+                    subscribeToMore
 				})
 			},
 		})

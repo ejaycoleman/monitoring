@@ -5,6 +5,7 @@ const path = require('path');
 const CronJob = require('cron').CronJob;
 const { createContext, pubsub, prisma } = require('./context')
 
+
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
@@ -27,7 +28,7 @@ async function postExecution(taskId, datetime) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
-        pubsub.publish('NEW_EXECUTION', {
+        pubsub.publish('PUBSUB_NEW_MESSAGE', {
             newExecution
         })
     }

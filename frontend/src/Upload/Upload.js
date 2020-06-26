@@ -7,8 +7,8 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 import { withStyles } from '@material-ui/core/styles'
 import { store } from '../index'
-import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
+import { addTask } from '../actions'
 
 const theme = {
 	scheme: 'monokai',
@@ -65,6 +65,7 @@ const Upload = props => {
 
 	useEffect(() =>{
 		const unsubscribe = store.subscribe(() => true)
+
 		return function cleanup() {
 			unsubscribe()
 		}
