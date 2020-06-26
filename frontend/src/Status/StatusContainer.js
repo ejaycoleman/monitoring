@@ -1,7 +1,7 @@
 import Status from './Status'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'
-import { retreiveTasks, userExecutionPreferences, userSetExecutionPreferences } from '../gql'
+import { userExecutionPreferences, userSetExecutionPreferences } from '../gql'
 
 const StatusContainer =
     compose(

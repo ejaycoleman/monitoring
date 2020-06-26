@@ -153,10 +153,10 @@ async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFre
         throw new Error('Not Authenticated')
     }
 
-    const userPreference = await prisma.user.findOne({where: {id: user.id}}).preference
+    const userPreference = await prisma.user.findOne({where: {id: user.id}}).preference()
     const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
     const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
-
+    
     if (userPreference === null) {
         return prisma.preference.create({data: {forUser: {connect: { id: user.id }}, executionThresholdIdeal, executionThresholdAbsolute}})
     } else {
