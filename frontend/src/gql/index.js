@@ -96,8 +96,8 @@ export const createSingleTask = gql`
 `
 
 export const modifyTask = gql`
-    mutation modifyTask($number: Int!, $command: String, $frequency: Int, $period: Period) {
-        modifyTask(number: $number, command: $command, frequency: $frequency, period: $period) {
+    mutation modifyTask($number: Int!, $command: String, $frequency: Int, $period: Period, $enabled: Boolean) {
+        modifyTask(number: $number, command: $command, frequency: $frequency, period: $period, enabled: $enabled) {
             number,
             command,
             frequency,
@@ -132,15 +132,6 @@ export const toggleNotification = gql`
         }
     }
 `
-
-export const toggleEnabled = gql`
-    mutation toggleEnabled($taskNumber: Int!) {
-        toggleEnabled(taskNumber: $taskNumber) {
-            number
-        }
-    }
-`
-
 
 export const approveTaskMutation = gql`
     mutation approveTask($id: ID!) {

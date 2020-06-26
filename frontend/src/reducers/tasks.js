@@ -26,6 +26,7 @@ const tasks = (state = [], action) => {
             existingTask.command = action.value.command
             existingTask.frequency = action.value.frequency
             existingTask.period = action.value.period
+            existingTask.enabled = action.value.enabled
             return tasks
         case REMOVE_TASK:
             return state.filter(({number}) => number !== action.value)

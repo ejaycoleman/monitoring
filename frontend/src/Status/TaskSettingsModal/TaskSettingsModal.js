@@ -19,7 +19,7 @@ export default function TaskSettingsModal(props) {
 	const [command, setCommand] = React.useState(task.command);
 	const [frequency, setFrequency] = React.useState(task.frequency);
 	const [period, setPeriod] = React.useState(task.period);
-	const [active, setActive] = React.useState(true);
+	const [enabled, setEnabled] = React.useState(task.enabled);
 
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
 
@@ -50,14 +50,8 @@ export default function TaskSettingsModal(props) {
 						<option value="months">months</option>
 					</NativeSelect>
 				</FormGroup>
-				{active ? 'enabled' : 'disabled'}
-				<Switch
-					checked={active}
-					onChange={() => setActive(!active)}
-					color="primary"
-					name="checkedB"
-					inputProps={{ 'aria-label': 'primary checkbox' }}
-				/>
+				{enabled ? 'enabled' : 'disabled'}
+				<Switch checked={enabled} onChange={() => setEnabled(!enabled)} />
 				<Button style={{float: 'right'}} onClick={() => setDeleteConfirmDialog(true)} variant="contained" color="secondary">
 					Delete Task
 				</Button>
@@ -66,10 +60,11 @@ export default function TaskSettingsModal(props) {
 				<Button onClick={() => close()} color="primary">
 					Cancel
 				</Button>
-				{(command !== task.command || frequency !== task.frequency || period !== task.period || active !== true) && (
+				{(command !== task.command || frequency !== task.frequency || period !== task.period || enabled !== task.enabled) && (
 					<Button onClick={() => {
-						props.modifyTask(task.number, command, frequency, period).then(({data: { modifyTask: {number, command, frequency, period} }}) => {
-							dispatch(modifyTask({number, command, frequency, period}))
+						props.modifyTask(task.number, command, frequency, period, enabled).then(({data: { modifyTask: {number, command, frequency, period, enabled} }}) => {
+							
+							dispatch(modifyTask({number, command, frequency, period, enabled}))
 							close()
 						}).catch(e => console.log(e))
 					}}>

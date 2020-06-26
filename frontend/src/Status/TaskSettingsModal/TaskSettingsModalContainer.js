@@ -1,20 +1,21 @@
 import TaskSettingsModal from './TaskSettingsModal'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'
-import { modifyTask, removeTask } from '../../gql'
+import { modifyTask, removeTask, toggleEnabled } from '../../gql'
 
 const TaskSettingsModalContainer =
     compose(
         graphql(modifyTask, {
             props: ({ loading, mutate, ownProps }) => ({
                 loading: loading || ownProps.loading,
-                modifyTask: (number, command, frequency, period) => {
+                modifyTask: (number, command, frequency, period, enabled) => {
                     return mutate({
                         variables: {
                             number: parseInt(number),
                             command,
                             frequency: parseInt(frequency),
-                            period
+                            period,
+                            enabled
                         }
                     })
                 }
