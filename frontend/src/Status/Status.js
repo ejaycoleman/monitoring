@@ -139,7 +139,6 @@ export default function Status(props) {
 										{ admin &&
 											<React.Fragment>
 												<TableCell align="right" style={{width: 30}}>Settings</TableCell>
-												<TableCell align="right" style={{width: 30}}>Enabled</TableCell>
 											</React.Fragment>
 										}
 									</React.Fragment>	

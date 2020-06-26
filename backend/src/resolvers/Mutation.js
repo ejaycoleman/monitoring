@@ -164,7 +164,7 @@ async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFre
     }
 }
 
-async function modifyTask(parent, { number, command, frequency, period }, { user, prisma }) {
+async function modifyTask(parent, { number, command, frequency, period, enabled }, { user, prisma }) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -175,7 +175,7 @@ async function modifyTask(parent, { number, command, frequency, period }, { user
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.update({where: {number}, data: {command, frequency, period}})
+    return prisma.task.update({where: {number}, data: {command, frequency, period, enabled}})
 }
 
 async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
@@ -200,22 +200,6 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
 
     return task
 }
-
-async function toggleEnabled(parent, { taskNumber }, { user, prisma }) {
-    if (!user) {
-        throw new Error('Not Authenticated')
-    }
-
-    const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}})
-
-    if (!fullUser.isAdmin) {
-        throw new Error('Incorrect Privileges')
-    }
-
-    return prisma.task.update({where: {number: parseInt(taskNumber)}, data: {enabled: !fullTask.enabled}})
-}
-
 module.exports = {
     register,
     login,
@@ -225,6 +209,5 @@ module.exports = {
     toggleNotification,
     setPreferences,
     modifyTask,
-    removeTask,
-    toggleEnabled
+    removeTask
 }
