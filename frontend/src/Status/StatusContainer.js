@@ -5,15 +5,6 @@ import { retreiveTasks, userExecutionPreferences, userSetExecutionPreferences } 
 
 const StatusContainer =
     compose(
-        graphql(retreiveTasks, {
-            props: ({ data: { loading, tasks, subscribeToMore }, ownProps }) => {
-                return ({
-                    tasks,
-                    loading,
-                    subscribeToMore
-                })
-            },
-        }),
         graphql(userExecutionPreferences, {
             props: ({ data: { loading, currentUser }, ownProps }) => {
                 return ({

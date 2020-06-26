@@ -15,7 +15,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import { login } from './actions'
 import { AUTH_TOKEN, BACKEND_URL } from './constants'
 import rootReducer from './reducers'
-import Navigation from './Navigation';
+import NavigationContainer from './NavigationContainer'
 import './index.css';
 
 const authLink = setContext((_, { headers }) => {
@@ -69,7 +69,7 @@ const AppRouter = () => {
 
   return (
     <Router>
-      <Navigation/>
+      <NavigationContainer/>
     </Router>
   )
 }

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const prisma = new PrismaClient()
 const pubsub = new PubSub()
+pubsub.ee.setMaxListeners(30);
 
 const getUser = token => {
     try {

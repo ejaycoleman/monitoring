@@ -5,6 +5,7 @@ const path = require('path');
 const CronJob = require('cron').CronJob;
 const { createContext, pubsub, prisma } = require('./context')
 
+
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
@@ -32,7 +33,6 @@ async function postExecution(taskId, datetime) {
         })
     }
 }
-
 
 const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
     fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {

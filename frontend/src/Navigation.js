@@ -14,10 +14,12 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-
 import { AUTH_TOKEN } from './constants'
+import { addTask, addExecution, removeTask } from './actions'
+import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
 
-function Navigation() {
+const Navigation = props => {
+    const { tasks, subscribeToMore } = props
     const dispatch = useDispatch();
     const location = useLocation();
     const signOut = () => {
@@ -33,6 +35,31 @@ function Navigation() {
         setCurrentRoute(location.pathname)
     }, [location])
 
+    const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
+
+    React.useEffect(() => {
+		tasks && tasks.map(task => dispatch(addTask(task)))
+	}, [tasks])
+    
+    React.useEffect(() => {        
+        subscribeToMore({
+			document: retrieveExecutionsSubscription,
+			updateQuery: (prev, { subscriptionData }) => {
+                
+				const newExecution = subscriptionData.data.newExecution
+				newExecution && dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
+			}
+        })
+        
+        subscribeToMore({
+            document: taskDeletedSubscription,
+            updateQuery: (prev, { subscriptionData: { data: { taskDeleted: { number }} } }) => {
+                dispatch(removeTask(number))
+            }
+        })
+
+    }, [tasks, reduxTasks, dispatch, subscribeToMore])
+    
     return (
         <div>
             <AppBar position="static">

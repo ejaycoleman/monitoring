@@ -15,10 +15,9 @@ import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
-import { addTask, addExecution, removeTask } from '../actions'
+import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
-import { retrieveExecutionsSubscription, taskDeletedSubscription } from '../gql'
 
 export default function Status(props) {
 	const { tasks, subscribeToMore } = props
@@ -30,21 +29,6 @@ export default function Status(props) {
 	const { authed, admin } = useSelector(state => state.isLogged)
 	const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
 	const dispatch = useDispatch()
-
-	subscribeToMore({
-		document: retrieveExecutionsSubscription,
-		updateQuery: (prev, { subscriptionData }) => {
-			const newExecution = subscriptionData.data.newExecution
-			newExecution && dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
-		}
-	})
-
-	subscribeToMore({
-		document: taskDeletedSubscription,
-		updateQuery: (prev, { subscriptionData: { data: { taskDeleted: { number }} } }) => {
-			dispatch(removeTask(number))
-		}
-	})
 
 	React.useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
@@ -68,7 +52,7 @@ export default function Status(props) {
 		let mostRecentExecution = 0
 		tasks.map(task => {
 			task.executions.forEach(execution => {
-				mostRecentExecution =  Math.max(execution.datetime, mostRecentExecution)
+				mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
 			})
 		})
 		return mostRecentExecution
