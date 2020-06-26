@@ -83,7 +83,11 @@ const Upload = props => {
 			const content = fileReader.result
 			setJsonFile(content)
 		}
-		fileReader.readAsText(file)
+		try {
+			fileReader.readAsText(file)
+		} catch(e) {
+			console.log(e)
+		}
 	}
 	
 	return (
