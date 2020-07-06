@@ -33,7 +33,7 @@ export default function StatusRow(props) {
 			'& > *': {
 				borderBottom: 'unset',
 			},
-			backgroundColor: task.enabled ? '#FFFFFF' : '#EEEEEE'
+			borderLeft: task.enabled ? '10px solid green' : '10px solid red'
 		},
 	})
 
@@ -103,7 +103,7 @@ export default function StatusRow(props) {
 
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={8}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
 			</TableRow>
