@@ -9,6 +9,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Backdrop from '@material-ui/core/Backdrop'
 
 import Dialog from '@material-ui/core/Dialog'
 import { modifyTask, removeTask } from '../../actions'
@@ -98,8 +99,10 @@ export default function TaskSettingsModal(props) {
 						}).catch(e => console.log(e))						
 					}} variant="contained" color="secondary">
 						Delete
-						{ loading && <CircularProgress style={{marginLeft: 15}} size={24}/> }
 					</Button>
+					<Backdrop open={loading} style={{zIndex: 99999999}}>
+						<CircularProgress color="inherit" />
+					</Backdrop>
 				</DialogActions>
 			</Dialog>
 		</React.Fragment>
