@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import Dialog from '@material-ui/core/Dialog'
 import { modifyTask, removeTask } from '../../actions'
@@ -20,6 +21,8 @@ export default function TaskSettingsModal(props) {
 	const [frequency, setFrequency] = React.useState(task.frequency);
 	const [period, setPeriod] = React.useState(task.period);
 	const [enabled, setEnabled] = React.useState(task.enabled);
+	const [loading, setLoading] = React.useState(false)
+	
 
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
 
@@ -86,12 +89,16 @@ export default function TaskSettingsModal(props) {
 						Cancel
 					</Button>
 					<Button onClick={() => {
-						dispatch(removeTask(task.number))
-						props.removeTask(task.number).then(data => true).catch(e => console.log(e))
-						setDeleteConfirmDialog(false)
-						close()	
+						setLoading(true)
+						props.removeTask(task.number).then(data => {
+							setLoading(false)
+							dispatch(removeTask(task.number))
+							setDeleteConfirmDialog(false)
+							close()	
+						}).catch(e => console.log(e))						
 					}} variant="contained" color="secondary">
 						Delete
+						{ loading && <CircularProgress style={{marginLeft: 15}} size={24}/> }
 					</Button>
 				</DialogActions>
 			</Dialog>
