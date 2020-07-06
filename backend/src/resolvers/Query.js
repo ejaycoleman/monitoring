@@ -1,6 +1,6 @@
 async function currentUser(parent, args, { user, prisma }) {
     if (!user) {
-        throw new Error('Not Authenticated')
+        return null
     }
     return prisma.user.findOne({where: { id: user.id }})
 }

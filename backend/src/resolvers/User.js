@@ -1,13 +1,16 @@
-function tasks(parent, args, context) {
-    return context.prisma.user.findOne({where: { id: parent.id }}).tasks()
+function tasks(parent, args, {prisma}) {
+    return prisma.user.findOne({where: { id: parent.id }}).tasks()
 }
 
-function notifications(parent, args, context) {
-    return context.prisma.user.findOne({where: { id: parent.id }}).notifications()
+function notifications(parent, args, {prisma}) {
+    return prisma.user.findOne({where: { id: parent.id }}).notifications()
 }
 
-function preference(parent, args, context) {
-    return context.prisma.user.findOne({where: { id: parent.id }}).preference()
+function preference(parent, args, {prisma, user}) {
+    if (!user) {
+        return null
+    }
+    return prisma.user.findOne({where: { id: parent.id }}).preference()
 }
 
 module.exports = {
