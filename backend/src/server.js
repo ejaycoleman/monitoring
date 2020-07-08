@@ -5,7 +5,6 @@ const path = require('path');
 const CronJob = require('cron').CronJob;
 const { createContext, pubsub, prisma } = require('./context')
 
-
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,

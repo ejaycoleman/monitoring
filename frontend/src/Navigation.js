@@ -22,12 +22,6 @@ const Navigation = props => {
     const { tasks, subscribeToMore } = props
     const dispatch = useDispatch();
     const location = useLocation();
-    const signOut = () => {
-        dispatch(logout())
-        localStorage.removeItem(AUTH_TOKEN)
-        return <Redirect to="/" />
-    }
-
     const { authed, admin } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
 
@@ -35,17 +29,14 @@ const Navigation = props => {
         setCurrentRoute(location.pathname)
     }, [location])
 
-    const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
-
-    React.useEffect(() => {
+    useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
 	}, [tasks])
     
-    React.useEffect(() => {        
+    useEffect(() => {        
         subscribeToMore({
 			document: retrieveExecutionsSubscription,
 			updateQuery: (prev, { subscriptionData }) => {
-                
 				const newExecution = subscriptionData.data.newExecution
 				newExecution && dispatch(addExecution({number: newExecution.task.number, execution: newExecution.datetime}))
 			}
@@ -58,6 +49,12 @@ const Navigation = props => {
             }
         })
     }, [])
+
+    const signOut = () => {
+        dispatch(logout())
+        localStorage.removeItem(AUTH_TOKEN)
+        return <Redirect to="/" />
+    }
 
     return (
         <div>

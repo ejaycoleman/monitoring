@@ -6,7 +6,7 @@ const newExecution = {
 
 const newTask = {
     subscribe: (parent, args, { pubsub }) => {
-        return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
+        return pubsub.asyncIterator('NEW_TASK')
     }
 }
 
