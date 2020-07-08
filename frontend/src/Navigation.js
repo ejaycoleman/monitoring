@@ -57,9 +57,8 @@ const Navigation = props => {
                 taskDeleted && dispatch(removeTask(taskDeleted.number))
             }
         })
+    }, [])
 
-    }, [tasks, reduxTasks, dispatch, subscribeToMore])
-    
     return (
         <div>
             <AppBar position="static">

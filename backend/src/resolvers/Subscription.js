@@ -1,6 +1,6 @@
 const newExecution = {
     subscribe: (parent, args, { pubsub }) => {
-        return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
+        return pubsub.asyncIterator('NEW_EXECUTION')
     }
 }
 
@@ -12,7 +12,7 @@ const newTask = {
 
 const taskDeleted = {
     subscribe: (parent, args, { pubsub }) => {
-        return pubsub.asyncIterator('PUBSUB_NEW_MESSAGE')
+        return pubsub.asyncIterator('TASK_DELETED')
     }
 }
 

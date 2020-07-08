@@ -28,7 +28,7 @@ async function postExecution(taskId, datetime, file) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
-        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        pubsub.publish('NEW_EXECUTION', {
             newExecution
         })
 
