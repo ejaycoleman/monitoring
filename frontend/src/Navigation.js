@@ -53,8 +53,8 @@ const Navigation = props => {
         
         subscribeToMore({
             document: taskDeletedSubscription,
-            updateQuery: (prev, { subscriptionData: { data: { taskDeleted: { number }} } }) => {
-                dispatch(removeTask(number))
+            updateQuery: (prev, { subscriptionData: { data: { taskDeleted} } }) => {
+                taskDeleted && dispatch(removeTask(taskDeleted.number))
             }
         })
 

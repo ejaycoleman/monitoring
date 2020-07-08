@@ -19,6 +19,8 @@ import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
 
+import { Link } from 'react-router-dom'
+
 export default function Status(props) {
 	const { tasks } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
@@ -106,52 +108,61 @@ export default function Status(props) {
 		<div>
 			<h1 style={{color: 'white'}}>Status</h1>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto'}}>
-				<TableContainer component={Paper} >
-					<Table aria-label="collapsible table">
-						<TableHead>
-							<TableRow>
-								<TableCell style={{width: 30}}/>
-								<TableCell>
-									Task Number
-									<TableSortLabel active direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
-										setOrder(order === 'asc' ? 'desc' : 'asc')
-										setOrderBy('number')	
-									}} />	
-								</TableCell>
-								<TableCell>
-									Command
-									<TableSortLabel active direction={order} active={orderBy === 'Command'} onClick={() => { 
-										setOrder(order === 'asc' ? 'desc' : 'asc')
-										setOrderBy('command')
-									}} />		
-								</TableCell>
-								<TableCell align="right">
-									Frequency
-									<TableSortLabel active direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
-										setOrder(order === 'asc' ? 'desc' : 'asc')
-										setOrderBy('frequency')	
-									}} />
-								</TableCell>
-								<TableCell align="right" style={{width: 30}}>Status</TableCell>
-								{authed && 
-									<React.Fragment>
-										<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
-										{ admin &&
+				{
+					reduxTasks.length !== 0 ?
+						<TableContainer component={Paper} >
+							<Table aria-label="collapsible table">
+								<TableHead>
+									<TableRow>
+										<TableCell style={{width: 30}}/>
+										<TableCell>
+											Task Number
+											<TableSortLabel active direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
+												setOrder(order === 'asc' ? 'desc' : 'asc')
+												setOrderBy('number')	
+											}} />	
+										</TableCell>
+										<TableCell>
+											Command
+											<TableSortLabel active direction={order} active={orderBy === 'Command'} onClick={() => { 
+												setOrder(order === 'asc' ? 'desc' : 'asc')
+												setOrderBy('command')
+											}} />		
+										</TableCell>
+										<TableCell align="right">
+											Frequency
+											<TableSortLabel active direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
+												setOrder(order === 'asc' ? 'desc' : 'asc')
+												setOrderBy('frequency')	
+											}} />
+										</TableCell>
+										<TableCell align="right" style={{width: 30}}>Status</TableCell>
+										{authed && 
 											<React.Fragment>
-												<TableCell align="right" style={{width: 30}}>Settings</TableCell>
-											</React.Fragment>
+												<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
+												{ admin &&
+													<React.Fragment>
+														<TableCell align="right" style={{width: 30}}>Settings</TableCell>
+													</React.Fragment>
+												}
+											</React.Fragment>	
 										}
-									</React.Fragment>	
-								}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{
-								stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />))	
-							}
-						</TableBody>
-					</Table>
-				</TableContainer>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{
+										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />)) 
+									}
+								</TableBody>
+							</Table>
+						</TableContainer>
+					:
+					<div style={{width: '100%', backgroundColor: 'white', borderRadius: 5}}>
+						<h1 style={{textAlign: 'center', width: '100%'}}>No tasks present</h1>
+						<h2 style={{textAlign: 'center', color: 'black'}}>Add them <Link to="/upload">here</Link></h2>
+					</div>
+				}
+				
 				<div style={{ 
 					marginTop: 20,
 					marginBottom: 20, 
