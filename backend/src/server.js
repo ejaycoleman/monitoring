@@ -5,7 +5,6 @@ const path = require('path');
 const CronJob = require('cron').CronJob;
 const { createContext, pubsub, prisma } = require('./context')
 
-
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
@@ -16,7 +15,7 @@ const sendEmail = (email, task) => {
     console.log(`Sending an email to ${email} for task #${task}`)
 }
  
-async function postExecution(taskId, datetime) {
+async function postExecution(taskId, datetime, file) {
     const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
     const associatedNotifications = await prisma.task.findOne({where: {number: taskId}}).notifications().user()
     if (associatedTask && associatedTask.executions && associatedTask.executions.filter(execution => execution.datetime === datetime).length === 0) {
@@ -28,9 +27,14 @@ async function postExecution(taskId, datetime) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
-        pubsub.publish('PUBSUB_NEW_MESSAGE', {
+        pubsub.publish('NEW_EXECUTION', {
             newExecution
         })
+
+        // fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
+        //     if (err) throw err;
+        //     console.log('renamed complete');
+        // });
     }
 }
 
@@ -40,7 +44,7 @@ const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
             const [ taskDate, taskExecution, last ] = file.split("_")
             const taskId = last && last.match(/\d+/)[0]
             if (!isNaN(Date.parse(taskDate)) && !isNaN(taskExecution) && taskId !== null) {
-                postExecution(parseInt(taskId), Date.parse(taskDate)/1000)
+                postExecution(parseInt(taskId), Date.parse(taskDate)/1000, file)
             }
         });
     });
