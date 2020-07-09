@@ -95,7 +95,6 @@ async function approveTask(parent, { id }, {user, prisma}) {
         throw new Error('Not Authenticated')
     }
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {id: parseInt(id)}})
     
     if (!fullUser.isAdmin) {
         throw new Error('Incorrect Privileges')
