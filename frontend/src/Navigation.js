@@ -16,7 +16,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { AUTH_TOKEN } from './constants'
 import { addTask, addExecution, removeTask } from './actions'
-import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
+import { retrieveExecutionsSubscription, taskDeletedSubscription, taskApprovedSubscription, taskRejectedSubscription } from './gql'
 
 const Navigation = props => {
     const { tasks, subscribeToMore } = props
@@ -46,6 +46,20 @@ const Navigation = props => {
             document: taskDeletedSubscription,
             updateQuery: (prev, { subscriptionData: { data: { taskDeleted} } }) => {
                 taskDeleted && dispatch(removeTask(taskDeleted.number))
+            }
+        })
+
+        subscribeToMore({
+            document: taskApprovedSubscription,
+            updateQuery: (prev, { subscriptionData: { data: { taskApproved }}}) => {
+                console.log(taskApproved)
+            }
+        })
+
+        subscribeToMore({
+            document: taskRejectedSubscription,
+            updateQuery: (prev, { subscriptionData: { data: { taskRejected }}}) => {
+                console.log(taskRejected)
             }
         })
     }, [])

@@ -16,8 +16,22 @@ const taskDeleted = {
     }
 }
 
+const taskRejected = {
+    subscribe: (parent, args, { pubsub }) => {
+        return pubsub.asyncIterator('TASK_REJECTED')
+    }
+}
+
+const taskApproved = {
+    subscribe: (parent, args, { pubsub }) => {
+        return pubsub.asyncIterator('TASK_APPROVED')
+    }
+}
+
 module.exports = {
     newExecution,
     newTask,
-    taskDeleted
+    taskDeleted,
+    taskRejected,
+    taskApproved
 }

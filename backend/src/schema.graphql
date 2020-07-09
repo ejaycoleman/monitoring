@@ -58,6 +58,8 @@ type Subscription {
   newExecution: Execution
   newTask: Task
   taskDeleted: TaskPreviousValues
+  taskRejected: TaskPreviousValues
+  taskApproved: Task
 }
 
 type TaskPreviousValues {
