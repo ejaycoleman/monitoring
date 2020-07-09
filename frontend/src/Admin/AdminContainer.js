@@ -6,10 +6,11 @@ import {retreiveDisapprovedTasks, approveTaskMutation, rejectTaskMutation} from 
 const AdminContainer =
     compose(
         graphql(retreiveDisapprovedTasks, {
-			props: ({ data: { loading, tasks }, ownProps }) => {
+			props: ({ data: { loading, tasks, refetch }, ownProps }) => {
 				return ({
 					tasks,
-					loading
+                    loading,
+                    refetch
 				})
 			},
         }),

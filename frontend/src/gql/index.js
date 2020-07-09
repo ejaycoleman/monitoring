@@ -19,22 +19,6 @@ export const taskDeletedSubscription = gql`
     }
 `
 
-export const taskApprovedSubscription = gql`
-    subscription {
-        taskApproved {
-			number
-		}
-    }
-`
-
-export const taskRejectedSubscription = gql`
-    subscription {
-        taskRejected {
-			number
-		}
-    }
-`
-
 export const retreiveTasks = gql` {
     tasks {
         number,

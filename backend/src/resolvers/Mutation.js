@@ -90,7 +90,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
     }
 }
 
-async function approveTask(parent, { id }, {user, prisma, pubsub}) {
+async function approveTask(parent, { id }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -101,14 +101,10 @@ async function approveTask(parent, { id }, {user, prisma, pubsub}) {
         throw new Error('Incorrect Privileges')
     }
 
-    pubsub.publish('TASK_APPROVED', {
-        taskApproved: {appproved: true, ...fullTask}
-    })
-
     return prisma.task.update({where: {id: parseInt(id)}, data: {approved: true}})
 }
 
-async function rejectTask(parent, { id }, {user, prisma, pubsub}) {
+async function rejectTask(parent, { id }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -123,12 +119,9 @@ async function rejectTask(parent, { id }, {user, prisma, pubsub}) {
         throw new Error('Task already approved')
     }
     
+    await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: parseInt(id)}})
-
-    pubsub.publish('TASK_REJECTED', {
-        taskRejected: fullTask
-    })
-
+    
     return task
 }
 
@@ -205,6 +198,7 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
 
     return task
 }
+
 module.exports = {
     register,
     login,

@@ -9,13 +9,19 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button'
 
-import { addTask } from '../actions'
+import { addTask, removeTask } from '../actions'
 import { useDispatch } from 'react-redux'
 
 const Admin = props => {
-	const [ tasks, setTasks ] = useState("");		
+	const [ tasks, setTasks ] = useState([]);		
     useEffect(() =>setTasks(props.tasks), [props.tasks])
     const dispatch = useDispatch();
+
+    useEffect(() => {
+		props.refetch().then(({data: { tasks }}) => {
+            tasks && setTasks(tasks)
+		})
+	}, [])
 
 	return (
 		<div>
@@ -70,6 +76,7 @@ const Admin = props => {
                                             let values = [...tasks]
                                             values.splice(index, 1)
                                             setTasks(values)
+                                            dispatch(removeTask(data.approveTask.id))
                                         }).catch(error => console.log(error))}>Reject</Button>
                                     </TableCell>
                                 </TableRow>
