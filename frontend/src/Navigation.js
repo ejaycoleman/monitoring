@@ -75,7 +75,7 @@ const Navigation = props => {
                     { 
                         authed ?
                         <div>
-                            <NavLink exact={true} to='/admin'>
+                            <NavLink exact={true} to='/account'>
                                 <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
                                     <AccountCircle />
                                 </IconButton>
@@ -91,7 +91,7 @@ const Navigation = props => {
                 <Route path="/" exact component={Status} />
                 <Route path="/login/" component={Login} />
                 <SecuredRoute path="/upload/" component={Upload} />
-                <SecuredRoute path="/admin/" component={Admin} />
+                <SecuredRoute path="/account/" component={Admin} />
             </div>
         </div>
     )
