@@ -1,6 +1,7 @@
 type Query {
   currentUser: User!
   tasks(approved: Boolean): [Task]
+  usersUnapprovedTasks: [Task]
 }
 
 type Mutation {

@@ -11,7 +11,16 @@ async function tasks(parent, args, { user, prisma }) {
     
 }
 
+async function usersUnapprovedTasks(parent, args, {user, prisma}) {
+    if (!user) {
+        throw new Error('Not Authenticated')
+    }
+
+    return prisma.user.findOne({where: { id: user.id }}).tasks({where: {approved: false}})
+}
+
 module.exports = {
     currentUser,
-    tasks
+    tasks,
+    usersUnapprovedTasks
 }
