@@ -111,6 +111,13 @@ async function rejectTask(parent, { id }, {user, prisma}) {
     const fullTask = await prisma.task.findOne({where: {id: parseInt(id)}})
     
     if (!fullUser.isAdmin) {
+        const owner = await prisma.task.findOne({where: {id: parseInt(id)}}).author()
+        if (owner.id === parseInt(user.id)) {
+            await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
+            const task = await prisma.task.delete({where: {id: parseInt(id)}})
+            return task
+        }
+
         throw new Error('Incorrect Privileges')
     }
 

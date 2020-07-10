@@ -22,7 +22,7 @@ const Navigation = props => {
     const { tasks, subscribeToMore } = props
     const dispatch = useDispatch();
     const location = useLocation();
-    const { authed, admin } = useSelector(state => state.isLogged)
+    const { authed } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
 
     useEffect(() => {
