@@ -1,7 +1,7 @@
 import Admin from './Admin'
 import { graphql } from 'react-apollo'
 import {flowRight as compose} from 'lodash'
-import {retreiveDisapprovedTasks, approveTaskMutation, rejectTaskMutation} from '../gql'
+import {retreiveDisapprovedTasks, approveTaskMutation, rejectTaskMutation, usersUnapprovedTasks} from '../gql'
 
 const AdminContainer =
     compose(
@@ -37,6 +37,15 @@ const AdminContainer =
                     })
                 }
             })
+        }),
+        graphql(usersUnapprovedTasks, {
+			props: ({ data: { loading, tasks }, ownProps }) => {
+				return ({
+					tasks,
+                    loading,
+                    
+				})
+			},
         })
     )(Admin)
 

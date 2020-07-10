@@ -72,14 +72,16 @@ const Navigation = props => {
                             </IconButton>
                         </NavLink>
                     </div>
-                    { authed && admin && <NavLink exact={true} to='/admin'>
-                        <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
-                            <AccountCircle />
-                        </IconButton>
-                    </NavLink>}
                     { 
                         authed ?
-                        <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
+                        <div>
+                            <NavLink exact={true} to='/admin'>
+                                <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
+                                    <AccountCircle />
+                                </IconButton>
+                            </NavLink>
+                            <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
+                        </div>
                         :
                         <NavLink exact={true} to='/login' style={{textDecoration: 'none'}} ><Button variant="contained">Login</Button></NavLink>             
                     }
@@ -89,7 +91,7 @@ const Navigation = props => {
                 <Route path="/" exact component={Status} />
                 <Route path="/login/" component={Login} />
                 <SecuredRoute path="/upload/" component={Upload} />
-                <SecuredRoute path="/admin/" component={Admin} adminRequired />
+                <SecuredRoute path="/admin/" component={Admin} />
             </div>
         </div>
     )
