@@ -179,6 +179,22 @@ async function modifyTask(parent, { number, command, frequency, period, enabled 
         throw new Error('Incorrect Privileges')
     }
 
+    if (!Number.isInteger(number) || number <= 0) {
+        throw new Error(`Task number (${number}) must be a positive integer`)
+    }
+
+    if (command === '') {
+        throw new Error(`Task #${number} - command must not be empty`)
+    }
+
+    if (!Number.isInteger(frequency) || frequency <= 0) {
+        throw new Error(`Task #${number} - frequency must be a positive integer (got ${frequency})`)
+    }
+    
+    if (!['days', 'weeks', 'months'].includes(period)) {
+        throw new Error(`Period must be either 'days', 'weeks', or 'months' (got ${period})`)
+    }
+
     return prisma.task.update({where: {number}, data: {command, frequency, period, enabled}})
 }
 
