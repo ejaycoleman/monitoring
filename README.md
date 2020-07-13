@@ -39,3 +39,7 @@ Task executions are saved in the `backend/ingress` directory. Add/rename the fil
 <br>
 
 To view the raw data stored in the database, you can visit [localhost:5555](http://localhost:5555)
+
+<br>
+
+After an execution has been recorded, it stays in the ingress directory to make debugging easier. The commented code in /backend/src/server.js, lines 39-42, offer the functionality for moving the files into the archive directory once they have been recorded.
