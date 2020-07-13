@@ -10,6 +10,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Backdrop from '@material-ui/core/Backdrop'
+import Snackbar from '@material-ui/core/Snackbar'
 
 import Dialog from '@material-ui/core/Dialog'
 import { modifyTask, removeTask } from '../../actions'
@@ -23,8 +24,7 @@ export default function TaskSettingsModal(props) {
 	const [period, setPeriod] = React.useState(task.period);
 	const [enabled, setEnabled] = React.useState(task.enabled);
 	const [loading, setLoading] = React.useState(false)
-	
-
+	const [error, setError] = React.useState('')
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
 
 	const dispatch = useDispatch()
@@ -66,11 +66,15 @@ export default function TaskSettingsModal(props) {
 				</Button>
 				{(command !== task.command || frequency !== task.frequency || period !== task.period || enabled !== task.enabled) && (
 					<Button onClick={() => {
-						props.modifyTask(task.number, command, frequency, period, enabled).then(({data: { modifyTask: {number, command, frequency, period, enabled} }}) => {
+						try {
+							props.modifyTask(task.number, command, frequency, period, enabled).then(({data: { modifyTask: {number, command, frequency, period, enabled} }}) => {
 							
-							dispatch(modifyTask({number, command, frequency, period, enabled}))
-							close()
-						}).catch(e => console.log(e))
+								dispatch(modifyTask({number, command, frequency, period, enabled}))
+								close()
+							}).catch(e => console.log(e))
+						} catch(e) {
+							setError(e.message)
+						}						
 					}}>
 						Apply
 					</Button>
@@ -105,6 +109,12 @@ export default function TaskSettingsModal(props) {
 					</Backdrop>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				open={!!error}
+				onClose={() => setError('')}
+				message={`⚠️ ${error}`}
+			/>
 		</React.Fragment>
 	)
 }
