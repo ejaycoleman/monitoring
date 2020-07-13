@@ -1,7 +1,7 @@
 import TaskSettingsModal from './TaskSettingsModal'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'
-import { modifyTask, removeTask, toggleEnabled } from '../../gql'
+import { modifyTask, removeTask } from '../../gql'
 
 const TaskSettingsModalContainer =
     compose(

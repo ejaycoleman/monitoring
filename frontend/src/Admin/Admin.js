@@ -11,16 +11,17 @@ import { addTask, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Admin = props => {
+	const { refetch } = props
 	const [ tasks, setTasks ] = useState([]);		
 	const { admin } = useSelector(state => state.isLogged)
 	useEffect(() =>setTasks(props.tasks), [props.tasks])
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		props.refetch().then(({data: { tasks }}) => {
+		refetch().then(({data: { tasks }}) => {
 			tasks && setTasks(tasks)
 		})
-	}, [])
+	}, [refetch])
 
 	return (
 		<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>

@@ -34,7 +34,7 @@ export default function Status(props) {
 
 	React.useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
-	}, [tasks])
+	}, [tasks, dispatch])
 
 	React.useEffect(() => {
 		const currentTasksInStore = store.getState().tasks
@@ -52,7 +52,7 @@ export default function Status(props) {
 
 	const getMostRecentExecution = tasks => {
 		let mostRecentExecution = 0
-		tasks.map(task => {
+		tasks.forEach(task => {
 			task.executions.forEach(execution => {
 				mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
 			})
@@ -117,21 +117,21 @@ export default function Status(props) {
 										<TableCell style={{width: 30}}/>
 										<TableCell>
 											Task Number
-											<TableSortLabel active direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
+											<TableSortLabel direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('number')	
 											}} />	
 										</TableCell>
 										<TableCell>
 											Command
-											<TableSortLabel active direction={order} active={orderBy === 'Command'} onClick={() => { 
+											<TableSortLabel direction={order} active={orderBy === 'Command'} onClick={() => { 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('command')
 											}} />		
 										</TableCell>
 										<TableCell align="right">
 											Frequency
-											<TableSortLabel active direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
+											<TableSortLabel direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('frequency')	
 											}} />
