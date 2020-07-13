@@ -14,6 +14,14 @@ const server = new GraphQLServer({
 const sendEmail = (email, task) => {
     console.log(`Sending an email to ${email} for task #${task}`)
 }
+
+const moveFiles = file => {
+    const moveFiles = false // change this to true if you want files to be moved to /archived
+    moveFiles && fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
+        if (err) throw err;
+        console.log('renamed complete');
+    });
+}
  
 async function postExecution(taskId, datetime, file) {
     const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
@@ -21,6 +29,7 @@ async function postExecution(taskId, datetime, file) {
     if (associatedTask && associatedTask.executions && associatedTask.executions.filter(execution => execution.datetime === datetime).length === 0) {
         if (datetime * 1000 > Date.now()) {
             console.log(`Date ${datetime} for task #${taskId} is in the future!`)
+            moveFiles(file)
             return
         }
 
@@ -36,10 +45,7 @@ async function postExecution(taskId, datetime, file) {
             newExecution
         })
 
-        // fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
-        //     if (err) throw err;
-        //     console.log('renamed complete');
-        // });
+        moveFiles(file)
     }
 }
 

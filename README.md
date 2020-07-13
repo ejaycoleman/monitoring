@@ -42,4 +42,4 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 
 <br>
 
-After an execution has been recorded, it stays in the ingress directory to make debugging easier. The commented code in /backend/src/server.js, lines 39-42, offer the functionality for moving the files into the archive directory once they have been recorded.
+After an execution has been recorded, it stays in the ingress directory to make debugging easier. The moveFiles constant in /backend/src/server.js, line 19, can be set to true to make the files move to the archive directory once they have been recorded.
