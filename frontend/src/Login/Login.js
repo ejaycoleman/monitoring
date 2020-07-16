@@ -9,6 +9,7 @@ import Card from '@material-ui/core/Card';
 import { AUTH_TOKEN } from '../constants'
 
 const Login = props => {
+	const { loginMutation, history } = props
 	const dispatch = useDispatch();
 	const [ email, setEmail ] = useState("");
 	const [ password, setPassword ] = useState("");
@@ -37,13 +38,13 @@ const Login = props => {
 						error={error}
 						helperText={error && "Invalid Credentials"}
 					/>
-					<Button style={{width: 100, marginTop: 20}} variant="contained" onClick={() => props.loginMutation({ email, password }).then(({data}) => {
+					<Button style={{width: 100, marginTop: 20}} variant="contained" onClick={() => loginMutation({ email, password }).then(({data}) => {
 						localStorage.setItem(AUTH_TOKEN, data.login.token)
 						dispatch(login(data.login.user.isAdmin))
-						props.history.push(`/`)
+						history.push(`/`)
 					}).catch(error => {
 						setError(true)
-						})}>LOGIN</Button>
+					})}>LOGIN</Button>
 				</FormGroup>
 			</Card>
 		</div>

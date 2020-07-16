@@ -51,6 +51,7 @@ const CssTextField = withStyles({
   })(TextField)
 
 const Upload = props => {
+	const { refetch, uploadSingleTask } = props
 	const [ jsonFile, setJsonFile ] = useState('')
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0)
 	const [ newTaskCommand, setNewTaskCommand ] = useState("")
@@ -69,13 +70,13 @@ const Upload = props => {
 		return function cleanup() {
 			unsubscribe()
 		}
-	}, [props.tasks, dispatch, reduxTasks])
+	}, [])
 
 	useEffect(() => {
-		props.refetch().then(({data: { tasks }}) => {
+		refetch().then(({data: { tasks }}) => {
 			tasks && tasks.map(task => dispatch(addTask(task)))
 		})
-	}, [])
+	}, [refetch, dispatch])
 
 	const readFileUploaded = file => {
 		const fileReader = new FileReader()
@@ -98,9 +99,9 @@ const Upload = props => {
 					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
 					<Button variant="contained" onClick={() =>	{
 						try {
-							JSON.parse(jsonFile).tasks.map((task) => {
+							JSON.parse(jsonFile).tasks.forEach((task) => {
 								try {
-									props.uploadSingleTask(task).then(({data}) => {
+									uploadSingleTask(task).then(({data}) => {
 										if (isAdmin) {
 											dispatch(addTask(data.uploadSingleTask))
 										} else {
@@ -122,7 +123,7 @@ const Upload = props => {
 					}}>UPLOAD</Button>	
 				</FormGroup>
 				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
-					<h2 style={{paddingTop: 10}}>⚠️ errors:</h2>
+					<h2 style={{paddingTop: 10}}><span role="img" aria-label="warning">⚠️</span> errors:</h2>
 					{errors.map((e, i) => <h3>{i + 1}. {e}</h3>)}
 				</div>}
 			</div>
@@ -157,7 +158,7 @@ const Upload = props => {
 				</NativeSelect>
 				<Button variant="contained" onClick={() => {
 					try {
-						props.uploadSingleTask({ 
+						uploadSingleTask({ 
 							number: newTaskNumber, 
 							command: newTaskCommand, 
 							frequency: newTaskFrequency, 

@@ -11,16 +11,17 @@ import { addTask, removeTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Admin = props => {
-	const [ tasks, setTasks ] = useState([]);		
+	const { refetch, tasks, approveTask, rejectTask } = props
+	const [ stateTasks, setTasks ] = useState([]);		
 	const { admin } = useSelector(state => state.isLogged)
-	useEffect(() =>setTasks(props.tasks), [props.tasks])
+	useEffect(() =>setTasks(tasks), [tasks])
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		props.refetch().then(({data: { tasks }}) => {
+		refetch().then(({data: { tasks }}) => {
 			tasks && setTasks(tasks)
 		})
-	}, [])
+	}, [refetch])
 
 	return (
 		<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
@@ -28,7 +29,7 @@ const Admin = props => {
 				<div>
 					<h1 style={{color: 'white'}}>Approve the tasks below</h1>
 					{
-						tasks && tasks.length ? 
+						stateTasks && stateTasks.length ? 
 							(<TableContainer component={Paper}>
 								<Table aria-label="simple table">
 									<TableHead>
@@ -43,7 +44,7 @@ const Admin = props => {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										{tasks.map((row, index) => (
+										{stateTasks.map((row, index) => (
 											<TableRow key={row.number}>
 												<TableCell>
 													{row.number}
@@ -61,20 +62,20 @@ const Admin = props => {
 													{row.author.email}
 												</TableCell>
 												<TableCell style={{width: '10%'}} align="right">
-													<Button variant="contained" onClick={() => props.approveTask({ 
+													<Button variant="contained" onClick={() => approveTask({ 
 														id: row.id
 													}).then(({data}) => {
-														let values = [...tasks]
+														let values = [...stateTasks]
 														values.splice(index, 1)
 														setTasks(values)
 														dispatch(addTask(data.approveTask))
 													}).catch(error => console.log(error))}>Approve</Button>
 												</TableCell>
 												<TableCell style={{width: '10%'}} align="right">
-													<Button variant="contained" onClick={() => props.rejectTask({ 
+													<Button variant="contained" onClick={() => rejectTask({ 
 														id: row.id
 													}).then(({data}) => {
-														let values = [...tasks]
+														let values = [...stateTasks]
 														values.splice(index, 1)
 														setTasks(values)
 														dispatch(removeTask(data.approveTask.id))
@@ -109,7 +110,7 @@ const Admin = props => {
 							</TableHead>
 							<TableBody>
 								{
-									tasks && tasks.map((task, index) => (
+									stateTasks && stateTasks.map((task, index) => (
 										<TableRow>
 											<TableCell component="th" scope="row">
 												{task.number}
@@ -121,10 +122,10 @@ const Admin = props => {
 												{`Run every ${task.frequency} ${task.period}`}
 											</TableCell>
 											<TableCell style={{width: '10%'}} align="right">
-												<Button variant="contained" onClick={() => props.rejectTask({ 
+												<Button variant="contained" onClick={() => rejectTask({ 
 													id: task.id
 												}).then(({data}) => {
-													let values = [...tasks]
+													let values = [...stateTasks]
 													values.splice(index, 1)
 													setTasks(values)
 													dispatch(removeTask(data.approveTask.id))

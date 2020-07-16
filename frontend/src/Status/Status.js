@@ -18,11 +18,10 @@ import { store } from '../index'
 import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
-
 import { Link } from 'react-router-dom'
 
 export default function Status(props) {
-	const { tasks } = props
+	const { tasks, userPreferences, setPreferences } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
@@ -34,7 +33,7 @@ export default function Status(props) {
 
 	React.useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
-	}, [tasks])
+	}, [tasks, dispatch])
 
 	React.useEffect(() => {
 		const currentTasksInStore = store.getState().tasks
@@ -48,11 +47,11 @@ export default function Status(props) {
 			unsubscribe()
 		}
 
-	}, [props.tasks, reduxTasks, dispatch])
+	}, [tasks, reduxTasks, dispatch])
 
 	const getMostRecentExecution = tasks => {
 		let mostRecentExecution = 0
-		tasks.map(task => {
+		tasks.forEach(task => {
 			task.executions.forEach(execution => {
 				mostRecentExecution = Math.max(execution.datetime, mostRecentExecution)
 			})
@@ -61,8 +60,8 @@ export default function Status(props) {
 	}
 
 	const determineChipColor = time => {
-		const [idealFrequency, idealPeriod] = props.userPreferences && props.userPreferences.preference ? props.userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
-		const [absoluteFrequency, absolutePeriod] = props.userPreferences && props.userPreferences.preference? props.userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
+		const [idealFrequency, idealPeriod] = userPreferences && userPreferences.preference ? userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
+		const [absoluteFrequency, absolutePeriod] = userPreferences && userPreferences.preference? userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
 		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
 		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {
@@ -117,21 +116,21 @@ export default function Status(props) {
 										<TableCell style={{width: 30}}/>
 										<TableCell>
 											Task Number
-											<TableSortLabel active direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
+											<TableSortLabel direction={order} active={orderBy === 'Task Number'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('number')	
 											}} />	
 										</TableCell>
 										<TableCell>
 											Command
-											<TableSortLabel active direction={order} active={orderBy === 'Command'} onClick={() => { 
+											<TableSortLabel direction={order} active={orderBy === 'Command'} onClick={() => { 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('command')
 											}} />		
 										</TableCell>
 										<TableCell align="right">
 											Frequency
-											<TableSortLabel active direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
+											<TableSortLabel direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('frequency')	
 											}} />
@@ -175,7 +174,7 @@ export default function Status(props) {
 						onClick={() => authed ? setModalOpen(true) : setSnackBarErrorShow(true)}
 					/>	
 					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-						<PreferencesModal preferences={props.userPreferences} setPreferences={props.setPreferences} close={() => setModalOpen(false)}/>
+						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</Dialog>
 					<Snackbar
 						anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

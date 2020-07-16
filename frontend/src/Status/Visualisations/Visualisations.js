@@ -43,16 +43,16 @@ export default function Visualisations(props) {
       }
 
     const times = {}
-    reduxTasks && reduxTasks.map(task => {
-        task.executions.sort(compare).map((execution) => {
+    reduxTasks && reduxTasks.forEach(task => {
+        task.executions.sort(compare).forEach((execution) => {
             times[execution.datetime] ? times[execution.datetime] = [task.number, ...times[execution.datetime]] : times[execution.datetime] = [task.number]
         })
     })
 
-    reduxTasks && reduxTasks.map(task => {
+    reduxTasks && reduxTasks.forEach(task => {
         let runningTotal = 0
         let dataPoints = []
-        Object.keys(times).sort(compare).map(time => {
+        Object.keys(times).sort(compare).forEach(time => {
             dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal})
         })
         myData.push({

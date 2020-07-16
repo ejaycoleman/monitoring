@@ -1,14 +1,14 @@
 import TaskSettingsModal from './TaskSettingsModal'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'
-import { modifyTask, removeTask, toggleEnabled } from '../../gql'
+import { modifyTask, removeTask } from '../../gql'
 
 const TaskSettingsModalContainer =
     compose(
         graphql(modifyTask, {
             props: ({ loading, mutate, ownProps }) => ({
                 loading: loading || ownProps.loading,
-                modifyTask: (number, command, frequency, period, enabled) => {
+                modifyTaskProp: (number, command, frequency, period, enabled) => {
                     if (!Number.isInteger(parseInt(number)) || number <= 0) {
                         throw new Error(`Task number (${number}) must be a positive integer`)
                     }
@@ -36,7 +36,7 @@ const TaskSettingsModalContainer =
         graphql(removeTask, {
             props: ({ loading, mutate, ownProps }) => ({
                 loading: loading || ownProps.loading,
-                removeTask: (taskNumber) => {
+                removeTaskProp: (taskNumber) => {
                     return mutate({
                         variables: {
                             taskNumber: parseInt(taskNumber)

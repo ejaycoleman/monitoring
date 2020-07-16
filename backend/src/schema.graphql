@@ -1,5 +1,5 @@
 type Query {
-  currentUser: User!
+  currentUser: User
   tasks(approved: Boolean): [Task]
   usersUnapprovedTasks: [Task]
 }

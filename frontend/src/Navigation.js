@@ -31,7 +31,7 @@ const Navigation = props => {
 
     useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
-	}, [tasks])
+	}, [tasks, dispatch])
     
     useEffect(() => {        
         subscribeToMore({
@@ -48,7 +48,7 @@ const Navigation = props => {
                 taskDeleted && dispatch(removeTask(taskDeleted.number))
             }
         })
-    }, [])
+    }, [dispatch, subscribeToMore])
 
     const signOut = () => {
         dispatch(logout())
