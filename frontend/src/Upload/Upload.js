@@ -51,7 +51,7 @@ const CssTextField = withStyles({
   })(TextField)
 
 const Upload = props => {
-	const { refetch } = props
+	const { refetch, uploadSingleTask } = props
 	const [ jsonFile, setJsonFile ] = useState('')
 	const [ newTaskNumber, setNewTaskNumber ] = useState(0)
 	const [ newTaskCommand, setNewTaskCommand ] = useState("")
@@ -101,7 +101,7 @@ const Upload = props => {
 						try {
 							JSON.parse(jsonFile).tasks.forEach((task) => {
 								try {
-									props.uploadSingleTask(task).then(({data}) => {
+									uploadSingleTask(task).then(({data}) => {
 										if (isAdmin) {
 											dispatch(addTask(data.uploadSingleTask))
 										} else {
@@ -158,7 +158,7 @@ const Upload = props => {
 				</NativeSelect>
 				<Button variant="contained" onClick={() => {
 					try {
-						props.uploadSingleTask({ 
+						uploadSingleTask({ 
 							number: newTaskNumber, 
 							command: newTaskCommand, 
 							frequency: newTaskFrequency, 

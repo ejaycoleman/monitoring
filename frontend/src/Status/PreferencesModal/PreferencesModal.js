@@ -10,7 +10,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Snackbar from '@material-ui/core/Snackbar'
 
 export default function PreferencesModal(props) {
-	const {close, preferences: { preference } } = props
+	const {close, preferences: { preference }, setPreferences } = props
 	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
 	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
 	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
@@ -60,7 +60,7 @@ export default function PreferencesModal(props) {
 						setSnackBarErrorShow(true)
 						return
 					}
-					props.setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close()).catch(err => console.log(err))
+					setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(() => close()).catch(err => console.log(err))
 					}} color="primary">
 					Apply
 				</Button>
