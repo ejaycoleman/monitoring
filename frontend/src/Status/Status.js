@@ -20,11 +20,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
 import { Link } from 'react-router-dom'
 
+import Notification from '../Notfication/Notification'
+
 export default function Status(props) {
 	const { tasks, userPreferences, setPreferences } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
+
+	const [newSnackBarError, setNewSnackBarError] = React.useState(true)
+
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
 	const { authed, admin } = useSelector(state => state.isLogged)
@@ -176,17 +181,20 @@ export default function Status(props) {
 					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</Dialog>
-					<Snackbar
+					{/* <Snackbar
 						anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 						open={snackBarErrorShow}
 						onClose={() => setSnackBarErrorShow(false)}
 						message="⚠️ Login to change threshold preferences"
-					/>
+					/> */}
+					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)} message="⚠️ Login to change threshold preferences" /> 
 				</div>
 			</div>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
 				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
+
+			
 		</div>
 	) 
 }
