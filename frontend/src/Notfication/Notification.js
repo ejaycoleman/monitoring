@@ -1,6 +1,8 @@
 import React from 'react';
 import { useRef, useEffect } from "react";
 
+import Paper from '@material-ui/core/Paper'
+
 export default function Notification(props) {
     const { show, onClose } = props
     const wrapperRef = useRef(null);
@@ -18,8 +20,8 @@ export default function Notification(props) {
     })
 
 	return (
-		<div ref={wrapperRef} style={{display: show? 'block' : 'none', backgroundColor: 'white', width: 200, height: 50, position: 'fixed', top:0, right:0, textAlign: 'center'}}>
-			{props.message}
+		<div ref={wrapperRef} style={{display: show? 'block' : 'none', position: 'fixed', top:0, right:0, textAlign: 'center'}}>
+			<Paper style={{width: 200}}>{props.children}</Paper>
 		</div>
 	)
 }

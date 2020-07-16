@@ -10,7 +10,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import WatchLaterIcon from '@material-ui/icons/WatchLater'
-import Snackbar from '@material-ui/core/Snackbar'
 import StatusRow from './StatusRow'
 import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
@@ -27,9 +26,7 @@ export default function Status(props) {
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
-
-	const [newSnackBarError, setNewSnackBarError] = React.useState(true)
-
+	const [notificationErrorShow, setNotificationErrorShow] = React.useState(false)
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
 	const { authed, admin } = useSelector(state => state.isLogged)
@@ -155,7 +152,7 @@ export default function Status(props) {
 								</TableHead>
 								<TableBody>
 									{
-										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow key={index} task={task} ranInTime={true} />)) 
+										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow showNotificationError={() => setNotificationErrorShow(true)} key={index} task={task} ranInTime={true} />)) 
 									}
 								</TableBody>
 							</Table>
@@ -181,13 +178,10 @@ export default function Status(props) {
 					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</Dialog>
-					{/* <Snackbar
-						anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-						open={snackBarErrorShow}
-						onClose={() => setSnackBarErrorShow(false)}
-						message="⚠️ Login to change threshold preferences"
-					/> */}
-					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)} message="⚠️ Login to change threshold preferences" /> 
+					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Login to change threshold preferences</Notification> 
+
+
+					<Notification show={notificationErrorShow} onClose={() => setNotificationErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Emails not set up currently</Notification> 
 				</div>
 			</div>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>

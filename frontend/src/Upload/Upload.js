@@ -4,11 +4,11 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import NativeSelect from '@material-ui/core/NativeSelect'
 import FormGroup from '@material-ui/core/FormGroup'
-import Snackbar from '@material-ui/core/Snackbar'
 import { withStyles } from '@material-ui/core/styles'
 import { store } from '../index'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTask } from '../actions'
+import Notification from '../Notfication/Notification'
 
 const theme = {
 	scheme: 'monokai',
@@ -180,12 +180,7 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarFeedbackShow}
-				onClose={() => setSnackBarFeedbackShow(false)}
-				message="Requested ✅"
-			/>
+			<Notification show={snackBarFeedbackShow} onClose={() => setSnackBarFeedbackShow(false)}>Requested <span role="img" aria-label="tick">✅</span></Notification> 
 		</div>
 	) 
 }

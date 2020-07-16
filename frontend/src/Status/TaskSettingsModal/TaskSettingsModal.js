@@ -9,10 +9,10 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Backdrop from '@material-ui/core/Backdrop'
-import Snackbar from '@material-ui/core/Snackbar'
 import Dialog from '@material-ui/core/Dialog'
 import { modifyTask, removeTask } from '../../actions'
 import { useDispatch } from 'react-redux'
+import Notification from '../../Notfication/Notification'
 
 export default function TaskSettingsModal(props) {
 	const { close, task, modifyTaskProp, removeTaskProp } = props
@@ -105,12 +105,7 @@ export default function TaskSettingsModal(props) {
 					</Backdrop>
 				</DialogActions>
 			</Dialog>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={!!error}
-				onClose={() => setError('')}
-				message={`⚠️ ${error}`}
-			/>
+			<Notification show={!!error} onClose={() => setError('')}><span role="img" aria-label="warning">⚠️</span> {error}</Notification> 
 		</React.Fragment>
 	)
 }

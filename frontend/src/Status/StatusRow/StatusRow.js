@@ -14,14 +14,12 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useSelector } from 'react-redux'
-import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
 import TaskSettingsModal from '../TaskSettingsModal'
 
 export default function StatusRow(props) {
-	const { task, toggleNotification } = props;
+	const { task, toggleNotification, showNotificationError } = props;
 	const [open, setOpen] = React.useState(false);
-	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
 	const [modalOpen, setModalOpen] = React.useState(false)
@@ -86,7 +84,7 @@ export default function StatusRow(props) {
 								toggleNotification(task.number.toString())
 								.then(() => {
 									setNotifications(!notifications)
-									!notifications && setSnackBarErrorShow(true)
+									!notifications && showNotificationError()
 								})
 								.catch(e => console.log(e))}>
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
@@ -106,13 +104,7 @@ export default function StatusRow(props) {
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={8}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
-			</TableRow>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarErrorShow}
-				onClose={() => setSnackBarErrorShow(false)}
-				message="⚠️ Emails not set up currently"
-			/>
+			</TableRow>			
 			<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
 				<TaskSettingsModal task={task} close={() => setModalOpen(false)}/>
 			</Dialog>
