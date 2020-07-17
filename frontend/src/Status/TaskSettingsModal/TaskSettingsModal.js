@@ -7,12 +7,11 @@ import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Backdrop from '@material-ui/core/Backdrop'
-import Snackbar from '@material-ui/core/Snackbar'
-import Dialog from '@material-ui/core/Dialog'
 import { modifyTask, removeTask } from '../../actions'
 import { useDispatch } from 'react-redux'
+import Notification from '../../Notfication/Notification'
+import InteractiveModal from '../../InteractiveModal/InteractiveModal'
+import WarningIcon from '@material-ui/icons/Warning'
 
 export default function TaskSettingsModal(props) {
 	const { close, task, modifyTaskProp, removeTaskProp } = props
@@ -20,7 +19,6 @@ export default function TaskSettingsModal(props) {
 	const [frequency, setFrequency] = React.useState(task.frequency);
 	const [period, setPeriod] = React.useState(task.period);
 	const [enabled, setEnabled] = React.useState(task.enabled);
-	const [loading, setLoading] = React.useState(false)
 	const [error, setError] = React.useState('')
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
 	const dispatch = useDispatch()
@@ -76,10 +74,7 @@ export default function TaskSettingsModal(props) {
 					</Button>
 				)}
 			</DialogActions>
-			<Dialog
-				open={deleteConfirmDialog}
-				onClose={() => setDeleteConfirmDialog(false)}
-			>
+			<InteractiveModal show={deleteConfirmDialog} onClose={() => setDeleteConfirmDialog(false)}>
 				<DialogContent>
 					<DialogContentText>
 						Are you sure you want to delete task #{task.number}?
@@ -90,9 +85,7 @@ export default function TaskSettingsModal(props) {
 						Cancel
 					</Button>
 					<Button onClick={() => {
-						setLoading(true)
 						removeTaskProp(task.number).then(data => {
-							setLoading(false)
 							dispatch(removeTask(task.number))
 							setDeleteConfirmDialog(false)
 							close()	
@@ -100,17 +93,9 @@ export default function TaskSettingsModal(props) {
 					}} variant="contained" color="secondary">
 						Delete
 					</Button>
-					<Backdrop open={loading} style={{zIndex: 99999999}}>
-						<CircularProgress color="inherit" />
-					</Backdrop>
 				</DialogActions>
-			</Dialog>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={!!error}
-				onClose={() => setError('')}
-				message={`⚠️ ${error}`}
-			/>
+			</InteractiveModal>
+			<Notification show={!!error} onClose={() => setError('')}><WarningIcon style={{color: '#F2A83B'}}/> {error}</Notification> 
 		</React.Fragment>
 	)
 }

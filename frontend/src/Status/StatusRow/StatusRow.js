@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import Dialog from '@material-ui/core/Dialog'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import moment from 'moment'
@@ -14,17 +13,13 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useSelector } from 'react-redux'
-import Snackbar from '@material-ui/core/Snackbar';
 import ExecutionTable from '../ExecutionTable'
-import TaskSettingsModal from '../TaskSettingsModal'
 
 export default function StatusRow(props) {
-	const { task, toggleNotification } = props;
+	const { task, toggleNotification, showNotificationError, showPreferencesModal } = props;
 	const [open, setOpen] = React.useState(false);
-	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
-	const [modalOpen, setModalOpen] = React.useState(false)
 
 	const { authed, admin } = useSelector(state => state.isLogged)
 	
@@ -49,7 +44,8 @@ export default function StatusRow(props) {
 			}
 		})
 		setRanInTime(ranInTime)
-	}, [setRanInTime, task.frequency, task.period, task.executions])
+		setNotifications(task.notifications && task.notifications.length !== 0)
+	}, [setRanInTime, task.frequency, task.period, task.executions, task.notifications])
 
 	return (
 		<React.Fragment>
@@ -86,36 +82,26 @@ export default function StatusRow(props) {
 								toggleNotification(task.number.toString())
 								.then(() => {
 									setNotifications(!notifications)
-									!notifications && setSnackBarErrorShow(true)
+									!notifications && showNotificationError()
 								})
 								.catch(e => console.log(e))}>
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</TableCell>
 						{ admin && 
 							<React.Fragment>
-								<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => setModalOpen(true)}>
+								<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => showPreferencesModal(task)}>
 									<SettingsIcon />
 								</TableCell> 
 							</React.Fragment>
 						}
 					</React.Fragment>
 				}
-
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={8}>
 					<ExecutionTable task={task} open={open} />
 				</TableCell>
-			</TableRow>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarErrorShow}
-				onClose={() => setSnackBarErrorShow(false)}
-				message="⚠️ Emails not set up currently"
-			/>
-			<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-				<TaskSettingsModal task={task} close={() => setModalOpen(false)}/>
-			</Dialog>
+			</TableRow>			
 		</React.Fragment>
  	);
 }

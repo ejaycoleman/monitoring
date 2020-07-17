@@ -3,11 +3,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Button from '@material-ui/core/Button';
-
 import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
-import Snackbar from '@material-ui/core/Snackbar'
+import Notification from '../../Notfication/Notification'
+import WarningIcon from '@material-ui/icons/Warning'
 
 export default function PreferencesModal(props) {
 	const {close, preferences: { preference }, setPreferences } = props
@@ -65,12 +65,7 @@ export default function PreferencesModal(props) {
 					Apply
 				</Button>
 			</DialogActions>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarErrorShow}
-				onClose={() => setSnackBarErrorShow(false)}
-				message="⚠️ Absolute must be greater than ideal!"
-			/>
+			<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B'}}/> Absolute must be greater than ideal!</Notification> 
 		</React.Fragment>
 	)
 }

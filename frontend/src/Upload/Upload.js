@@ -4,11 +4,12 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import NativeSelect from '@material-ui/core/NativeSelect'
 import FormGroup from '@material-ui/core/FormGroup'
-import Snackbar from '@material-ui/core/Snackbar'
 import { withStyles } from '@material-ui/core/styles'
 import { store } from '../index'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTask } from '../actions'
+import Notification from '../Notfication/Notification'
+import WarningIcon from '@material-ui/icons/Warning'
 
 const theme = {
 	scheme: 'monokai',
@@ -123,8 +124,8 @@ const Upload = props => {
 					}}>UPLOAD</Button>	
 				</FormGroup>
 				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
-					<h2 style={{paddingTop: 10}}><span role="img" aria-label="warning">⚠️</span> errors:</h2>
-					{errors.map((e, i) => <h3>{i + 1}. {e}</h3>)}
+					<h2 style={{paddingTop: 10, display: 'flex', alignItems: 'center'}}><WarningIcon style={{color: '#F2A83B', paddingRight: 5, fontSize: '1.5em'}}/> errors:</h2>
+					{errors.map((e, i) => <h3 key={i}>{i + 1}. {e}</h3>)}
 				</div>}
 			</div>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
@@ -180,12 +181,7 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
-			<Snackbar
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={snackBarFeedbackShow}
-				onClose={() => setSnackBarFeedbackShow(false)}
-				message="Requested ✅"
-			/>
+			<Notification show={snackBarFeedbackShow} onClose={() => setSnackBarFeedbackShow(false)}>Requested <span role="img" aria-label="tick">✅</span></Notification> 
 		</div>
 	) 
 }
