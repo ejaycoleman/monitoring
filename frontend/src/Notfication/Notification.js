@@ -28,7 +28,7 @@ export default function Notification(props) {
             textAlign: 'center',
             height: 50,            
         }}>
-            <Paper elevation={3} style={{display: 'block', padding: 10, width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>{props.children}</Paper>
+            <Paper elevation={3} style={{padding: 10, width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>{props.children}</Paper>
 		</div>
 	)
 }
