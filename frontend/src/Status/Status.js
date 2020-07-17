@@ -11,7 +11,6 @@ import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import WatchLaterIcon from '@material-ui/icons/WatchLater'
 import StatusRow from './StatusRow'
-import Dialog from '@material-ui/core/Dialog'
 import PreferencesModal from './PreferencesModal'
 import { store } from '../index'
 import { addTask } from '../actions'
@@ -21,11 +20,13 @@ import { Link } from 'react-router-dom'
 
 import Notification from '../Notfication/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
+import TaskSettingsModal from './TaskSettingsModal'
 
 export default function Status(props) {
 	const { tasks, userPreferences, setPreferences } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
+	const [preferencesModalOpen, setPreferencesModalOpen] = React.useState(false)
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 	const [notificationErrorShow, setNotificationErrorShow] = React.useState(false)
 	const [order, setOrder] = React.useState('asc')
@@ -153,7 +154,7 @@ export default function Status(props) {
 								</TableHead>
 								<TableBody>
 									{
-										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow showNotificationError={() => setNotificationErrorShow(true)} key={index} task={task} ranInTime={true} />)) 
+										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow showPreferencesModal={(task) => setPreferencesModalOpen(task)} showNotificationError={() => setNotificationErrorShow(true)} key={index} task={task} ranInTime={true} />)) 
 									}
 								</TableBody>
 							</Table>
@@ -176,17 +177,15 @@ export default function Status(props) {
 						style={{backgroundColor: 'white'}} 
 						onClick={() => authed ? setModalOpen(true) : setSnackBarErrorShow(true)}
 					/>	
-					{/* <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-						
-					</Dialog> */}
-
 					<InteractiveModal show={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</InteractiveModal>
 					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Login to change threshold preferences</Notification> 
-
-
 					<Notification show={notificationErrorShow} onClose={() => setNotificationErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Emails not set up currently</Notification> 
+
+					<InteractiveModal show={!!preferencesModalOpen} onClose={() => setPreferencesModalOpen(false)}>
+						<TaskSettingsModal task={preferencesModalOpen} close={() => setPreferencesModalOpen(false)}/>
+					</InteractiveModal>
 				</div>
 			</div>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
