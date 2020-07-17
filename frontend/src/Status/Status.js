@@ -20,6 +20,7 @@ import Visualisations from './Visualisations'
 import { Link } from 'react-router-dom'
 
 import Notification from '../Notfication/Notification'
+import InteractiveModal from '../InteractiveModal/InteractiveModal'
 
 export default function Status(props) {
 	const { tasks, userPreferences, setPreferences } = props
@@ -175,9 +176,13 @@ export default function Status(props) {
 						style={{backgroundColor: 'white'}} 
 						onClick={() => authed ? setModalOpen(true) : setSnackBarErrorShow(true)}
 					/>	
-					<Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+					{/* <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+						
+					</Dialog> */}
+
+					<InteractiveModal show={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
-					</Dialog>
+					</InteractiveModal>
 					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Login to change threshold preferences</Notification> 
 
 
