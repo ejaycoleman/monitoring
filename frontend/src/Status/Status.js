@@ -17,10 +17,11 @@ import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
 import { Link } from 'react-router-dom'
-
 import Notification from '../Notfication/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
 import TaskSettingsModal from './TaskSettingsModal'
+
+import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
 	const { tasks, userPreferences, setPreferences } = props
@@ -180,9 +181,8 @@ export default function Status(props) {
 					<InteractiveModal show={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</InteractiveModal>
-					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Login to change threshold preferences</Notification> 
-					<Notification show={notificationErrorShow} onClose={() => setNotificationErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Emails not set up currently</Notification> 
-
+					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B'}}/> Login to change threshold preferences</Notification> 
+					<Notification show={notificationErrorShow} onClose={() => setNotificationErrorShow(false)}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/> Emails not set up currently</Notification> 
 					<InteractiveModal show={!!preferencesModalOpen} onClose={() => setPreferencesModalOpen(false)}>
 						<TaskSettingsModal task={preferencesModalOpen} close={() => setPreferencesModalOpen(false)}/>
 					</InteractiveModal>

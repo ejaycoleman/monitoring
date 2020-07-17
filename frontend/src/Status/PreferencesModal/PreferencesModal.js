@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Notification from '../../Notfication/Notification'
+import WarningIcon from '@material-ui/icons/Warning'
 
 export default function PreferencesModal(props) {
 	const {close, preferences: { preference }, setPreferences } = props
@@ -64,7 +65,7 @@ export default function PreferencesModal(props) {
 					Apply
 				</Button>
 			</DialogActions>
-			<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><span role="img" aria-label="warning">⚠️</span> Absolute must be greater than ideal!</Notification> 
+			<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B'}}/> Absolute must be greater than ideal!</Notification> 
 		</React.Fragment>
 	)
 }

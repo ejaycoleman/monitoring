@@ -10,8 +10,8 @@ import Switch from '@material-ui/core/Switch'
 import { modifyTask, removeTask } from '../../actions'
 import { useDispatch } from 'react-redux'
 import Notification from '../../Notfication/Notification'
-
 import InteractiveModal from '../../InteractiveModal/InteractiveModal'
+import WarningIcon from '@material-ui/icons/Warning'
 
 export default function TaskSettingsModal(props) {
 	const { close, task, modifyTaskProp, removeTaskProp } = props
@@ -95,7 +95,7 @@ export default function TaskSettingsModal(props) {
 					</Button>
 				</DialogActions>
 			</InteractiveModal>
-			<Notification show={!!error} onClose={() => setError('')}><span role="img" aria-label="warning">⚠️</span> {error}</Notification> 
+			<Notification show={!!error} onClose={() => setError('')}><WarningIcon style={{color: '#F2A83B'}}/> {error}</Notification> 
 		</React.Fragment>
 	)
 }

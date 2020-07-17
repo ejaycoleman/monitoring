@@ -20,8 +20,15 @@ export default function Notification(props) {
     })
 
 	return (
-		<div ref={wrapperRef} style={{display: show? 'block' : 'none', position: 'fixed', top:0, right:0, textAlign: 'center'}}>
-			<Paper style={{width: 200}}>{props.children}</Paper>
+		<div ref={wrapperRef} style={{
+            display: show? 'block' : 'none', 
+            position: 'fixed', 
+            top: 15, 
+            right: 15, 
+            textAlign: 'center',
+            height: 50,            
+        }}>
+            <Paper elevation={3} style={{display: 'block', padding: 10, width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>{props.children}</Paper>
 		</div>
 	)
 }
