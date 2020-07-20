@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import FormGroup from '@material-ui/core/FormGroup';
 import Card from '@material-ui/core/Card';
 
+import jwt from 'jsonwebtoken'
+
 import { AUTH_TOKEN } from '../constants'
 
 const Login = props => {
@@ -39,8 +41,15 @@ const Login = props => {
 						helperText={error && "Invalid Credentials"}
 					/>
 					<Button style={{width: 100, marginTop: 20}} variant="contained" onClick={() => loginMutation({ email, password }).then(({data}) => {
+						console.log(data)
 						localStorage.setItem(AUTH_TOKEN, data.login.token)
-						dispatch(login(data.login.user.isAdmin))
+						// dispatch(login({isAdmin: data.login.user.isAdmin, }))
+
+						const session = jwt.decode(data.login.token)
+  						
+
+
+						dispatch(login({admin: data.login.user.isAdmin, email: session.email}))
 						history.push(`/`)
 					}).catch(error => {
 						setError(true)

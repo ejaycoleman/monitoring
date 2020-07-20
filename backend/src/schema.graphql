@@ -1,6 +1,6 @@
 type Query {
   currentUser: User
-  tasks(approved: Boolean): [Task]
+  tasks: [Task]
   usersUnapprovedTasks: [Task]
 }
 

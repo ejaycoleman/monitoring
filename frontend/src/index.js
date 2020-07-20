@@ -62,7 +62,8 @@ const AppRouter = () => {
   const dispatch = useDispatch()
   const session = jwt.decode(localStorage.getItem(AUTH_TOKEN))
   if (session && new Date().getTime() / 1000 < session.exp ) {
-    dispatch(login(session.admin))
+    // dispatch(login(session.admin))
+    dispatch(login({admin: session.admin, email: session.email}))
   } else {
     localStorage.removeItem(AUTH_TOKEN)
   }
