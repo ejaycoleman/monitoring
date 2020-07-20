@@ -12,7 +12,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 
 export default function ExecutionTable(props) {
 	const { task, open } = props;
-	const [order, setOrder] = React.useState('asc');
+	const [order, setOrder] = React.useState('desc');
 	
 	const [page, setPage] = React.useState(0);
 	const numberOfPages = 5
