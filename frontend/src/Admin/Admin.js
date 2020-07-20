@@ -78,7 +78,7 @@ const Admin = props => {
 														let values = [...stateTasks]
 														values.splice(index, 1)
 														setTasks(values)
-														dispatch(removeTask(data.approveTask.id))
+														dispatch(removeTask(data.rejectTask.number))
 													}).catch(error => console.log(error))}>Reject</Button>
 												</TableCell>
 											</TableRow>
