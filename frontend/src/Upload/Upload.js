@@ -170,6 +170,8 @@ const Upload = props => {
 								dispatch(addTask(data.uploadSingleTask))
 							} else {
 								setSnackBarFeedbackShow(true)
+
+								dispatch(addTask(data.uploadSingleTask))
 							}
 						}).catch(e => {
 							toSetErrors.push(e.message.split(':')[1])

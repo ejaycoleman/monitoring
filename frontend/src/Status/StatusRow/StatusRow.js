@@ -15,6 +15,14 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { useSelector } from 'react-redux'
 import ExecutionTable from '../ExecutionTable'
 
+
+import Chip from '@material-ui/core/Chip';
+// import Button from '@material-ui/core/Button'
+// import IconButton from '@material-ui/core/IconButton';
+// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+// import AddCircleIcon from '@material-ui/icons/AddCircle';
+// import DeleteIcon from '@material-ui/icons/Delete';
+
 export default function StatusRow(props) {
 	const { task, toggleNotification, showNotificationError, showPreferencesModal } = props;
 	const [open, setOpen] = React.useState(false);
@@ -88,14 +96,41 @@ export default function StatusRow(props) {
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</TableCell>
 						{ admin && 
-							<React.Fragment>
-								<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => showPreferencesModal(task)}>
-									<SettingsIcon />
-								</TableCell> 
-							</React.Fragment>
+							<TableCell component="th" scope="row" style={{textAlign: 'center', cursor: 'pointer'}} onClick={() => showPreferencesModal(task)}>
+								<SettingsIcon />
+							</TableCell> 
 						}
 					</React.Fragment>
 				}
+				<TableCell align="right" style={{textAlign: 'right'}}>
+					{ task.approved ? 
+						<Chip variant="outlined" label='APPROVED' style={{color: 'green'}} size="small" />	
+					: (
+						// <div style={{display: 'flex', flexDirection: 'row'}}>
+						// 	<Button size="small" variant="contained">Approve</Button>
+						// 	<Button size="small" variant="contained">Delete</Button>
+						// </div>
+						admin ?
+						(<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+							{/* <Chip variant="outlined" label='PENDING' size="small" /> */}
+							{/* <Button size="small" variant="contained">APPPROVE</Button>  */}
+
+							<Chip
+							 	size="small"
+								label="APPROVE TASK"
+								clickable
+								color="primary"
+								onDelete={() => true}
+								deleteIcon={<CheckCircleIcon />}
+								variant="outlined"
+							/>
+						</div>)
+						:
+							<Chip variant="outlined" label='PENDING' size="small" />
+
+					)
+				}
+				</TableCell>
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={8}>

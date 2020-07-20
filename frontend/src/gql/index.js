@@ -25,6 +25,7 @@ export const retreiveTasks = gql` {
         command, 
         frequency,
         period,
+        approved,
         executions {
             datetime
         },

@@ -21,6 +21,8 @@ import Notification from '../Notfication/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
 import TaskSettingsModal from './TaskSettingsModal'
 
+// import Admin from '../Admin'
+
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
@@ -151,6 +153,7 @@ export default function Status(props) {
 												}
 											</React.Fragment>	
 										}
+										<TableCell style={{width: 30}}/>
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -192,7 +195,7 @@ export default function Status(props) {
 				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
 
-			
+			{/* <Admin /> */}
 		</div>
 	) 
 }

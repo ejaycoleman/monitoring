@@ -53,30 +53,30 @@ export default function ExecutionTable(props) {
 						</h3>
 						<Table style={{width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
 							<TableHead>
-							<TableRow>
-								<TableCell>
-									Order of execution
-								</TableCell>
-								<TableCell align="right">
-									Datetime
-									<TableSortLabel active direction={order} onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')} />
-								</TableCell>
-							</TableRow>
-							</TableHead>
-							<TableBody>
-							{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * numberOfPages, page * numberOfPages + numberOfPages).map((execution) => (
-								<TableRow key={execution.datetime}>
-									<TableCell component="th" scope="row">
-										{execution.index}
+								<TableRow>
+									<TableCell>
+										Order of execution
 									</TableCell>
-									<TableCell align="right" scope="row">
-										{moment(execution.datetime * 1000).format('MMMM Do YYYY')}
+									<TableCell align="right">
+										Datetime
+										<TableSortLabel active direction={order} onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')} />
 									</TableCell>
 								</TableRow>
-							))}
+							</TableHead>
+							<TableBody>
+								{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * numberOfPages, page * numberOfPages + numberOfPages).map((execution) => (
+									<TableRow key={execution.datetime}>
+										<TableCell component="th" scope="row">
+											{execution.index}
+										</TableCell>
+										<TableCell align="right" scope="row">
+											{moment(execution.datetime * 1000).format('MMMM Do YYYY')}
+										</TableCell>
+									</TableRow>
+								))}
 							</TableBody>
 							<TablePagination 
-								rowsPerPageOptions={false}
+								rowsPerPageOptions={[5]}
 								count={task.executions.length}
 								onChangePage={(_event, newPage) => setPage(newPage)}
 								rowsPerPage={5}
