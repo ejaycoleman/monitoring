@@ -213,6 +213,7 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     }
 
     await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
+    await prisma.taskNotification.deleteMany({where: {taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: fullTask.id}})
 
     pubsub.publish('TASK_DELETED', { 
