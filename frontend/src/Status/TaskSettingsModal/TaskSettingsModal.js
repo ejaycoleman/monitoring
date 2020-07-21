@@ -48,10 +48,10 @@ export default function TaskSettingsModal(props) {
 						<option value="months">months</option>
 					</NativeSelect>
 				</FormGroup>
-				{enabled ? 'enabled' : 'disabled'}
-				<Switch checked={enabled} onChange={() => setEnabled(!enabled)} />
+				{ task.approved && (enabled ? 'enabled' : 'disabled')}
+				{ task.approved && <Switch checked={enabled} onChange={() => setEnabled(!enabled)} /> }
 				<Button style={{float: 'right'}} onClick={() => setDeleteConfirmDialog(true)} variant="contained" color="secondary">
-					Delete Task
+					{task.approved ? 'Delete' : 'Reject'} Task
 				</Button>
 			</DialogContent>
 			<DialogActions>
@@ -77,7 +77,7 @@ export default function TaskSettingsModal(props) {
 			<InteractiveModal show={deleteConfirmDialog} onClose={() => setDeleteConfirmDialog(false)}>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to delete task #{task.number}?
+						Are you sure you want to {task.approved ? 'delete' : 'reject'} task #{task.number}?
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
@@ -91,7 +91,7 @@ export default function TaskSettingsModal(props) {
 							close()	
 						}).catch(e => console.log(e))						
 					}} variant="contained" color="secondary">
-						Delete
+						{task.approved ? 'Delete' : 'Reject'}
 					</Button>
 				</DialogActions>
 			</InteractiveModal>

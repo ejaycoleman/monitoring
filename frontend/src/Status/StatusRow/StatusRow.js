@@ -14,15 +14,9 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useDispatch, useSelector } from 'react-redux'
 import ExecutionTable from '../ExecutionTable'
-
 import { approveTask } from '../../actions'
-
 import Chip from '@material-ui/core/Chip';
-// import Button from '@material-ui/core/Button'
-// import IconButton from '@material-ui/core/IconButton';
-// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-// import AddCircleIcon from '@material-ui/icons/AddCircle';
-// import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button'
 
 export default function StatusRow(props) {
 	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask } = props;
@@ -30,14 +24,14 @@ export default function StatusRow(props) {
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
 
-	const { authed, admin } = useSelector(state => state.isLogged)
+	const { authed, admin, email } = useSelector(state => state.isLogged)
 	
 	const useRowStyles = makeStyles({
 		root: {
 			'& > *': {
 				borderBottom: 'unset',
 			},
-			borderLeft: task.enabled ? '10px solid green' : '10px solid red'
+			borderLeft: task.approved ? task.enabled ? '10px solid green' : '10px solid red' : '10px solid #808080'
 		},
 	})
 
@@ -61,11 +55,13 @@ export default function StatusRow(props) {
 	return (
 		<React.Fragment>
 			<TableRow className={classes.root}>
-				<TableCell>
-					<IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
-				</TableCell>
+					<TableCell>
+						{ task.approved &&
+							<IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+								{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+							</IconButton>
+						} 
+					</TableCell>
 				<TableCell component="th" scope="row">
 					{task.number}
 				</TableCell>
@@ -75,17 +71,21 @@ export default function StatusRow(props) {
 				<TableCell align="right">
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
-				<TableCell align="right" style={{textAlign: 'center'}}>
-					{(!task.executions || task.executions.length === 0) ? 
-						<HelpIcon style={{color: 'grey'}}/> 
-					: 
-						(ranInTime ? 
-							<CheckCircleIcon style={{color: 'green'}}/> 
-						: 
-							<CancelIcon style={{color: 'red'}}/>
-						) 
-					}
-				</TableCell>
+				{ task.approved ?
+						<TableCell align="right" style={{textAlign: 'center'}}>
+							{(!task.executions || task.executions.length === 0) ? 
+								<HelpIcon style={{color: 'grey'}}/> 
+							: 
+								(ranInTime ? 
+									<CheckCircleIcon style={{color: 'green'}}/> 
+								: 
+									<CancelIcon style={{color: 'red'}}/>
+								) 
+							}
+						</TableCell>
+					:
+						<TableCell></TableCell>
+				}
 				{authed && 
 					<React.Fragment>
 						{ admin && 
@@ -97,37 +97,24 @@ export default function StatusRow(props) {
 						}
 					</React.Fragment>
 				}
-				<TableCell align="right" style={{textAlign: 'right'}}>
+				<TableCell align="right" style={{textAlign: 'right', fontWeight: task.author.email === email ? 600 : 400}}>
 					{task.author.email}
 				</TableCell>
-				<TableCell align="right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-				{ 	!task.approved && admin &&
-						(
-							<Chip
-							 	size="small"
-								label="APPROVE"
-								clickable
-								color='secondary'
-								onDelete={() => {
-									// console.log('test')
-									// // THIS IS HOW A TASK WILL GET APPROVED
-									console.log(task)
-
+				<TableCell align="right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingTop: 20, paddingBottom: 20}}>
+				{ 	!task.approved && admin && (
+						<Button variant="outlined" 
+								endIcon={<CheckCircleIcon />}
+								onClick={() => {
 									graphqlApproveTask({ 
 										number: task.number
 									}).then(({data}) => {
-										// let values = [...stateTasks]
-										// values.splice(index, 1)
-										// setTasks(values)
 										dispatch(approveTask(data.approveTask.number))
 									}).catch(error => console.log(error))
-								}}
-								deleteIcon={<CheckCircleIcon />}
-								variant="outlined"
-							/>
+								}}>
+							APPROVE
+						</Button>
 					)
 				}
-
 				{ !task.approved && !admin && (
 					<Chip
 						size="small"
@@ -135,7 +122,6 @@ export default function StatusRow(props) {
 						variant="outlined"
 					/>
 				)}
-
 				{
 					authed && task.approved &&
 					(<IconButton
@@ -151,11 +137,13 @@ export default function StatusRow(props) {
 				}
 				</TableCell>
 			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={9}>
-					<ExecutionTable task={task} open={open} />
-				</TableCell>
-			</TableRow>			
+				<TableRow>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={9}>
+					{ task.approved &&
+						<ExecutionTable task={task} open={open} />
+					}
+					</TableCell>
+				</TableRow>		
 		</React.Fragment>
  	);
 }

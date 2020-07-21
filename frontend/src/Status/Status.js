@@ -145,7 +145,6 @@ export default function Status(props) {
 										<TableCell align="right" style={{width: 30}}>Status</TableCell>
 										{authed && 
 											<React.Fragment>
-												{/* <TableCell align="right" style={{width: 30}}>Notifications</TableCell> */}
 												{ admin &&
 													<React.Fragment>
 														<TableCell align="right" style={{width: 30}}>Settings</TableCell>
@@ -153,8 +152,8 @@ export default function Status(props) {
 												}
 											</React.Fragment>	
 										}
-										<TableCell style={{width: 30}}>Author</TableCell>
-										<TableCell style={{width: 30}}/>
+										<TableCell style={{width: 30, textAlign: 'right'}}>Author</TableCell>
+										<TableCell />
 									</TableRow>
 								</TableHead>
 								<TableBody>
