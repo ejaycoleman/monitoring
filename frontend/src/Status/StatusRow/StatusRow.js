@@ -31,7 +31,7 @@ export default function StatusRow(props) {
 			'& > *': {
 				borderBottom: 'unset',
 			},
-			borderLeft: task.approved ? task.enabled ? '10px solid green' : '10px solid red' : '10px solid #808080'
+			borderLeft: task.approved ? (task.enabled ? '10px solid green' : '10px solid red') : '10px solid #808080'
 		},
 	})
 
@@ -72,7 +72,7 @@ export default function StatusRow(props) {
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
 				{ task.approved ?
-						<TableCell align="right" style={{textAlign: 'center'}}>
+						<TableCell align="right" style={{textAlign: 'center', paddingTop: 20}}>
 							{(!task.executions || task.executions.length === 0) ? 
 								<HelpIcon style={{color: 'grey'}}/> 
 							: 
@@ -86,55 +86,56 @@ export default function StatusRow(props) {
 					:
 						<TableCell></TableCell>
 				}
-				{authed && 
+				{authed && admin &&
 					<React.Fragment>
-						{ admin && 
-							<TableCell component="th" scope="row">
-								<IconButton onClick={() => showPreferencesModal(task)}>
-									<SettingsIcon />
-								</IconButton>
-							</TableCell> 
-						}
+						<TableCell component="th" scope="row" style={{padding: 0}}>
+							<IconButton onClick={() => showPreferencesModal(task)}>
+								<SettingsIcon />
+							</IconButton>
+						</TableCell> 
 					</React.Fragment>
 				}
 				<TableCell align="right" style={{textAlign: 'right', fontWeight: task.author.email === email ? 600 : 400}}>
 					{task.author.email}
 				</TableCell>
-				<TableCell align="right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingTop: 20, paddingBottom: 20}}>
-				{ 	!task.approved && admin && (
-						<Button variant="outlined" 
-								endIcon={<CheckCircleIcon />}
-								onClick={() => {
-									graphqlApproveTask({ 
-										number: task.number
-									}).then(({data}) => {
-										dispatch(approveTask(data.approveTask.number))
-									}).catch(error => console.log(error))
-								}}>
-							APPROVE
-						</Button>
-					)
-				}
-				{ !task.approved && !admin && (
-					<Chip
-						size="small"
-						label="IN REVIEW"
-						variant="outlined"
-					/>
-				)}
-				{
-					authed && task.approved &&
-					(<IconButton
-						onClick={() => 
-							toggleNotification(task.number.toString())
-							.then(() => {
-								setNotifications(!notifications)
-								!notifications && showNotificationError()
-							})
-							.catch(e => console.log(e))}>
-								{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
-					</IconButton>)
-				}
+				<TableCell align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+					{ 	!task.approved && admin && (
+							<Button 
+									variant="outlined" 
+									size="small"
+									endIcon={<CheckCircleIcon />}
+									onClick={() => {
+										graphqlApproveTask({ 
+											number: task.number
+										}).then(({data}) => {
+											dispatch(approveTask(data.approveTask.number))
+										}).catch(error => console.log(error))
+									}}>
+								APPROVE
+							</Button>
+						)
+					}
+					{ !task.approved && !admin && (
+						<Chip
+							size="small"
+							label="IN REVIEW"
+							variant="outlined"
+						/>
+					)}
+					{
+						authed && task.approved &&
+						(<IconButton
+							size='small'
+							onClick={() => 
+								toggleNotification(task.number.toString())
+								.then(() => {
+									setNotifications(!notifications)
+									!notifications && showNotificationError()
+								})
+								.catch(e => console.log(e))}>
+									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
+						</IconButton>)
+					}
 				</TableCell>
 			</TableRow>
 				<TableRow>
