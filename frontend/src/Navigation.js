@@ -5,13 +5,11 @@ import { logout } from './actions'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
-import Admin from './Admin/index'
 import SecuredRoute from './SecuredRoute';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { AUTH_TOKEN } from './constants'

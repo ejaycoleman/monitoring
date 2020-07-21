@@ -34,7 +34,10 @@ export const retreiveTasks = gql` {
                 id
             }
         }
-        enabled
+        enabled,
+        author {
+            email
+        }
     }
 }
 `
@@ -143,8 +146,8 @@ export const toggleNotification = gql`
 `
 
 export const approveTaskMutation = gql`
-    mutation approveTask($id: ID!) {
-        approveTask(id: $id) {
+    mutation approveTask($number: Int!) {
+        approveTask(number: $number) {
             number,
             command,
             frequency,

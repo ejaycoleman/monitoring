@@ -8,7 +8,7 @@ type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
   login(email: String!, password: String!): LoginResponse
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
-  approveTask(id: ID!): Task
+  approveTask(number: Int!): Task
   rejectTask(id: ID!): Task
   toggleNotification(taskNumber: String!): TaskNotification
   setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
