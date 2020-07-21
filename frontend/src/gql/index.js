@@ -102,7 +102,10 @@ export const createSingleTask = gql`
                     id
                 }
             }
-            enabled
+            enabled,
+            author {
+                email
+            }
         }
     }
 `

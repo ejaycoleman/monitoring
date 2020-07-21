@@ -106,6 +106,7 @@ const Upload = props => {
 										if (isAdmin) {
 											dispatch(addTask(data.uploadSingleTask))
 										} else {
+											dispatch(addTask(data.uploadSingleTask))
 											setSnackBarFeedbackShow(true)
 										}
 									}).catch(e => {
