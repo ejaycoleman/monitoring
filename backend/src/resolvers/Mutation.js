@@ -103,35 +103,6 @@ async function approveTask(parent, { number }, {user, prisma}) {
     return prisma.task.update({where: {number: parseInt(number)}, data: {approved: true}})
 }
 
-// Is this required???
-async function rejectTask(parent, { id }, {user, prisma}) {
-    if (!user) {
-        throw new Error('Not Authenticated')
-    }
-    const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {id: parseInt(id)}})
-    
-    if (!fullUser.isAdmin) {
-        const owner = await prisma.task.findOne({where: {id: parseInt(id)}}).author()
-        if (owner.id === parseInt(user.id)) {
-            await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
-            const task = await prisma.task.delete({where: {id: parseInt(id)}})
-            return task
-        }
-
-        throw new Error('Incorrect Privileges')
-    }
-
-    if (fullTask.approved) {
-        throw new Error('Task already approved')
-    }
-    
-    await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
-    const task = await prisma.task.delete({where: {id: parseInt(id)}})
-    
-    return task
-}
-
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -228,7 +199,6 @@ module.exports = {
     login,
     uploadSingleTask,
     approveTask,
-    rejectTask,
     toggleNotification,
     setPreferences,
     modifyTask,

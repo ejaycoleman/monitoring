@@ -26,7 +26,7 @@ const moveFiles = file => {
 async function postExecution(taskId, datetime, file) {
     const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
     const associatedNotifications = await prisma.task.findOne({where: {number: taskId}}).notifications().user()
-    if (associatedTask && associatedTask.executions && associatedTask.executions.filter(execution => execution.datetime === datetime).length === 0) {
+    if (associatedTask && associatedTask.executions && associatedTask.executions.filter(execution => execution.datetime === datetime).length === 0 && associatedTask.approved) {
         if (datetime * 1000 > Date.now()) {
             console.log(`Date ${datetime} for task #${taskId} is in the future!`)
             moveFiles(file)

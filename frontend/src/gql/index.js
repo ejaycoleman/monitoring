@@ -169,14 +169,6 @@ export const approveTaskMutation = gql`
     }
 `
 
-export const rejectTaskMutation = gql`
-    mutation rejectTask($id: ID!) {
-        rejectTask(id: $id) {
-            number
-        }
-    }
-`
-
 export const loginMutation = gql`
     mutation login($email: String!, $password: String!) {
         login(email: $email, password: $password) {
