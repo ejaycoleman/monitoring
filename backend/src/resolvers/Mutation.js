@@ -90,7 +90,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
     }
 }
 
-async function approveTask(parent, { id }, {user, prisma}) {
+async function approveTask(parent, { number }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -100,9 +100,10 @@ async function approveTask(parent, { id }, {user, prisma}) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.update({where: {id: parseInt(id)}, data: {approved: true}})
+    return prisma.task.update({where: {number: parseInt(number)}, data: {approved: true}})
 }
 
+// Is this required???
 async function rejectTask(parent, { id }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
