@@ -11,15 +11,19 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import SettingsIcon from '@material-ui/icons/Settings';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux'
 import ExecutionTable from '../ExecutionTable'
-import { approveTask } from '../../actions'
+import { removeTask, approveTask } from '../../actions'
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button'
 
+import Badge from '@material-ui/core/Badge'
+import Typography from '@material-ui/core/Typography'
+
 export default function StatusRow(props) {
-	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask } = props;
+	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask, removeTaskProp } = props;
 	const [open, setOpen] = React.useState(false);
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
@@ -68,11 +72,20 @@ export default function StatusRow(props) {
 				<TableCell component="th" scope="row">
 					{task.command}
 				</TableCell>
-				<TableCell align="right">
+				<TableCell component="th" scope="row">
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
+				<TableCell component="th" scope="row">
+					{task.author.email === email ? 
+						<Badge color="secondary" variant="dot">
+							<Typography style={{fontSize: '0.875rem', fontWeight: 800}}>{task.author.email}</Typography>
+						</Badge>
+					: 
+						task.author.email
+					}
+				</TableCell>
 				{ task.approved ?
-						<TableCell align="right" style={{textAlign: 'center', paddingTop: 20}}>
+						<TableCell component="th" scope="row" align="right" style={{textAlign: 'center', paddingTop: 20}}>
 							{(!task.executions || task.executions.length === 0) ? 
 								<HelpIcon style={{color: 'grey'}}/> 
 							: 
@@ -84,23 +97,29 @@ export default function StatusRow(props) {
 							}
 						</TableCell>
 					:
-						<TableCell></TableCell>
+						<TableCell component="th" scope="row">
+							{ !admin && (
+								<Chip
+									size="small"
+									label="IN REVIEW"
+									variant="outlined"
+								/>
+							)}
+						</TableCell>
 				}
 				{authed && admin &&
 					<React.Fragment>
-						<TableCell component="th" scope="row" style={{padding: 0}}>
+						<TableCell component="th" scope="row" style={{padding: 0, textAlign: 'center'}}>
 							<IconButton onClick={() => showPreferencesModal(task)}>
-								<SettingsIcon />
+								<EditIcon />
 							</IconButton>
 						</TableCell> 
 					</React.Fragment>
 				}
-				<TableCell align="right" style={{textAlign: 'right', fontWeight: task.author.email === email ? 600 : 400}}>
-					{task.author.email}
-				</TableCell>
-				<TableCell align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+				<TableCell component="th" scope="row" align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
 					{ 	!task.approved && admin && (
 							<Button 
+
 									variant="outlined" 
 									size="small"
 									endIcon={<CheckCircleIcon />}
@@ -115,13 +134,7 @@ export default function StatusRow(props) {
 							</Button>
 						)
 					}
-					{ !task.approved && !admin && (
-						<Chip
-							size="small"
-							label="IN REVIEW"
-							variant="outlined"
-						/>
-					)}
+					
 					{
 						authed && task.approved &&
 						(<IconButton
@@ -135,6 +148,21 @@ export default function StatusRow(props) {
 								.catch(e => console.log(e))}>
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</IconButton>)
+					}
+					{
+						authed && email === task.author.email && !task.approved && (
+							<IconButton
+								size='small'
+								// onClick={() => removeTaskProp(task.number).then(data => dispatch(removeTask(task.number)))}
+								onClick={() => {
+									removeTaskProp(task.number).then(data => {
+										dispatch(removeTask(task.number))
+									}).catch(e => console.log(e))						
+								}}
+							>
+								<DeleteOutlinedIcon style={{color: 'black'}} />
+							</IconButton>
+						)
 					}
 				</TableCell>
 			</TableRow>

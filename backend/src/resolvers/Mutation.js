@@ -176,10 +176,10 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     }
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}})
+    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}, include: {author: true}})
     
 
-    if (!fullUser.isAdmin) {
+    if (!fullUser.isAdmin && fullTask.author.email !== fullUser.email) {
         throw new Error('Incorrect Privileges')
     }
 

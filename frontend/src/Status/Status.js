@@ -135,24 +135,24 @@ export default function Status(props) {
 												setOrderBy('command')
 											}} />		
 										</TableCell>
-										<TableCell align="right">
+										<TableCell>
 											Frequency
 											<TableSortLabel direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('frequency')	
 											}} />
 										</TableCell>
-										<TableCell align="right" style={{width: 30}}>Status</TableCell>
+										<TableCell>Author</TableCell>
+										<TableCell style={{width: 30, textAlign: 'center'}}>Status</TableCell>
 										{authed && 
 											<React.Fragment>
 												{ admin &&
 													<React.Fragment>
-														<TableCell align="right" style={{width: 30}}>Settings</TableCell>
+														<TableCell style={{width: 30, textAlign: 'center'}}>Edit</TableCell>
 													</React.Fragment>
 												}
 											</React.Fragment>	
 										}
-										<TableCell style={{width: 30, textAlign: 'right'}}>Author</TableCell>
 										<TableCell />
 									</TableRow>
 								</TableHead>
@@ -169,7 +169,6 @@ export default function Status(props) {
 						<h2 style={{textAlign: 'center', color: 'black'}}>Add them <Link to="/upload">here</Link></h2>
 					</div>
 				}
-				
 				<div style={{ 
 					marginTop: 20,
 					marginBottom: 20, 
