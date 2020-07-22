@@ -21,6 +21,8 @@ import Notification from '../Notfication/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
 import TaskSettingsModal from './TaskSettingsModal'
 
+// import Admin from '../Admin'
+
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
@@ -133,24 +135,25 @@ export default function Status(props) {
 												setOrderBy('command')
 											}} />		
 										</TableCell>
-										<TableCell align="right">
+										<TableCell>
 											Frequency
 											<TableSortLabel direction={order} active={orderBy === 'Frequency'} onClick={() =>{ 
 												setOrder(order === 'asc' ? 'desc' : 'asc')
 												setOrderBy('frequency')	
 											}} />
 										</TableCell>
-										<TableCell align="right" style={{width: 30}}>Status</TableCell>
+										<TableCell>Author</TableCell>
+										<TableCell style={{width: 30, textAlign: 'center'}}>Status</TableCell>
 										{authed && 
 											<React.Fragment>
-												<TableCell align="right" style={{width: 30}}>Notifications</TableCell>
 												{ admin &&
 													<React.Fragment>
-														<TableCell align="right" style={{width: 30}}>Settings</TableCell>
+														<TableCell style={{width: 30, textAlign: 'center'}}>Edit</TableCell>
 													</React.Fragment>
 												}
 											</React.Fragment>	
 										}
+										<TableCell />
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -166,7 +169,6 @@ export default function Status(props) {
 						<h2 style={{textAlign: 'center', color: 'black'}}>Add them <Link to="/upload">here</Link></h2>
 					</div>
 				}
-				
 				<div style={{ 
 					marginTop: 20,
 					marginBottom: 20, 
@@ -192,7 +194,7 @@ export default function Status(props) {
 				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
 
-			
+			{/* <Admin /> */}
 		</div>
 	) 
 }

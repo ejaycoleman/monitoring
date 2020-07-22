@@ -5,13 +5,11 @@ import { logout } from './actions'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
-import Admin from './Admin/index'
 import SecuredRoute from './SecuredRoute';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { AUTH_TOKEN } from './constants'
@@ -22,7 +20,7 @@ const Navigation = props => {
     const { tasks, subscribeToMore } = props
     const dispatch = useDispatch();
     const location = useLocation();
-    const { authed } = useSelector(state => state.isLogged)
+    const { authed, email } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
 
     useEffect(() => {
@@ -75,11 +73,7 @@ const Navigation = props => {
                     { 
                         authed ?
                         <div>
-                            <NavLink exact={true} to='/account'>
-                                <IconButton style={{color: currentRoute === '/admin' ? '#fff' : '#1E2650'}}>
-                                    <AccountCircle />
-                                </IconButton>
-                            </NavLink>
+                            <Button disabled style={{color: '#1E2650'}}>{email}</Button>
                             <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
                         </div>
                         :
@@ -91,7 +85,6 @@ const Navigation = props => {
                 <Route path="/" exact component={Status} />
                 <Route path="/login/" component={Login} />
                 <SecuredRoute path="/upload/" component={Upload} />
-                <SecuredRoute path="/account/" component={Admin} />
             </div>
         </div>
     )

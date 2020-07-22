@@ -6,8 +6,8 @@ async function currentUser(parent, args, { user, prisma }) {
 }
 
 async function tasks(parent, args, { user, prisma }) {
-    const approved = args.approved === undefined ? true : args.approved
-    return prisma.task.findMany({where: {approved}})
+    // const approved = args.approved === undefined ? true : args.approved
+    return prisma.task.findMany()
     
 }
 

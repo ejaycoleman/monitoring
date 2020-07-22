@@ -1,6 +1,6 @@
 type Query {
   currentUser: User
-  tasks(approved: Boolean): [Task]
+  tasks: [Task]
   usersUnapprovedTasks: [Task]
 }
 
@@ -8,8 +8,7 @@ type Mutation {
   register(email: String!, password: String!, isAdmin: Boolean!): User
   login(email: String!, password: String!): LoginResponse
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
-  approveTask(id: ID!): Task
-  rejectTask(id: ID!): Task
+  approveTask(number: Int!): Task
   toggleNotification(taskNumber: String!): TaskNotification
   setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
   modifyTask(number: Int!, command: String, frequency: Int, period: Period, enabled: Boolean): Task

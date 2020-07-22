@@ -1,4 +1,4 @@
-import { ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED } from '../constants'
+import { ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED, APPROVE_TASK } from '../constants'
 
 const tasks = (state = [], action) => {
     let tasks, existingTask
@@ -27,6 +27,16 @@ const tasks = (state = [], action) => {
             existingTask.frequency = action.value.frequency
             existingTask.period = action.value.period
             existingTask.enabled = action.value.enabled
+            return tasks
+        case APPROVE_TASK:
+            tasks = state.map(a => ({...a}))
+            console.log(action)
+            existingTask = tasks.find(({number})=> number === parseInt(action.value))
+            console.log(existingTask)
+            if (existingTask.length === 0) {
+                return state
+            }
+            existingTask.approved = true
             return tasks
         case REMOVE_TASK:
             return state.filter(({number}) => number !== action.value)

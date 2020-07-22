@@ -49,7 +49,7 @@ export default function Visualisations(props) {
         })
     })
 
-    reduxTasks && reduxTasks.forEach(task => {
+    reduxTasks && reduxTasks.filter(task => task.approved).forEach(task => {
         let runningTotal = 0
         let dataPoints = []
         Object.keys(times).sort(compare).forEach(time => {

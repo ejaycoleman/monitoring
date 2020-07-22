@@ -90,7 +90,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
     }
 }
 
-async function approveTask(parent, { id }, {user, prisma}) {
+async function approveTask(parent, { number }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
     }
@@ -100,35 +100,7 @@ async function approveTask(parent, { id }, {user, prisma}) {
         throw new Error('Incorrect Privileges')
     }
 
-    return prisma.task.update({where: {id: parseInt(id)}, data: {approved: true}})
-}
-
-async function rejectTask(parent, { id }, {user, prisma}) {
-    if (!user) {
-        throw new Error('Not Authenticated')
-    }
-    const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {id: parseInt(id)}})
-    
-    if (!fullUser.isAdmin) {
-        const owner = await prisma.task.findOne({where: {id: parseInt(id)}}).author()
-        if (owner.id === parseInt(user.id)) {
-            await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
-            const task = await prisma.task.delete({where: {id: parseInt(id)}})
-            return task
-        }
-
-        throw new Error('Incorrect Privileges')
-    }
-
-    if (fullTask.approved) {
-        throw new Error('Task already approved')
-    }
-    
-    await prisma.execution.deleteMany({where: { taskId: fullTask.id}})
-    const task = await prisma.task.delete({where: {id: parseInt(id)}})
-    
-    return task
+    return prisma.task.update({where: {number: parseInt(number)}, data: {approved: true}})
 }
 
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
@@ -204,10 +176,10 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     }
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
-    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}})
+    const fullTask = await prisma.task.findOne({where: {number: parseInt(taskNumber)}, include: {author: true}})
     
 
-    if (!fullUser.isAdmin) {
+    if (!fullUser.isAdmin && fullTask.author.email !== fullUser.email) {
         throw new Error('Incorrect Privileges')
     }
 
@@ -227,7 +199,6 @@ module.exports = {
     login,
     uploadSingleTask,
     approveTask,
-    rejectTask,
     toggleNotification,
     setPreferences,
     modifyTask,

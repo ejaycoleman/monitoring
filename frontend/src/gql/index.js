@@ -25,6 +25,7 @@ export const retreiveTasks = gql` {
         command, 
         frequency,
         period,
+        approved,
         executions {
             datetime
         },
@@ -33,7 +34,10 @@ export const retreiveTasks = gql` {
                 id
             }
         }
-        enabled
+        enabled,
+        author {
+            email
+        }
     }
 }
 `
@@ -98,7 +102,11 @@ export const createSingleTask = gql`
                     id
                 }
             }
-            enabled
+            enabled,
+            author {
+                email
+            },
+            approved
         }
     }
 `
@@ -142,8 +150,8 @@ export const toggleNotification = gql`
 `
 
 export const approveTaskMutation = gql`
-    mutation approveTask($id: ID!) {
-        approveTask(id: $id) {
+    mutation approveTask($number: Int!) {
+        approveTask(number: $number) {
             number,
             command,
             frequency,
@@ -157,14 +165,6 @@ export const approveTaskMutation = gql`
                 }
             }
             enabled
-        }
-    }
-`
-
-export const rejectTaskMutation = gql`
-    mutation rejectTask($id: ID!) {
-        rejectTask(id: $id) {
-            number
         }
     }
 `
