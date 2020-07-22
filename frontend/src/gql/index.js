@@ -42,15 +42,6 @@ export const retreiveTasks = gql` {
 }
 `
 
-export const usersUnapprovedTasks = gql` {
-    usersUnapprovedTasks {
-        number,
-        command,
-        frequency,
-        period
-    }
-}`
-
 export const retreiveDisapprovedTasks = gql` {
     tasks(approved: false) {
         id,

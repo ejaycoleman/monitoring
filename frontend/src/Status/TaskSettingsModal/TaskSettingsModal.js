@@ -8,7 +8,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 import { modifyTask, removeTask } from '../../actions'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Notification from '../../Notfication/Notification'
 import InteractiveModal from '../../InteractiveModal/InteractiveModal'
 import WarningIcon from '@material-ui/icons/Warning'
@@ -21,6 +21,7 @@ export default function TaskSettingsModal(props) {
 	const [enabled, setEnabled] = React.useState(task.enabled);
 	const [error, setError] = React.useState('')
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
+	const { email } = useSelector(state => state.isLogged)
 	const dispatch = useDispatch()
 
 	return (
@@ -51,7 +52,7 @@ export default function TaskSettingsModal(props) {
 				{ task.approved && (enabled ? 'enabled' : 'disabled')}
 				{ task.approved && <Switch checked={enabled} onChange={() => setEnabled(!enabled)} /> }
 				<Button style={{float: 'right'}} onClick={() => setDeleteConfirmDialog(true)} variant="contained" color="secondary">
-					{task.approved ? 'Delete' : 'Reject'} Task
+					{(task.approved || task.author.email === email) ? 'Delete' : 'Reject'} Task
 				</Button>
 			</DialogContent>
 			<DialogActions>
@@ -77,7 +78,7 @@ export default function TaskSettingsModal(props) {
 			<InteractiveModal show={deleteConfirmDialog} onClose={() => setDeleteConfirmDialog(false)}>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to {task.approved ? 'delete' : 'reject'} task #{task.number}?
+						Are you sure you want to {(task.approved || task.author.email === email) ? 'delete' : 'reject'} task #{task.number}?
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
@@ -91,7 +92,7 @@ export default function TaskSettingsModal(props) {
 							close()	
 						}).catch(e => console.log(e))						
 					}} variant="contained" color="secondary">
-						{task.approved ? 'Delete' : 'Reject'}
+						{(task.approved || task.author.email === email) ? 'Delete' : 'Reject'}
 					</Button>
 				</DialogActions>
 			</InteractiveModal>

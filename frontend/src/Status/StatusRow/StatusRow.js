@@ -11,16 +11,12 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux'
 import ExecutionTable from '../ExecutionTable'
-import { removeTask, approveTask } from '../../actions'
+import { approveTask } from '../../actions'
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button'
-
-import Badge from '@material-ui/core/Badge'
-import Typography from '@material-ui/core/Typography'
 
 export default function StatusRow(props) {
 	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask, removeTaskProp } = props;
@@ -76,13 +72,7 @@ export default function StatusRow(props) {
 					{`Run every ${task.frequency} ${task.period}`}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{task.author.email === email ? 
-						<Badge color="secondary" variant="dot">
-							<Typography style={{fontSize: '0.875rem', fontWeight: 800}}>{task.author.email}</Typography>
-						</Badge>
-					: 
-						task.author.email
-					}
+					{task.author.email === email ? 'you' : task.author.email}
 				</TableCell>
 				{ task.approved ?
 						<TableCell component="th" scope="row" align="right" style={{textAlign: 'center', paddingTop: 20}}>
@@ -98,28 +88,8 @@ export default function StatusRow(props) {
 						</TableCell>
 					:
 						<TableCell component="th" scope="row">
-							{ !admin && (
-								<Chip
-									size="small"
-									label="IN REVIEW"
-									variant="outlined"
-								/>
-							)}
-						</TableCell>
-				}
-				{authed && admin &&
-					<React.Fragment>
-						<TableCell component="th" scope="row" style={{padding: 0, textAlign: 'center'}}>
-							<IconButton onClick={() => showPreferencesModal(task)}>
-								<EditIcon />
-							</IconButton>
-						</TableCell> 
-					</React.Fragment>
-				}
-				<TableCell component="th" scope="row" align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-					{ 	!task.approved && admin && (
-							<Button 
-
+							{ admin ?
+								<Button 
 									variant="outlined" 
 									size="small"
 									endIcon={<CheckCircleIcon />}
@@ -130,11 +100,18 @@ export default function StatusRow(props) {
 											dispatch(approveTask(data.approveTask.number))
 										}).catch(error => console.log(error))
 									}}>
-								APPROVE
-							</Button>
-						)
-					}
-					
+									APPROVE
+								</Button>
+							: (
+								<Chip
+									size="small"
+									label="IN REVIEW"
+									variant="outlined"
+								/>
+							)}
+						</TableCell>
+				}
+				<TableCell component="th" scope="row" align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
 					{
 						authed && task.approved &&
 						(<IconButton
@@ -149,19 +126,10 @@ export default function StatusRow(props) {
 									{notifications ? <NotificationsActiveIcon style={{color: 'green'}} /> : <NotificationsOffIcon style={{color: 'black'}} /> }
 						</IconButton>)
 					}
-					{
-						authed && email === task.author.email && !task.approved && (
-							<IconButton
-								size='small'
-								onClick={() => {
-									removeTaskProp(task.number).then(data => {
-										dispatch(removeTask(task.number))
-									}).catch(e => console.log(e))						
-								}}
-							>
-								<DeleteOutlinedIcon style={{color: 'black'}} />
-							</IconButton>
-						)
+					{authed && (admin || email === task.author.email) &&
+						<IconButton size='small' onClick={() => showPreferencesModal(task)} style={{color: 'black'}}>
+							<EditIcon />
+						</IconButton>
 					}
 				</TableCell>
 			</TableRow>

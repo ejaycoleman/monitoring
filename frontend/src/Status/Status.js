@@ -20,9 +20,6 @@ import { Link } from 'react-router-dom'
 import Notification from '../Notfication/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
 import TaskSettingsModal from './TaskSettingsModal'
-
-// import Admin from '../Admin'
-
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
@@ -144,15 +141,6 @@ export default function Status(props) {
 										</TableCell>
 										<TableCell>Author</TableCell>
 										<TableCell style={{width: 30, textAlign: 'center'}}>Status</TableCell>
-										{authed && 
-											<React.Fragment>
-												{ admin &&
-													<React.Fragment>
-														<TableCell style={{width: 30, textAlign: 'center'}}>Edit</TableCell>
-													</React.Fragment>
-												}
-											</React.Fragment>	
-										}
 										<TableCell />
 									</TableRow>
 								</TableHead>
@@ -193,8 +181,6 @@ export default function Status(props) {
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
 				{mostRecentExecution ? <Visualisations></Visualisations> : null}
 			</div>
-
-			{/* <Admin /> */}
 		</div>
 	) 
 }

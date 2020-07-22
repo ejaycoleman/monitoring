@@ -146,8 +146,9 @@ async function modifyTask(parent, { number, command, frequency, period, enabled 
     }
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
+    const fullTask = await prisma.task.findOne({where: {number: parseInt(number)}, include: {author: true}})
 
-    if (!fullUser.isAdmin) {
+    if (!fullUser.isAdmin && fullTask.author.email !== fullUser.email) {
         throw new Error('Incorrect Privileges')
     }
 

@@ -1,7 +1,6 @@
 type Query {
   currentUser: User
   tasks: [Task]
-  usersUnapprovedTasks: [Task]
 }
 
 type Mutation {
