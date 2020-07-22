@@ -153,7 +153,6 @@ export default function StatusRow(props) {
 						authed && email === task.author.email && !task.approved && (
 							<IconButton
 								size='small'
-								// onClick={() => removeTaskProp(task.number).then(data => dispatch(removeTask(task.number)))}
 								onClick={() => {
 									removeTaskProp(task.number).then(data => {
 										dispatch(removeTask(task.number))
