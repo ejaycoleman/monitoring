@@ -77,14 +77,16 @@ export default function ExecutionTable(props) {
 										</TableCell>
 									</TableRow>
 								))}
+								<TableRow>
+									<TablePagination 
+										rowsPerPageOptions={[5]}
+										count={task.executions.length}
+										onChangePage={(_event, newPage) => setPage(newPage)}
+										rowsPerPage={5}
+										page={page}
+									/>
+								</TableRow>
 							</TableBody>
-							<TablePagination 
-								rowsPerPageOptions={[5]}
-								count={task.executions.length}
-								onChangePage={(_event, newPage) => setPage(newPage)}
-								rowsPerPage={5}
-								page={page}
-							/>
 						</Table>
 					</div>
 					) 
