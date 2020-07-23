@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment'
 import Box from '@material-ui/core/Box';
-import Collapse from '@material-ui/core/Collapse';
+import AnimateHeight from 'react-animate-height';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -44,7 +44,10 @@ export default function ExecutionTable(props) {
     }
 
 	return (
-		<Collapse in={open} timeout="auto" unmountOnExit>
+		<AnimateHeight
+			duration={300}
+			height={open? 'auto' : 0}
+			>
 			<Box margin={1}>
 				{task.executions && task.executions.length > 0 ? (
 					<div>
@@ -89,6 +92,6 @@ export default function ExecutionTable(props) {
 					<h3 style={{textAlign: 'center'}}>This task hasn't been executed yet</h3>
 				}
 			</Box>
-		</Collapse>
+		</AnimateHeight>
 	)
 }
