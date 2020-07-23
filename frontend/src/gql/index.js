@@ -165,7 +165,11 @@ export const loginMutation = gql`
         login(email: $email, password: $password) {
             token,
             user {
-                isAdmin
+                isAdmin,
+                preference {
+                    executionThresholdIdeal,
+                    executionThresholdAbsolute
+                }
             }
         }
     }

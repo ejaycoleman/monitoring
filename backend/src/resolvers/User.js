@@ -7,9 +7,6 @@ function notifications(parent, args, {prisma}) {
 }
 
 function preference(parent, args, {prisma, user}) {
-    if (!user) {
-        return null
-    }
     return prisma.user.findOne({where: { id: parent.id }}).preference()
 }
 
