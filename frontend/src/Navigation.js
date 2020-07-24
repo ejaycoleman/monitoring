@@ -30,7 +30,7 @@ const Navigation = props => {
             dispatch(setPreferences(currentUser.preference))
             dispatch(login({admin: currentUser.isAdmin, email: currentUser.email}))
         }
-    }, [currentUser])
+    }, [currentUser, dispatch])
 
     useEffect(() => {
         const session = jwt.decode(localStorage.getItem(AUTH_TOKEN))
