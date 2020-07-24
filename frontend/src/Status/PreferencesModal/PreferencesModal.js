@@ -14,10 +14,10 @@ import { useDispatch } from 'react-redux'
 export default function PreferencesModal(props) {
 	const {close, preferences, setPreferences } = props
 	const preference = preferences? preferences : null
-	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
-	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
-	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')
-	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
+	const [idealFreq, setIdealFreq] = React.useState(preference.executionThresholdIdeal ? preference.executionThresholdIdeal.split("-")[0] : '1')
+	const [idealPeriod, setIdealPeriod] = React.useState(preference.executionThresholdIdeal ? preference.executionThresholdIdeal.split("-")[1] : 'days')
+	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference.executionThresholdAbsolute ? preference.executionThresholdAbsolute.split("-")[0] : '10')
+	const [absolutePeriod, setAbsolutePeriod] = React.useState(preference.executionThresholdAbsolute ? preference.executionThresholdAbsolute.split("-")[1] : 'days')	
 	const [snackBarErrorShow, setSnackBarErrorShow] = React.useState(false)
 
 	const dispatch = useDispatch();
