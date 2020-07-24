@@ -27,7 +27,7 @@ const Navigation = props => {
 
     useEffect(() => {
         if (currentUser) {
-            dispatch(setPreferences(currentUser.preference))
+            currentUser.preference && dispatch(setPreferences(currentUser.preference))
             dispatch(login({admin: currentUser.isAdmin, email: currentUser.email}))
         }
     }, [currentUser, dispatch])

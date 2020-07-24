@@ -59,15 +59,11 @@ export const retreiveDisapprovedTasks = gql` {
 export const userSetExecutionPreferences = gql`
     mutation setPreferences($idealFrequency: String!, $idealPeriod: String!, $absoluteFrequency: String!, $absolutePeriod: String!) {
         setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {
-            forUser {
-                email,
-            },
             executionThresholdIdeal,
             executionThresholdAbsolute
         }
     }
 `
-
 
 export const createSingleTask = gql`
     mutation uploadSingleTask($number: Int!, $command: String!, $frequency: Int!, $period: Period!) {
@@ -157,6 +153,7 @@ export const loginMutation = gql`
             token,
             user {
                 isAdmin,
+                email,
                 preference {
                     executionThresholdIdeal,
                     executionThresholdAbsolute
