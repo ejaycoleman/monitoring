@@ -174,3 +174,16 @@ export const loginMutation = gql`
         }
     }
 `
+
+export const currentUser = gql`
+    {
+        currentUser {
+            isAdmin,
+            email,
+            preference {
+                executionThresholdIdeal,
+                executionThresholdAbsolute
+            }
+        }
+    }
+`

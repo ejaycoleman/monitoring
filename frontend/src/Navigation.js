@@ -13,15 +13,31 @@ import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { AUTH_TOKEN } from './constants'
-import { addTask, addExecution, removeTask } from './actions'
+import { addTask, addExecution, removeTask, login, setPreferences } from './actions'
 import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
 
+import jwt from 'jsonwebtoken'
+
 const Navigation = props => {
-    const { tasks, subscribeToMore } = props
+    const { tasks, subscribeToMore, currentUser } = props
     const dispatch = useDispatch();
     const location = useLocation();
     const { authed, email } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
+
+    useEffect(() => {
+        if (currentUser) {
+            dispatch(setPreferences(currentUser.preference))
+            dispatch(login({admin: currentUser.isAdmin, email: currentUser.email}))
+        }
+    }, [currentUser])
+
+    useEffect(() => {
+        const session = jwt.decode(localStorage.getItem(AUTH_TOKEN))
+        if (session && (new Date().getTime() / 1000 > session.exp)) {
+            localStorage.removeItem(AUTH_TOKEN)
+        }
+    }, [])
 
     useEffect(() => {
         setCurrentRoute(location.pathname)

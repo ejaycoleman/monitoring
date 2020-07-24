@@ -23,7 +23,7 @@ import TaskSettingsModal from './TaskSettingsModal'
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
-	const { tasks, userPreferences, setPreferences } = props
+	const { tasks, setPreferences } = props // preferences might need to be refetched
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [preferencesModalOpen, setPreferencesModalOpen] = React.useState(false)
@@ -32,6 +32,7 @@ export default function Status(props) {
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
 	const { authed, admin } = useSelector(state => state.isLogged)
+	const userPreferences = useSelector(state => state.preferences)
 	const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
 	const dispatch = useDispatch()
 
@@ -64,8 +65,8 @@ export default function Status(props) {
 	}
 
 	const determineChipColor = time => {
-		const [idealFrequency, idealPeriod] = userPreferences && userPreferences.preference ? userPreferences.preference.executionThresholdIdeal.split("-") : [1, 'days']
-		const [absoluteFrequency, absolutePeriod] = userPreferences && userPreferences.preference? userPreferences.preference.executionThresholdAbsolute.split("-") : [10, 'days']
+		const [idealFrequency, idealPeriod] = userPreferences ? userPreferences.executionThresholdIdeal.split("-") : [1, 'days']
+		const [absoluteFrequency, absolutePeriod] = userPreferences? userPreferences.executionThresholdAbsolute.split("-") : [10, 'days']
 		if (moment.unix(time).isBefore(moment().subtract(absoluteFrequency, absolutePeriod))) {
 			return 'red'
 		} else if (moment.unix(time).isSameOrAfter(moment().subtract(idealFrequency, idealPeriod))) {

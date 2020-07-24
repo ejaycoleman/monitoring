@@ -10,7 +10,8 @@ import Notification from '../../Notfication/Notification'
 import WarningIcon from '@material-ui/icons/Warning'
 
 export default function PreferencesModal(props) {
-	const {close, preferences: { preference }, setPreferences } = props
+	const {close, preferences, setPreferences } = props
+	const preference = preferences? preferences : null
 	const [idealFreq, setIdealFreq] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[0] : '1')
 	const [idealPeriod, setIdealPeriod] = React.useState(preference ? preference.executionThresholdIdeal.split("-")[1] : 'days')
 	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference ? preference.executionThresholdAbsolute.split("-")[0] : '10')

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { login } from '../actions'
+import { login, setPreferences } from '../actions'
 import { useDispatch } from 'react-redux'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -39,12 +39,12 @@ const Login = props => {
 						helperText={error && "Invalid Credentials"}
 					/>
 					<Button style={{width: 100, marginTop: 20}} variant="contained" onClick={() => loginMutation({ email, password }).then(({data}) => {
-						console.log(data)
+						dispatch(setPreferences(data.login.user.preference))
 						localStorage.setItem(AUTH_TOKEN, data.login.token)
 						const session = jwt.decode(data.login.token)
 						dispatch(login({admin: data.login.user.isAdmin, email: session.email}))
 						history.push(`/`)
-					}).catch(error => {
+					}).catch(() => {
 						setError(true)
 					})}>LOGIN</Button>
 				</FormGroup>
