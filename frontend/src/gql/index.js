@@ -56,15 +56,6 @@ export const retreiveDisapprovedTasks = gql` {
 }
 `
 
-export const userExecutionPreferences = gql` {
-    currentUser {
-        preference {
-            executionThresholdIdeal,
-            executionThresholdAbsolute
-        }
-    }
-}`
-
 export const userSetExecutionPreferences = gql`
     mutation setPreferences($idealFrequency: String!, $idealPeriod: String!, $absoluteFrequency: String!, $absolutePeriod: String!) {
         setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {

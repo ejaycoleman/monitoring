@@ -23,7 +23,7 @@ import TaskSettingsModal from './TaskSettingsModal'
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function Status(props) {
-	const { tasks, setPreferences } = props // preferences might need to be refetched
+	const { tasks, setPreferences } = props
 	const [mostRecentExecution, setMostRecentExecution] = React.useState(0)
 	const [modalOpen, setModalOpen] = React.useState(false)
 	const [preferencesModalOpen, setPreferencesModalOpen] = React.useState(false)
