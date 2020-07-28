@@ -42,3 +42,8 @@ export const toggleTaskEnabled = value => ({
     type: TOGGLE_TASK_ENABLED,
     value
 })
+
+export const setPreferences = value => ({
+    type: 'SET_PREFERENCES',
+    value
+})

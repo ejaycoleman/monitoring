@@ -15,7 +15,6 @@ async function register(parent, { isAdmin, email, password }, context) {
 
 async function login(parent, {email, password}, context) {
     const user = await context.prisma.user.findOne({where: {email}})
-
     if (!user) {
         throw new Error("Invalid Login")
     }
@@ -27,15 +26,9 @@ async function login(parent, {email, password}, context) {
     }
 
     const token = jwt.sign(
-        {
-            id: user.id,
-            email: user.email,
-            admin: user.isAdmin
-        },
+        {id: user.id},
         'the-project-secret',
-        {
-            expiresIn: '7d'
-        }
+        {expiresIn: '7d'}
     )
 
     return {
