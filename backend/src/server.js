@@ -69,7 +69,7 @@ const notify = new CronJob('0 0 0 * * *', async function() {
     tasks.forEach(async task => {
         const executions = await prisma.task.findOne({where: {id: task.id}}).executions({orderBy: {datetime: 'desc'}})
         if (executions[0] && moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(executions[0].datetime))) {
-            let associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: true}})
+            const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: true}})
             associatedNotifications.forEach(notif => {
                 console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} wasnt run on time`)
             })

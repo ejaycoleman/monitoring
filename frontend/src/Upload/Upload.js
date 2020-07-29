@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button'
 import NativeSelect from '@material-ui/core/NativeSelect'
 import FormGroup from '@material-ui/core/FormGroup'
 import { withStyles } from '@material-ui/core/styles'
-import { store } from '../index'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTask } from '../actions'
 import Notification from '../Notfication/Notification'
@@ -64,14 +63,6 @@ const Upload = props => {
 	const isAdmin = useSelector(state => state.isLogged.admin)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
-
-	useEffect(() =>{
-		const unsubscribe = store.subscribe(() => true)
-
-		return function cleanup() {
-			unsubscribe()
-		}
-	}, [])
 
 	useEffect(() => {
 		refetch().then(({data: { tasks }}) => {
@@ -166,12 +157,10 @@ const Upload = props => {
 							frequency: newTaskFrequency, 
 							period: newTaskPeriod 
 						}).then(({data}) => {
-							console.log('successful')
 							if (isAdmin) {
 								dispatch(addTask(data.uploadSingleTask))
 							} else {
 								setSnackBarFeedbackShow(true)
-
 								dispatch(addTask(data.uploadSingleTask))
 							}
 						}).catch(e => {

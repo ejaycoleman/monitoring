@@ -30,9 +30,7 @@ const tasks = (state = [], action) => {
             return tasks
         case APPROVE_TASK:
             tasks = state.map(a => ({...a}))
-            console.log(action)
             existingTask = tasks.find(({number})=> number === parseInt(action.value))
-            console.log(existingTask)
             if (existingTask.length === 0) {
                 return state
             }

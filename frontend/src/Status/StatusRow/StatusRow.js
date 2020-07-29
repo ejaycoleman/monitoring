@@ -19,7 +19,7 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button'
 
 export default function StatusRow(props) {
-	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask, removeTaskProp } = props;
+	const { task, toggleNotification, showNotificationError, showPreferencesModal, graphqlApproveTask } = props;
 	const [open, setOpen] = React.useState(false);
 	const [notifications, setNotifications] = React.useState(task.notifications && task.notifications.length !== 0);
 	const [ranInTime, setRanInTime] = React.useState(false)
