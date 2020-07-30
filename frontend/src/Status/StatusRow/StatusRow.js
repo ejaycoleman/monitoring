@@ -74,43 +74,74 @@ export default function StatusRow(props) {
 				<TableCell component="th" scope="row">
 					{task.author.email === email ? 'you' : task.author.email}
 				</TableCell>
-				{ task.approved ?
-						<TableCell component="th" scope="row" align="right" style={{textAlign: 'center', paddingTop: 20}}>
-							{(!task.executions || task.executions.length === 0) ? 
-								<HelpIcon style={{color: 'grey'}}/> 
-							: 
-								(ranInTime ? 
-									<CheckCircleIcon style={{color: 'green'}}/> 
-								: 
-									<CancelIcon style={{color: 'red'}}/>
-								) 
-							}
-						</TableCell>
-					:
-						<TableCell component="th" scope="row">
-							{ admin ?
-								<Button 
-									variant="outlined" 
-									size="small"
-									endIcon={<CheckCircleIcon />}
-									onClick={() => {
-										graphqlApproveTask({ 
-											number: task.number
-										}).then(({data}) => {
-											dispatch(approveTask(data.approveTask.number))
-										}).catch(error => console.log(error))
-									}}>
-									APPROVE
-								</Button>
-							: (
+				<TableCell component="th" scope="row" align="right" style={{textAlign: 'center', paddingTop: 20}}>
+					{task.approved ?
+						(task.enabled ?
+							(!task.executions || task.executions.length === 0) ? 
 								<Chip
 									size="small"
-									label="IN REVIEW"
+									icon={<HelpIcon style={{color: 'grey'}}/> }
+									label="NEVER RECIEVED"
 									variant="outlined"
 								/>
-							)}
-						</TableCell>
-				}
+							:
+								(ranInTime ? 
+									<Chip
+										size="small"
+										icon={<CheckCircleIcon style={{color: 'green'}}/>}
+										label="RECIEVED"
+										variant="outlined"
+										style={{border: '1px solid green'}}
+									/>
+								:
+									<Chip
+										size="small"
+										icon={<CancelIcon style={{color: '#e53935'}}/>}
+										label="OVERDUE"
+										variant="outlined"
+										style={{border: '1px solid #e53935'}}
+									/>
+								) 
+							: 
+								(
+									<Chip
+										color='secondary'
+										size="small"
+										label="DISABLED"
+										style={{backgroundColor: '#e53935'}}
+									/>
+								)
+							)
+						:
+						(	
+							<div>
+								{ admin ?
+									<Button 
+										style={{backgroundColor: 'green', color: 'white'}}
+										variant="contained" 
+										size="small"
+										endIcon={<CheckCircleIcon />}
+										onClick={() => {
+											graphqlApproveTask({ 
+												number: task.number
+											}).then(({data}) => {
+												dispatch(approveTask(data.approveTask.number))
+											}).catch(error => console.log(error))
+										}}>
+										APPROVE
+									</Button>
+								: (
+									<Chip
+										size="small"
+										label="IN REVIEW"
+										variant="outlined"
+										
+									/>
+								)}
+							</div>
+						)
+					}
+				</TableCell>
 				<TableCell component="th" scope="row" align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
 					{
 						authed && task.approved &&
