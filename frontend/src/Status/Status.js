@@ -33,7 +33,7 @@ export default function Status(props) {
   	const [orderBy, setOrderBy] = React.useState('number')
 	const { authed, admin } = useSelector(state => state.isLogged)
 	const userPreferences = useSelector(state => state.preferences)
-	const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
+	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()
 
 	React.useEffect(() => {
