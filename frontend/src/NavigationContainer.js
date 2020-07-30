@@ -15,9 +15,10 @@ const NavigationContainer =
             },
         }),
         graphql(currentUser, { 
-            props: ({ data: { loading, currentUser}, ownProps}) => {
+            props: ({ data: { currentUser, refetch}, ownProps}) => {
                 return ({
-                    currentUser
+                    currentUser,
+                    refetch
                 })
             },
         })

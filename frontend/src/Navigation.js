@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Route, NavLink, Redirect, useLocation } from "react-router-dom";
+import { Route, NavLink, useLocation, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
-
 import User from './User'
-
 import SecuredRoute from './SecuredRoute';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar'
@@ -18,13 +16,13 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { AUTH_TOKEN } from './constants'
 import { addTask, addExecution, removeTask, login, setPreferences } from './actions'
 import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
-
 import jwt from 'jsonwebtoken'
 
 const Navigation = props => {
-    const { tasks, subscribeToMore, currentUser } = props
+    const { tasks, subscribeToMore, currentUser, refetch } = props
     const dispatch = useDispatch();
     const location = useLocation();
+    const history = useHistory();
     const { authed, email } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
 
@@ -70,7 +68,8 @@ const Navigation = props => {
     const signOut = () => {
         dispatch(logout())
         localStorage.removeItem(AUTH_TOKEN)
-        return <Redirect to="/" />
+        refetch()
+        history.push("/");
     }
 
     return (
@@ -93,7 +92,7 @@ const Navigation = props => {
                         authed ?
                         <div>
                             <NavLink exact={true} to='/user' style={{textDecoration: 'none'}}><Button >{email}</Button></NavLink>
-                            <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
+                            <Button color="inherit" onClick={() => signOut()}>Sign Out</Button>
                         </div>
                         :
                         <NavLink exact={true} to='/login' style={{textDecoration: 'none'}} ><Button variant="contained">Login</Button></NavLink>             
@@ -102,9 +101,9 @@ const Navigation = props => {
             </AppBar>
             <div style={{padding: 20}}>
                 <Route path="/" exact component={Status} />
-                <Route path="/login/" component={Login} />
-                <SecuredRoute path="/upload/" component={Upload} />
-                <Route path="/user" component={User} />
+                <Route path="/login/" render={() => <Login refetchUser={() => refetch()} history={history} />} />
+                <SecuredRoute path="/upload/" component={Upload} currentUser={currentUser} />
+                <SecuredRoute path="/user" component={User} currentUser={currentUser} />
             </div>
         </div>
     )
