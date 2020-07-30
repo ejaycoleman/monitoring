@@ -5,6 +5,9 @@ import { logout } from './actions'
 import Login from './Login/index'
 import Upload from './Upload/index'
 import Status from './Status/index'
+
+import User from './User'
+
 import SecuredRoute from './SecuredRoute';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar'
@@ -89,7 +92,7 @@ const Navigation = props => {
                     { 
                         authed ?
                         <div>
-                            <Button disabled style={{color: '#1E2650'}}>{email}</Button>
+                            <NavLink exact={true} to='/user' style={{textDecoration: 'none'}}><Button >{email}</Button></NavLink>
                             <Button color="inherit" onClick={() => signOut()} >Sign Out</Button>
                         </div>
                         :
@@ -101,6 +104,7 @@ const Navigation = props => {
                 <Route path="/" exact component={Status} />
                 <Route path="/login/" component={Login} />
                 <SecuredRoute path="/upload/" component={Upload} />
+                <Route path="/user" component={User} />
             </div>
         </div>
     )
