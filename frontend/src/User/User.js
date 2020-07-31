@@ -11,8 +11,10 @@ import { useSelector } from 'react-redux'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
+import Button from '@material-ui/core/Button'
 
 const User = props => {	
+    const { setPreferences } = props
     const { email } = useSelector(state => state.isLogged)
 
 	return (
@@ -59,6 +61,17 @@ const User = props => {
                         label="When a task hasnt ever been run"
                     />
                 </li>
+                <Button
+                    onClick={() => {
+                        console.log('clicked')
+                        // setPreferences
+                    }}
+                    variant="contained" color="secondary"
+                    
+                >
+
+                    SUBMIT
+                </Button>
             </ul>
 		</div>
 	) 
