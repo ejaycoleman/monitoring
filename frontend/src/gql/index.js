@@ -159,7 +159,10 @@ export const loginMutation = gql`
                 email,
                 preference {
                     executionThresholdIdeal,
-                    executionThresholdAbsolute
+                    executionThresholdAbsolute,
+                    recieveEmailForLate,
+                    recieveEmailForNever,
+                    recieveEmailForRan
                 }
             }
         }
@@ -173,7 +176,10 @@ export const currentUser = gql`
             email,
             preference {
                 executionThresholdIdeal,
-                executionThresholdAbsolute
+                executionThresholdAbsolute,
+                recieveEmailForLate,
+                recieveEmailForNever,
+                recieveEmailForRan
             }
         }
     }

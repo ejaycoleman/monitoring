@@ -1,2 +1,2 @@
-import User from './User'
-export default User;
+import UserContainer from './UserContainer'
+export default UserContainer;
