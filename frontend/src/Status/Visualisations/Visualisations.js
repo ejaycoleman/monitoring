@@ -28,8 +28,11 @@ export default function Visualisations(props) {
         }
     }
 
-    const { authed, admin } = useSelector(state => state.isLogged)
-    const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
+    // const { authed, admin } = useSelector(state => state.isLogged)
+    // const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
+
+    const reduxTasks = useSelector(state => state.tasks).filter(task => task.approved)
+
     let myData = []
 
     function compare(a, b) {

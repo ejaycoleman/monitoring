@@ -144,7 +144,7 @@ async function setPreferences(parent, data, {user, prisma}) {
         const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
         const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
         return prisma.preference.update({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
-    } else if (recieveEmailForLate || recieveEmailForNever || recieveEmailForRan) {
+    } else if (recieveEmailForLate !== null || recieveEmailForNever !== null || recieveEmailForRan !== null) {
         return prisma.preference.update({where: {id: userPreference.id}, data: {recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}})
     }
 }

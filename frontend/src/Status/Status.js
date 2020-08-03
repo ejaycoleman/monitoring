@@ -31,7 +31,7 @@ export default function Status(props) {
 	const [notificationErrorShow, setNotificationErrorShow] = React.useState(false)
 	const [order, setOrder] = React.useState('asc')
   	const [orderBy, setOrderBy] = React.useState('number')
-	const { authed, admin } = useSelector(state => state.isLogged)
+	const { authed } = useSelector(state => state.isLogged)
 	const userPreferences = useSelector(state => state.preferences)
 	const reduxTasks = useSelector(state => state.tasks)
 	const dispatch = useDispatch()

@@ -34,7 +34,9 @@ async function postExecution(taskId, datetime, file) {
         }
 
         associatedNotifications && associatedNotifications.map(notification => {
-            sendEmail(notification.user.email, associatedTask.number)
+            if (notification.user.recieveEmailForRan) {
+                sendEmail(notification.user.email, associatedTask.number)
+            }
         })
 
         const newExecution = await prisma.execution.create({data: {
@@ -71,13 +73,17 @@ const notify = new CronJob('0 0 0 * * *', async function() {
         if (executions[0] && moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(executions[0].datetime))) {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: true}})
             associatedNotifications.forEach(notif => {
-                console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} wasnt run on time`)
+                if (notif.user.recieveEmailForLate) {
+                    console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} wasnt run on time`)
+                }
             })
         }
         if (executions.length === 0) {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: true}})
             associatedNotifications.forEach(notif => {
-                console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} hasnt received any tasks`)
+                if (notif.user.recieveEmailForNever) {
+                    console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} hasnt received any tasks`)
+                }
             })
         }
     })
