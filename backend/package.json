@@ -4,7 +4,8 @@
   "devDependencies": {},
   "scripts": {
     "start": "node src/server",
-    "dev": "ts-node ./script.ts"
+    "dev": "ts-node ./script.ts",
+    "generate": "npx prisma generate"
   },
   "dependencies": {
     "@prisma/cli": "2.0.0",
