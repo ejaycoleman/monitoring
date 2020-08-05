@@ -69,7 +69,7 @@ const User = props => {
                             color="secondary"
                         />
                         }
-                        label="When a task hasnt ever been run"
+                        label="Each time a task is run"
                     />
                 </li>
                 <Button
