@@ -1,11 +1,3 @@
-// const userPref = {
-//     recieveInterval: {
-
-//     }
-
-// }
-
-
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
@@ -36,51 +28,46 @@ const User = props => {
                 <li>
                     <FormControlLabel
                         control={
-                        <Switch
-                            checked={recieveEmailForLate}
-                            onChange={() => setRecieveEmailForLate(!recieveEmailForLate)}
-                            name="recieveEmailForLate"
-                            color="secondary"
-                        />
+                            <Switch
+                                checked={recieveEmailForRan}
+                                onChange={() => setRecieveEmailForRan(!recieveEmailForRan)}
+                                name="recieveEmailForRan"
+                                color="secondary"
+                            />
                         }
-                        label="When a task hasnt been run in the expected time"
+                        label="Email me whenever a task I'm subscribed to is executed"
                     />
                 </li>
                 <li>
                     <FormControlLabel
                         control={
-                        <Switch
-                            checked={recieveEmailForNever}
-                            onChange={() => setRecieveEmailForNever(!recieveEmailForNever)}
-                            name="recieveEmailForNever"
-                            color="secondary"
-                        />
+                            <Switch
+                                checked={recieveEmailForLate}
+                                onChange={() => setRecieveEmailForLate(!recieveEmailForLate)}
+                                name="recieveEmailForLate"
+                                color="secondary"
+                            />
                         }
-                        label="When a task hasnt ever been run"
+                        label="Email me when a task's execution is late"
                     />
                 </li>
                 <li>
                     <FormControlLabel
                         control={
-                        <Switch
-                            checked={recieveEmailForRan}
-                            onChange={() => setRecieveEmailForRan(!recieveEmailForRan)}
-                            name="recieveEmailForRan"
-                            color="secondary"
-                        />
+                            <Switch
+                                checked={recieveEmailForNever}
+                                onChange={() => setRecieveEmailForNever(!recieveEmailForNever)}
+                                name="recieveEmailForNever"
+                                color="secondary"
+                            />
                         }
-                        label="Each time a task is run"
+                        label="Email me when a task has never been executed"
                     />
                 </li>
                 <Button
-                    onClick={() => {
-                        // console.log('clicked')
-                        setPreferences(recieveEmailForLate, recieveEmailForNever, recieveEmailForRan)
-                    }}
+                    onClick={() => setPreferences(recieveEmailForLate, recieveEmailForNever, recieveEmailForRan)}
                     variant="contained" color="secondary"
-                    
                 >
-
                     SUBMIT
                 </Button>
             </ul>
