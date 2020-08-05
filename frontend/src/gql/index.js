@@ -57,10 +57,13 @@ export const retreiveDisapprovedTasks = gql` {
 `
 
 export const userSetExecutionPreferences = gql`
-    mutation setPreferences($idealFrequency: String!, $idealPeriod: String!, $absoluteFrequency: String!, $absolutePeriod: String!) {
-        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod) {
+    mutation setPreferences($idealFrequency: String, $idealPeriod: String, $absoluteFrequency: String, $absolutePeriod: String, $recieveEmailForLate: Boolean, $recieveEmailForNever: Boolean, $recieveEmailForRan: Boolean) {
+        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod, recieveEmailForLate: $recieveEmailForLate, recieveEmailForNever: $recieveEmailForNever, recieveEmailForRan: $recieveEmailForRan) {
             executionThresholdIdeal,
-            executionThresholdAbsolute
+            executionThresholdAbsolute,
+            recieveEmailForLate,
+            recieveEmailForNever,
+            recieveEmailForRan
         }
     }
 `
@@ -156,7 +159,10 @@ export const loginMutation = gql`
                 email,
                 preference {
                     executionThresholdIdeal,
-                    executionThresholdAbsolute
+                    executionThresholdAbsolute,
+                    recieveEmailForLate,
+                    recieveEmailForNever,
+                    recieveEmailForRan
                 }
             }
         }
@@ -170,7 +176,10 @@ export const currentUser = gql`
             email,
             preference {
                 executionThresholdIdeal,
-                executionThresholdAbsolute
+                executionThresholdAbsolute,
+                recieveEmailForLate,
+                recieveEmailForNever,
+                recieveEmailForRan
             }
         }
     }

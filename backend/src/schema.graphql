@@ -9,7 +9,7 @@ type Mutation {
   uploadSingleTask(number: Int!, command: String!, frequency: Int!, period: Period!): Task
   approveTask(number: Int!): Task
   toggleNotification(taskNumber: String!): TaskNotification
-  setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String): Preference
+  setPreferences(idealFrequency: String, idealPeriod: String, absoluteFrequency: String, absolutePeriod: String, recieveEmailForLate: Boolean, recieveEmailForNever: Boolean, recieveEmailForRan: Boolean ): Preference
   modifyTask(number: Int!, command: String, frequency: Int, period: Period, enabled: Boolean): Task
   removeTask(taskNumber: Int): Task
 }
@@ -76,5 +76,8 @@ type TaskNotification {
 type Preference {
   forUser: User,
   executionThresholdIdeal: String,
-  executionThresholdAbsolute: String
+  executionThresholdAbsolute: String,
+  recieveEmailForLate: Boolean,
+  recieveEmailForNever: Boolean,
+  recieveEmailForRan: Boolean
 }

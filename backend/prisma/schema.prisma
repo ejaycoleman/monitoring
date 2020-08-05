@@ -14,7 +14,7 @@ model User {
   password String
   tasks Task[]
   notifications TaskNotification[]
-  preference Preference?
+  preference Preference
 }
 
 model Task {
@@ -52,4 +52,7 @@ model Preference {
   forUser User @relation(fields: [userId], references: [id])
   executionThresholdIdeal String
   executionThresholdAbsolute String
+  recieveEmailForLate  Boolean @default(true)
+  recieveEmailForNever  Boolean @default(true)
+  recieveEmailForRan  Boolean @default(true)
 }

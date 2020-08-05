@@ -7,7 +7,12 @@ async function register(parent, { isAdmin, email, password }, context) {
         data: {
             isAdmin,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            preference: { create: { executionThresholdIdeal: '', 
+            executionThresholdAbsolute: '',
+            recieveEmailForLate: true,
+            recieveEmailForNever: true,
+            recieveEmailForRan: true}}
         }
     })
     return user
@@ -117,19 +122,30 @@ async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     return prisma.taskNotification.delete({where: {id: existing[0].id}})
 }
 
-async function setPreferences(parent, { idealFrequency, idealPeriod, absoluteFrequency, absolutePeriod }, {user, prisma}) {
+async function setPreferences(parent, data, {user, prisma}) {
+    const { 
+        idealFrequency, 
+        idealPeriod, 
+        absoluteFrequency, 
+        absolutePeriod, 
+        recieveEmailForLate, 
+        recieveEmailForNever, 
+        recieveEmailForRan } = data
+
     if (!user) {
         throw new Error('Not Authenticated')
     }
 
     const userPreference = await prisma.user.findOne({where: {id: user.id}}).preference()
-    const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
-    const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
-    
-    if (userPreference === null) {
-        return prisma.preference.create({data: {forUser: {connect: { id: user.id }}, executionThresholdIdeal, executionThresholdAbsolute}})
-    } else {
+
+    // currently only one part of the preferences can be changed
+    // maybe update all preferences in one go
+    if (idealFrequency || idealPeriod || absoluteFrequency || absolutePeriod) {
+        const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
+        const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
         return prisma.preference.update({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
+    } else if (recieveEmailForLate !== null || recieveEmailForNever !== null || recieveEmailForRan !== null) {
+        return prisma.preference.update({where: {id: userPreference.id}, data: {recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}})
     }
 }
 

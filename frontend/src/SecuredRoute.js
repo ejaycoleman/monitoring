@@ -1,17 +1,20 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux'
 
 const SecuredRoute = props => {
-  const { component: Component, path, adminRequired, exact } = props
-  const { authed, admin } = useSelector(state => state.isLogged)
+  const { component: Component, path, exact, currentUser } = props
+
+  console.log(currentUser)
 
   return (
     <Route path={path} exact={exact} render={() => {
-        if (!authed || (!admin && adminRequired)) {
-            return <Redirect to="/login" />
+        if (currentUser !== undefined) {
+          if (currentUser === null) {
+              return <Redirect to="/login" />
+          }
+          return <Component />
         }
-        return <Component />
+        return <h1>Loading</h1>
     }} />
   );
 }

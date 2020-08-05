@@ -8,7 +8,7 @@ import Card from '@material-ui/core/Card';
 import { AUTH_TOKEN } from '../constants'
 
 const Login = props => {
-	const { loginMutation, history } = props
+	const { loginMutation, history, refetchUser} = props
 	const dispatch = useDispatch();
 	const [ email, setEmail ] = useState("");
 	const [ password, setPassword ] = useState("");
@@ -41,6 +41,7 @@ const Login = props => {
 						data.login.user.preference && dispatch(setPreferences(data.login.user.preference))
 						localStorage.setItem(AUTH_TOKEN, data.login.token)
 						dispatch(login({admin: data.login.user.isAdmin, email: data.login.user.email}))
+						refetchUser()
 						history.push(`/`)
 					}).catch(() => {
 						setError(true)
