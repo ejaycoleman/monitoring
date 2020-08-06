@@ -11,9 +11,7 @@
       "clean:volumes": "docker volume prune -f",
       "migrate:save": "docker exec -it prisma prisma migrate save --name first-migration --experimental",
       "migrate:up": "docker exec -it prisma prisma migrate up --experimental",
-      "migrate": "npm run migrate:save && npm run migrate:up",
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "generate": "docker exec -it frontend npm run generate"
+      "migrate": "npm run migrate:save && npm run migrate:up"
     },
     "author": "",
     "license": "ISC"

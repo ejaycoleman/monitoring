@@ -9,14 +9,15 @@ The system is comprised of two systems: the frontend (localhost:3000) and the ba
 ## Deploy the containers
 1. If this project has been run before (and there are schema changes), run the following commands within the project directory: (otherwise continue to step 2)<br>
 `npm run stop` <br> 
-`npm run clean` <br> 
+`npm run clean` 
 
 2. Run: <br>
 `npm run build` <br> 
+`npm start` 
 
 3. After running the first time, you should see errors like this:  
 ![Prior Migrate](prior_migrate.png) <br>
-This is because the scheme has not been replicated in the database. To fix this, run: <br>
+This is because the schema has not been replicated in the database. To fix this, run: <br>
 `npm run migrate` <br>
 
 ## Create a user
