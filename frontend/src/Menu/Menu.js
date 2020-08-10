@@ -24,11 +24,9 @@ export default function Menu(props) {
             display: show? 'block' : 'none', 
             position: 'fixed', 
             top: 15, 
-            right: 15, 
-            // textAlign: 'center',
-            // height: 50,            
+            right: 15
         }}>
-            <Paper elevation={3} style={{padding: 10}}>{props.children}</Paper>
+            <Paper elevation={3} style={{padding: 10, display: 'flex', justifyContent: 'start', flexDirection: 'column'}}>{props.children}</Paper>
 		</div>
 	)
 }

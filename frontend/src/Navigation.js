@@ -17,13 +17,8 @@ import { AUTH_TOKEN } from './constants'
 import { addTask, addExecution, removeTask, login, setPreferences } from './actions'
 import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
 import jwt from 'jsonwebtoken'
-
-// import Menu from '@material-ui/core/Menu'
-// import MenuItem from '@material-ui/core/MenuItem'
 import AccountCircle from '@material-ui/icons/AccountCircle';
-
-// import Notification from './Notification/Notification'
-
+import SettingsIcon from '@material-ui/icons/Settings';
 import Menu from './Menu/Menu'
 
 const Navigation = props => {
@@ -33,9 +28,7 @@ const Navigation = props => {
     const history = useHistory();
     const { authed, email } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
-
     const [isMenuOpen, handleMenuClose] = useState(false)
-    // const [anchorEl, setAnchorEl] = useState(null)
 
     useEffect(() => {
         if (currentUser) {
@@ -83,32 +76,6 @@ const Navigation = props => {
         history.push("/");
     }
 
-
-    // const handleMenuOpen = (event) => {
-    //     setAnchorEl(event.currentTarget);
-    //     handleMenuClose(true)
-    // };
-
-
-    // const renderMenu = (
-    //     // <Menu
-    //     //   anchorEl={anchorEl}
-    //     //   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-    //     //   keepMounted
-    //     //   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-    //     //   open={isMenuOpen}
-    //     //   onClose={() => handleMenuClose(false)}
-    //     // >
-    //     //   <MenuItem onClick={() => handleMenuClose(false)}>Profile</MenuItem>
-    //     //   <MenuItem onClick={() => handleMenuClose(false)}>My account</MenuItem>
-    //     // </Menu>
-
-    //     <div style={{display: isMenuOpen? 'block' : 'none', backgroundColor: 'white', position: 'absolute', top: 5, right: 5}}>
-    //         test
-    //         test
-    //     </div>
-    //   );
-
     return (
         <div>
             <AppBar position="static">
@@ -127,17 +94,11 @@ const Navigation = props => {
                     </div>
                     { 
                         authed ?
-                        // <div>
-                        //     <NavLink exact={true} to='/user' style={{textDecoration: 'none'}}><Button >{email}</Button></NavLink>
-                        //     <Button color="inherit" onClick={() => signOut()}>Sign Out</Button>
-                        // </div>
                         <IconButton
                             edge="end"
                             aria-label="account of current user"
-                            // aria-controls={menuId}
                             aria-haspopup="true"
                             onClick={() => handleMenuClose(true)}
-                            // onClick={handleMenuOpen}
                             color="inherit"
                             >
                                 <AccountCircle />
@@ -153,16 +114,14 @@ const Navigation = props => {
                 <SecuredRoute path="/upload/" component={Upload} currentUser={currentUser} />
                 <SecuredRoute path="/user" component={User} currentUser={currentUser} />
             </div>
-            {/* {renderMenu} */}
-
             <Menu show={isMenuOpen} onClose={() => handleMenuClose(false)}>
-                <div>
-                    <p>Welcome, {email}</p>
-                    <div><NavLink exact={true} to='/user' style={{textDecoration: 'none'}}><Button >preferences</Button></NavLink></div>
-                    <div><Button color="inherit" onClick={() => signOut()}>Sign Out</Button></div>
-                </div>
+                <p>Welcome, {email}</p>
+                <NavLink exact={true} onClick={() => handleMenuClose(false)} to='/user' style={{textDecoration: 'none'}}><Button variant="outlined" style={{marginBottom: 5}} startIcon={<SettingsIcon />}>preferences</Button></NavLink>
+                <Button variant="contained" color="secondary" onClick={() => {
+                    signOut()
+                    handleMenuClose(false)
+                }}>Sign Out</Button>
             </Menu> 
-            {/* <Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B'}}/> Login to change threshold preferences</Notification>  */}
         </div>
     )
 }
