@@ -7,6 +7,7 @@ export const REMOVE_TASK = 'REMOVE_TASK'
 export const RESET_TASKS = 'RESET_TASKS'
 export const TOGGLE_TASK_ENABLED = 'TOGGLE_TASK_ENABLED'
 export const APPROVE_TASK = 'APPROVE_TASK'
+export const SET_PREFERENCES = 'SET_PREFERENCES'
 
 export const AUTH_TOKEN = 'AUTH_TOKEN'
 export const BACKEND_URL = 'localhost:4000'

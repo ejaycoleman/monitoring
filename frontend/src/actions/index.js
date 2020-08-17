@@ -1,4 +1,4 @@
-import { LOGIN_USER, LOGOUT_USER, ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED, APPROVE_TASK } from '../constants'
+import { LOGIN_USER, LOGOUT_USER, ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED, APPROVE_TASK, SET_PREFERENCES } from '../constants'
 
 export const login = value => ({
     type: LOGIN_USER,
@@ -44,6 +44,6 @@ export const toggleTaskEnabled = value => ({
 })
 
 export const setPreferences = value => ({
-    type: 'SET_PREFERENCES',
+    type: SET_PREFERENCES,
     value
 })
