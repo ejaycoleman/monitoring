@@ -17,6 +17,9 @@ import { AUTH_TOKEN } from './constants'
 import { addTask, addExecution, removeTask, login, setPreferences } from './actions'
 import { retrieveExecutionsSubscription, taskDeletedSubscription } from './gql'
 import jwt from 'jsonwebtoken'
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Menu from './Menu/Menu'
 
 const Navigation = props => {
     const { tasks, subscribeToMore, currentUser, refetch } = props
@@ -25,6 +28,7 @@ const Navigation = props => {
     const history = useHistory();
     const { authed, email } = useSelector(state => state.isLogged)
     const [currentRoute, setCurrentRoute] = useState("")
+    const [isMenuOpen, handleMenuClose] = useState(false)
 
     useEffect(() => {
         if (currentUser) {
@@ -90,10 +94,15 @@ const Navigation = props => {
                     </div>
                     { 
                         authed ?
-                        <div>
-                            <NavLink exact={true} to='/user' style={{textDecoration: 'none'}}><Button >{email}</Button></NavLink>
-                            <Button color="inherit" onClick={() => signOut()}>Sign Out</Button>
-                        </div>
+                        <IconButton
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-haspopup="true"
+                            onClick={() => handleMenuClose(true)}
+                            color="inherit"
+                            >
+                                <AccountCircle />
+                        </IconButton>
                         :
                         <NavLink exact={true} to='/login' style={{textDecoration: 'none'}} ><Button variant="contained">Login</Button></NavLink>             
                     }
@@ -105,6 +114,14 @@ const Navigation = props => {
                 <SecuredRoute path="/upload/" component={Upload} currentUser={currentUser} />
                 <SecuredRoute path="/user" component={User} currentUser={currentUser} />
             </div>
+            <Menu show={isMenuOpen} onClose={() => handleMenuClose(false)}>
+                <p>Welcome, {email}</p>
+                <NavLink exact={true} onClick={() => handleMenuClose(false)} to='/user' style={{textDecoration: 'none'}}><Button variant="outlined" style={{marginBottom: 5}} startIcon={<SettingsIcon />}>preferences</Button></NavLink>
+                <Button variant="contained" color="secondary" onClick={() => {
+                    signOut()
+                    handleMenuClose(false)
+                }}>Sign Out</Button>
+            </Menu> 
         </div>
     )
 }

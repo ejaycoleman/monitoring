@@ -17,10 +17,8 @@ const sendEmail = (email, task) => {
 }
 
 const moveFiles = file => {
-    const moveFiles = false // change this to true if you want files to be moved to /archived
-    moveFiles && fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
+    fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
         if (err) throw err;
-        console.log('renamed complete');
     });
 }
  
