@@ -9,7 +9,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Switch from '@material-ui/core/Switch'
 import { modifyTask, removeTask } from '../../actions'
 import { useDispatch, useSelector } from 'react-redux'
-import Notification from '../../Notfication/Notification'
+import Notification from '../../Notification/Notification'
 import InteractiveModal from '../../InteractiveModal/InteractiveModal'
 import WarningIcon from '@material-ui/icons/Warning'
 

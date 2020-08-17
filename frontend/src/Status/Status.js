@@ -17,7 +17,7 @@ import { addTask } from '../actions'
 import { useDispatch, useSelector } from 'react-redux'
 import Visualisations from './Visualisations'
 import { Link } from 'react-router-dom'
-import Notification from '../Notfication/Notification'
+import Notification from '../Notification/Notification'
 import InteractiveModal from '../InteractiveModal/InteractiveModal'
 import TaskSettingsModal from './TaskSettingsModal'
 import WarningIcon from '@material-ui/icons/Warning';
@@ -165,7 +165,9 @@ export default function Status(props) {
 				}}>
 					<Chip 
 						icon={<WatchLaterIcon style={{color: determineChipColor(mostRecentExecution)}}/>} 
-						label={mostRecentExecution ? `Last received ${moment.unix(mostRecentExecution).fromNow()}` : 'Never Received'} 
+						label={mostRecentExecution ? `Last received ${
+							moment().diff( moment.unix(mostRecentExecution), 'days') === 0 ? 'today' : moment().diff( moment.unix(mostRecentExecution), 'days') === 1 ? 'yesterday' : `${moment().diff( moment.unix(mostRecentExecution), 'days')} days ago`						
+						}` : 'Never Received'} 
 						style={{backgroundColor: 'white'}} 
 						onClick={() => authed ? setModalOpen(true) : setSnackBarErrorShow(true)}
 					/>	

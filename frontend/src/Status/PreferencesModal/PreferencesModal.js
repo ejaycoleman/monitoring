@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormGroup from '@material-ui/core/FormGroup'
-import Notification from '../../Notfication/Notification'
+import Notification from '../../Notification/Notification'
 import WarningIcon from '@material-ui/icons/Warning'
 import { setPreferences as setPreferecesAction } from '../../actions'
 import { useDispatch } from 'react-redux'

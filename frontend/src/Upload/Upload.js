@@ -7,7 +7,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import { withStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { addTask } from '../actions'
-import Notification from '../Notfication/Notification'
+import Notification from '../Notification/Notification'
 import WarningIcon from '@material-ui/icons/Warning'
 
 const theme = {
