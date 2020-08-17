@@ -65,15 +65,13 @@ const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
 fileReaderCron.start()
 
 // RUN DAILY
-const notify = new CronJob('*/15 * * * * *', async function() {
+const notify = new CronJob('* * 0 * * *', async function() {
     const tasks = await prisma.task.findMany()
     tasks.forEach(async task => {
         const executions = await prisma.task.findOne({where: {id: task.id}}).executions({orderBy: {datetime: 'desc'}})
         if (executions[0] && moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(executions[0].datetime))) {
-            const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: true}})
+            const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
-                console.log('--------------')
-                console.log(notif.user)
                 if (notif.user.preference.recieveEmailForLate) {
                     console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} wasnt run on time`)
                 }
@@ -82,7 +80,6 @@ const notify = new CronJob('*/15 * * * * *', async function() {
         if (executions.length === 0) {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
-                console.log(notif.user.preference.recieveEmailForNever)
                 if (notif.user.preference.recieveEmailForNever) {
                     console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} hasnt received any tasks`)
                 }
