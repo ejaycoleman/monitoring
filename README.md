@@ -43,5 +43,3 @@ Finally, go to [localhost:3000](http://localhost:3000), and monitor the status o
 Task executions are saved in the `backend/ingress` directory. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page. <br>
 
 To view the raw data stored in the database, you can visit [localhost:5555](http://localhost:5555) <br>
-
-After an execution has been recorded, it stays in the ingress directory to make debugging easier. The moveFiles constant in /backend/src/server.js, line 19, can be set to true to make the files move to the archive directory once they have been recorded.
