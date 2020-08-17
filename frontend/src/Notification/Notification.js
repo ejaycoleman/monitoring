@@ -31,13 +31,15 @@ export default function Notification(props) {
             textAlign: 'center',
             height: 50,            
         }}>
-            <Paper elevation={3} style={{padding: 10, width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <Paper elevation={3} style={{padding: 10}}>
                 <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
                     <IconButton size="small" onClick={() => onClose()}>
                         <CancelIcon fontSize="inherit" />
                     </IconButton>
                 </div>
-                {props.children}
+                <div style={{width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {props.children}
+                </div>
             </Paper>
 		</div>
 	)
