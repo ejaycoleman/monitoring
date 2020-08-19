@@ -89,4 +89,11 @@ const notify = new CronJob('* * 0 * * *', async function() {
 })
 notify.start()
 
+server.get('/file.json', async (err, res) => {
+    res.status(200)
+    const tasks = await prisma.task.findMany({select: {number: true, command: true, frequency: true, period: true}})
+    res.json({tasks: tasks})
+    res.end()
+})
+
 server.start(() => console.log('Server is running on http://localhost:4000'))
