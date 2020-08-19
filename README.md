@@ -18,7 +18,7 @@ The system is comprised of two systems: the frontend (localhost:3000) and the ba
 3. After running the first time, you should see errors like this:  
 ![Prior Migrate](prior_migrate.png) <br>
 This is because the schema has not been replicated in the database. To fix this, run: <br>
-`npm run migrate` <br>
+`npm run migrate` in the project directory while the containers are running<br>
 
 ## Create a user
 go to [localhost:4000](http://localhost:4000) in your browser
