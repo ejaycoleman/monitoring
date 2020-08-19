@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Route, NavLink, useLocation, useHistory } from "react-router-dom";
+import { Route, NavLink, Switch, useLocation, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from './actions'
 import Login from './Login/index'
@@ -109,10 +109,13 @@ const Navigation = props => {
                 </Toolbar>
             </AppBar>
             <div style={{padding: 20}}>
-                <Route path="/" exact component={Status} />
-                <Route path="/login/" render={() => <Login refetchUser={() => refetch()} history={history} />} />
-                <SecuredRoute path="/upload/" component={Upload} currentUser={currentUser} />
-                <SecuredRoute path="/user" component={User} currentUser={currentUser} />
+                <Switch>
+                    <Route path="/" exact component={Status} />
+                    <Route path="/login/" render={() => <Login refetchUser={() => refetch()} history={history} />} />
+                    <SecuredRoute path="/upload/" component={Upload} currentUser={currentUser} />
+                    <SecuredRoute path="/user" component={User} currentUser={currentUser} />
+                    <Route path="*" render={() => <h1 style={{color: 'white'}}>404 - Page not found</h1>} />
+                </Switch>
             </div>
             <Menu show={isMenuOpen} onClose={() => handleMenuClose(false)}>
                 <p>Welcome, {email}</p>
