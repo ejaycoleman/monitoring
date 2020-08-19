@@ -9,7 +9,7 @@ The system is comprised of two systems: the frontend (localhost:3000) and the ba
 ## Deploy the containers
 1. If this project has been run before (and there are schema changes), run the following commands within the project directory: (otherwise continue to step 2)<br>
 `npm run stop` <br> 
-`npm run clean` 
+`npm run clean` (this will clear the database)
 
 2. Run: <br>
 `npm run build` <br> 
