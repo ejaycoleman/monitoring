@@ -96,7 +96,7 @@ export default function TaskSettingsModal(props) {
 					</Button>
 				</DialogActions>
 			</InteractiveModal>
-			<Notification show={!!error} onClose={() => setError('')}><WarningIcon style={{color: '#F2A83B'}}/> {error}</Notification> 
+			<Notification show={!!error} onClose={() => setError('')}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/> {error}</Notification> 
 		</React.Fragment>
 	)
 }

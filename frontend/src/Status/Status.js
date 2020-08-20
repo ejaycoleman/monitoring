@@ -174,7 +174,7 @@ export default function Status(props) {
 					<InteractiveModal show={modalOpen} onClose={() => setModalOpen(false)}>
 						<PreferencesModal preferences={userPreferences} setPreferences={setPreferences} close={() => setModalOpen(false)}/>
 					</InteractiveModal>
-					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B'}}/> Login to change threshold preferences</Notification> 
+					<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/> Login to change threshold preferences</Notification> 
 					<Notification show={notificationErrorShow} onClose={() => setNotificationErrorShow(false)}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/> Emails not set up currently</Notification> 
 					<InteractiveModal show={!!preferencesModalOpen} onClose={() => setPreferencesModalOpen(false)}>
 						<TaskSettingsModal task={preferencesModalOpen} close={() => setPreferencesModalOpen(false)}/>

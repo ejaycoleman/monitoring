@@ -29,16 +29,16 @@ export default function Notification(props) {
             top: 15, 
             right: 15, 
             textAlign: 'center',
-            height: 50,            
+            height: 50, 
         }}>
-            <Paper elevation={3} style={{padding: 10}}>
-                <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+            <Paper elevation={3} style={{padding: 10, display: 'flex',}}>
+                <div style={{ height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {props.children}
+                </div>
+                <div style={{width: 30, height: 25, display: 'flex', justifyContent: 'flex-end'}}>
                     <IconButton size="small" onClick={() => onClose()}>
                         <CancelIcon fontSize="inherit" />
                     </IconButton>
-                </div>
-                <div style={{width: 250, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    {props.children}
                 </div>
             </Paper>
 		</div>
