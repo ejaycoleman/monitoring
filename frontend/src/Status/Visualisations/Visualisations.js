@@ -5,6 +5,18 @@ import { useSelector } from 'react-redux'
 const CanvasJSChart = CanvasJSReact.CanvasJSChart
 
 export default function Visualisations(props) {
+    const [showTask, setShowTask] = React.useState(-1)
+
+    const toggleDataSeries = e => {
+        if (showTask === -1) {
+            setShowTask(parseInt(e.dataSeries.name.match(/\d+$/)[0]))
+        } else if (showTask !== parseInt(e.dataSeries.name.match(/\d+$/)[0])) {
+            setShowTask(parseInt(e.dataSeries.name.match(/\d+$/)[0]))
+        } else {
+            setShowTask(-1)
+        }
+    }
+
     const options = {
         theme: "light2",
         animationEnabled: true,
@@ -22,11 +34,9 @@ export default function Visualisations(props) {
             horizontalAlign: "right",
             reversed: true,
             cursor: "pointer",
+            itemclick : toggleDataSeries
         }
     }
-
-    // const { authed, admin } = useSelector(state => state.isLogged)
-    // const reduxTasks = useSelector(state => state.tasks).filter(task => (authed && admin) || task.enabled)
 
     const reduxTasks = useSelector(state => state.tasks).filter(task => task.approved)
 
@@ -53,13 +63,18 @@ export default function Visualisations(props) {
         let runningTotal = 0
         let dataPoints = []
         Object.keys(times).sort(compare).forEach(time => {
-            dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal, markerType: times[time].includes(task.number) ? "cross" : "no marker", markerColor: "black"})
+            if (showTask === -1) {
+                dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal, markerType: times[time].includes(task.number) ? "cross" : "no marker", markerColor: "black"})
+            } else if (times[time].includes(task.number)) {
+                dataPoints.push({x: moment.unix(time).toDate(), y: runningTotal += 1, markerType: "cross", markerColor: "black"})
+            }
         })
         myData.push({
             type: 'stackedArea',
             name: `task ${task.number}`,
             showInLegend: true,
-            dataPoints
+            dataPoints,
+            visible: showTask !== -1 ? showTask === task.number ? true : false : true
         })
     })
 
