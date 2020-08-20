@@ -114,7 +114,7 @@ const Upload = props => {
 							setErrors(toSetErrors)
 						}
 					}}>UPLOAD</Button>	
-					<a href="http://localhost:4000/file.json" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{left: 20, height: '100%'}}>Download JSON</Button></a>
+					<a href="http://localhost:4000/file.json" target="_blank" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{left: 20, height: '100%'}}>Download JSON</Button></a>
 				</FormGroup>
 				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
 					<h2 style={{paddingTop: 10, display: 'flex', alignItems: 'center'}}><WarningIcon style={{color: '#F2A83B', paddingRight: 5, fontSize: '1.5em'}}/> errors:</h2>
