@@ -17,9 +17,6 @@ export default function Visualisations(props) {
         axisX: {
             valueFormatString: "DD MMM"
         },
-        toolTip: {
-            shared: true
-        },
         legend: {
             verticalAlign: "center",
             horizontalAlign: "right",
@@ -56,7 +53,7 @@ export default function Visualisations(props) {
         let runningTotal = 0
         let dataPoints = []
         Object.keys(times).sort(compare).forEach(time => {
-            dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal})
+            dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal, markerType: times[time].includes(task.number) ? "cross" : "no marker", markerColor: "black"})
         })
         myData.push({
             type: 'stackedArea',
