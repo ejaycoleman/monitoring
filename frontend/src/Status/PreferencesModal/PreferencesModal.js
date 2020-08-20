@@ -26,32 +26,32 @@ export default function PreferencesModal(props) {
 		<React.Fragment>
 			<DialogContent>
 				<DialogContentText>
-					Change the threshold for when to expect executions
+					Warnings and Errors for late executions
 				</DialogContentText>
 				<FormGroup row>
 					<TextField
-						label="Ideally no later than..."
+						label="Warn after..."
 						type="number"
 						placeholder="frequency"
 						value={idealFreq} onChange={e => setIdealFreq(e.target.value)}
 					/>
 					<NativeSelect value={idealPeriod} onChange={e => setIdealPeriod(e.target.value)}>
-						<option value="days">days ago</option>
-						<option value="weeks">weeks ago</option>
-						<option value="months">months ago</option>
+						<option value="days">days</option>
+						<option value="weeks">weeks</option>
+						<option value="months">months</option>
 					</NativeSelect>
 				</FormGroup>
 				<FormGroup row>
 					<TextField
-						label="No later than..."
+						label="Error after..."
 						type="number"
 						placeholder="frequency"
 						value={absoluteFreq} onChange={e => setAbsoluteFreq(e.target.value)}
 					/>
 					<NativeSelect value={absolutePeriod} onChange={e => setAbsolutePeriod(e.target.value)}>
-						<option value="days">days ago</option>
-						<option value="weeks">weeks ago</option>
-						<option value="months">months ago</option>
+						<option value="days">days</option>
+						<option value="weeks">weeks</option>
+						<option value="months">months</option>
 					</NativeSelect>
 				</FormGroup>
 			</DialogContent>
