@@ -85,7 +85,8 @@ const Upload = props => {
 	
 	return (
 		<div>
-			<h1 style={{color: 'white'}}>Upload JSON</h1>
+			<h1 style={{color: 'white'}}>Create Tasks</h1>
+			<h2>Upload JSON</h2>
 			<div className="flex flex-column">
 				<FormGroup row>
 					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
@@ -121,8 +122,8 @@ const Upload = props => {
 					{errors.map((e, i) => <h3 key={i}>{i + 1}. {e}</h3>)}
 				</div>}
 			</div>
-			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
-			<FormGroup row>
+			<h2>Upload Single Task</h2>
+			<FormGroup row style={{marginTop: 20}}>
 				<CssTextField
 					variant="outlined"
 					value={newTaskNumber}
@@ -174,6 +175,7 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<Notification show={snackBarFeedbackShow} onClose={() => setSnackBarFeedbackShow(false)}>Requested <span role="img" aria-label="tick">✅</span></Notification> 
 		</div>
 	) 
