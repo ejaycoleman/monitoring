@@ -81,7 +81,7 @@ export default function StatusRow(props) {
 								<Chip
 									size="small"
 									icon={<HelpIcon style={{color: 'grey'}}/> }
-									label="NEVER RECIEVED"
+									label="NEVER RECEIVED"
 									variant="outlined"
 								/>
 							:
@@ -89,7 +89,7 @@ export default function StatusRow(props) {
 									<Chip
 										size="small"
 										icon={<CheckCircleIcon style={{color: 'green'}}/>}
-										label="RECIEVED"
+										label="RECEIVED"
 										variant="outlined"
 										style={{border: '1px solid green'}}
 									/>
