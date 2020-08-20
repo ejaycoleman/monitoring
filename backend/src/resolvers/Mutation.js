@@ -140,7 +140,7 @@ async function setPreferences(parent, data, {user, prisma}) {
 
     // currently only one part of the preferences can be changed
     // maybe update all preferences in one go
-    if (idealFrequency || idealPeriod || absoluteFrequency || absolutePeriod) {
+    if (idealFrequency && idealPeriod && absoluteFrequency && absolutePeriod) {
         const multiplier = {days: 1, weeks: 7, months: 30}
         if (parseInt(absoluteFrequency) * multiplier[absolutePeriod] < parseInt(idealFrequency) * multiplier[idealPeriod]) {
             throw new Error('warning must be sooner than error')
@@ -156,6 +156,7 @@ async function setPreferences(parent, data, {user, prisma}) {
     } else if (recieveEmailForLate !== null || recieveEmailForNever !== null || recieveEmailForRan !== null) {
         return prisma.preference.update({where: {id: userPreference.id}, data: {recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}})
     }
+    throw new Error('Unexpected parameters')
 }
 
 async function modifyTask(parent, { number, command, frequency, period, enabled }, { user, prisma }) {

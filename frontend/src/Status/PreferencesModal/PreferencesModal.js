@@ -26,7 +26,7 @@ export default function PreferencesModal(props) {
 		<React.Fragment>
 			<DialogContent>
 				<DialogContentText>
-					Warnings and Errors for late executions
+					Display warning/eror when executions have not been observed for...
 				</DialogContentText>
 				<FormGroup row>
 					<TextField
