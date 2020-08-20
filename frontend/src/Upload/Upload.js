@@ -110,7 +110,12 @@ const Upload = props => {
 								}
 							})
 						} catch(e) {
-							toSetErrors.push(`invalid json - ${e}`)
+							if (!jsonFile) {
+								toSetErrors.push(`A JSON file wasn't uploaded`)
+							} else {
+								toSetErrors.push(`invalid json - ${e}`)
+							}
+							
 						} finally {
 							setErrors(toSetErrors)
 						}
