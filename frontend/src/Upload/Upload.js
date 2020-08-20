@@ -115,7 +115,6 @@ const Upload = props => {
 							setErrors(toSetErrors)
 						}
 					}}>UPLOAD</Button>	
-					<a href="http://localhost:4000/file.json" target="_blank" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{left: 20, height: '100%'}}>Download JSON</Button></a>
 				</FormGroup>
 				{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
 					<h2 style={{paddingTop: 10, display: 'flex', alignItems: 'center'}}><WarningIcon style={{color: '#F2A83B', paddingRight: 5, fontSize: '1.5em'}}/> errors:</h2>
@@ -175,6 +174,7 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			<a href="http://localhost:4000/file.json" target="_blank" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{marginTop: 20, height: '100%'}}>Download JSON</Button></a>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<Notification show={snackBarFeedbackShow} onClose={() => setSnackBarFeedbackShow(false)}>Requested <span role="img" aria-label="tick">✅</span></Notification> 
 		</div>
