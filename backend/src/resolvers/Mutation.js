@@ -141,6 +141,15 @@ async function setPreferences(parent, data, {user, prisma}) {
     // currently only one part of the preferences can be changed
     // maybe update all preferences in one go
     if (idealFrequency || idealPeriod || absoluteFrequency || absolutePeriod) {
+        const multiplier = {days: 1, weeks: 7, months: 30}
+        if (parseInt(absoluteFrequency) * multiplier[absolutePeriod] < parseInt(idealFrequency) * multiplier[idealPeriod]) {
+            throw new Error('warning must be sooner than error')
+        }
+
+        if (parseInt(absoluteFrequency) <= 0 || parseInt(idealFrequency) <= 0) {
+            throw new Error('Values must not be negative')
+        }
+
         const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
         const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
         return prisma.preference.update({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})

@@ -65,6 +65,10 @@ export default function PreferencesModal(props) {
 						setSnackBarErrorShow(true)
 						return
 					}
+					if (parseInt(absoluteFreq) <= 0 || parseInt(idealFreq) <= 0) {
+						setSnackBarErrorShow(true)
+						return
+					}
 					setPreferences(idealFreq, idealPeriod, absoluteFreq, absolutePeriod).then(({data}) => {
 						dispatch(setPreferecesAction(data.setPreferences))
 						close()
