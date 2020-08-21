@@ -92,12 +92,36 @@ const Upload = props => {
 					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
 					<Button variant="contained" onClick={() =>	{
 						try {
-							JSON.parse(jsonFile).tasks.forEach((task) => {
-								try {
-									if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(task.number)).length !== 0) {
-										toSetErrors.push(`Task #${task.number} already exists!`)
-										return
-									}
+							let errorFlag = false
+							JSON.parse(jsonFile).tasks.forEach((task, i, arr) => {									
+								if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(task.number)).length !== 0) {
+									toSetErrors.push(`Task #${task.number} already exists!`)
+									errorFlag = true
+								}
+								if (!Number.isInteger(parseInt(task.number)) || task.number <= 0) {
+									toSetErrors.push(`Task number (${task.number}) must be a positive integer`)
+									errorFlag = true
+								}
+								if (task.command === '') {
+									toSetErrors.push(`task #${task.number}: command is empty`)
+									errorFlag = true
+								}
+								if (!Number.isInteger(parseInt(task.frequency)) || task.frequency <= 0) {
+									toSetErrors.push(`task #${task.number}: frequency should be positive integer`)
+									errorFlag = true
+								}
+								if (!['days', 'weeks', 'months'].includes(task.period)) {
+									toSetErrors.push(`task #${task.number}: invalid period '${task.period}'`)
+									errorFlag = true
+								}
+								if (arr.filter(t => t.number === task.number).length > 1) {
+
+									!toSetErrors.includes(`Your JSON contains two task with number: ${task.number}`) && toSetErrors.push(`Your JSON contains two task with number: ${task.number}`)
+									errorFlag = true
+								}
+							})
+							if (!errorFlag) { 
+								JSON.parse(jsonFile).tasks.forEach((task) => {
 									uploadSingleTask(task).then(({data}) => {
 										if (isAdmin) {
 											dispatch(addTask(data.uploadSingleTask))
@@ -106,13 +130,13 @@ const Upload = props => {
 											setSnackBarFeedbackShow(true)
 										}
 									}).catch(e => {
-										toSetErrors.push(e.message.split(':')[1])
-										setErrors([...toSetErrors])
+										toSetErrors.push(e.message.split(':')[1])	
 									})
-								} catch(e) {
-									toSetErrors.push(e.message)
-								}
-							})
+								})
+							} else {
+								toSetErrors.push('No tasks were submitted')	
+							}
+							setErrors([...toSetErrors])
 						} catch(e) {
 							if (!jsonFile) {
 								toSetErrors.push(`A JSON file wasn't uploaded`)
