@@ -179,7 +179,7 @@ const Upload = props => {
 				<h2 style={{paddingTop: 10, display: 'flex', alignItems: 'center'}}><WarningIcon style={{color: '#F2A83B', paddingRight: 5, fontSize: '1.5em'}}/> errors:</h2>
 				{errors.map((e, i) => <h3 key={i}>{i + 1}. {e}</h3>)}
 			</div>}
-			<a href="http://localhost:4000/file.json" target="_blank" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{marginTop: 20, height: '100%'}}>Download JSON</Button></a>
+			<a href="http://localhost:4000/file.json" target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}><Button variant="contained" color="secondary" style={{marginTop: 20, height: '100%'}}>Download JSON</Button></a>
 			<JSONTree data={reduxTasks || []} theme={theme} invertTheme={false} shouldExpandNode={(_keyName, _data, level) => level < 2}/>
 			<Notification show={snackBarFeedbackShow} onClose={() => setSnackBarFeedbackShow(false)}>Requested <span role="img" aria-label="tick">✅</span></Notification> 
 		</div>
