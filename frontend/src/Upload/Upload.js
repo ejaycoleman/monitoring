@@ -94,8 +94,8 @@ const Upload = props => {
 						try {
 							JSON.parse(jsonFile).tasks.forEach((task) => {
 								try {
-									if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(newTaskNumber)).length !== 0) {
-										setErrors([`Task #${task.number} already exists!`])
+									if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(task.number)).length !== 0) {
+										toSetErrors.push(`Task #${task.number} already exists!`)
 										return
 									}
 									uploadSingleTask(task).then(({data}) => {
