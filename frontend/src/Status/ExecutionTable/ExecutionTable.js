@@ -67,8 +67,8 @@ export default function ExecutionTable(props) {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * numberOfPages, page * numberOfPages + numberOfPages).map((execution) => (
-									<TableRow key={execution.datetime}>
+								{stableSort(task.executions, getComparator(order, 'datetime')).slice(page * numberOfPages, page * numberOfPages + numberOfPages).map((execution, i) => (
+									<TableRow key={i}>
 										<TableCell component="th" scope="row">
 											{execution.index}
 										</TableCell>

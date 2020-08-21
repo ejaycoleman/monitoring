@@ -64,12 +64,12 @@ export default function Visualisations(props) {
         let dataPoints = []
         Object.keys(times).sort(compare).forEach(time => {
             if (showTask === -1) {
-                dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += 1 : runningTotal, markerType: times[time].includes(task.number) ? "cross" : "no marker", markerColor: "black"})
+                dataPoints.push({x: moment.unix(time).toDate(), y: times[time].includes(task.number) ? runningTotal += times[time].filter(t => t === task.number).length : runningTotal, markerType: times[time].includes(task.number) ? "cross" : "no marker", markerColor: "black"})
             } else if (times[time].includes(task.number)) {
-                dataPoints.push({x: moment.unix(time).toDate(), y: runningTotal += 1, markerType: "cross", markerColor: "black"})
+                dataPoints.push({x: moment.unix(time).toDate(), y: runningTotal += times[time].filter(t => t === task.number).length, markerType: "cross", markerColor: "black"})
             }
         })
-        myData.push({
+        task.executions.length > 0 && myData.push({
             type: 'stackedArea',
             name: `task ${task.number}`,
             showInLegend: true,
