@@ -182,7 +182,7 @@ export default function Status(props) {
 				</div>
 			</div>
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
-				{mostRecentExecution ? <Visualisations></Visualisations> : null}
+				{mostRecentExecution && reduxTasks.filter(task => task.approved).length !== 0 ? <Visualisations></Visualisations> : null}
 			</div>
 		</div>
 	) 

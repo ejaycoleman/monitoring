@@ -21,7 +21,7 @@ export default function TaskSettingsModal(props) {
 	const [enabled, setEnabled] = React.useState(task.enabled);
 	const [error, setError] = React.useState('')
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
-	const { email } = useSelector(state => state.isLogged)
+	const { isAdmin, email } = useSelector(state => state.isLogged)
 	const dispatch = useDispatch()
 
 	return (
@@ -62,16 +62,15 @@ export default function TaskSettingsModal(props) {
 				{(command !== task.command || frequency !== task.frequency || period !== task.period || enabled !== task.enabled) && (
 					<Button onClick={() => {
 						try {
-							modifyTaskProp(task.number, command, frequency, period, enabled).then(({data: { modifyTask: {number, command, frequency, period, enabled} }}) => {
-							
-								dispatch(modifyTask({number, command, frequency, period, enabled}))
+							modifyTaskProp(task.number, command, frequency, period, enabled).then(({data: { modifyTask: {number, command, frequency, period, enabled, approved} }}) => {							
+								dispatch(modifyTask({number, command, frequency, period, enabled, approved}))
 								close()
 							}).catch(e => console.log(e))
 						} catch(e) {
 							setError(e.message)
-						}						
+						}
 					}}>
-						Apply
+						{!isAdmin && email === task.author.email ? 'Request Change' : 'Apply'}
 					</Button>
 				)}
 			</DialogActions>

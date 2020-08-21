@@ -166,9 +166,12 @@ async function modifyTask(parent, { number, command, frequency, period, enabled 
 
     const fullUser = await prisma.user.findOne({where: {id: user.id}})
     const fullTask = await prisma.task.findOne({where: {number: parseInt(number)}, include: {author: true}})
+    let approved = true
 
     if (!fullUser.isAdmin && fullTask.author.email !== fullUser.email) {
         throw new Error('Incorrect Privileges')
+    } else if (!fullUser.isAdmin && fullTask.author.email === fullUser.email) {
+        approved = false
     }
 
     if (!Number.isInteger(number) || number <= 0) {
@@ -187,7 +190,7 @@ async function modifyTask(parent, { number, command, frequency, period, enabled 
         throw new Error(`Period must be either 'days', 'weeks', or 'months' (got ${period})`)
     }
 
-    return prisma.task.update({where: {number}, data: {command, frequency, period, enabled}})
+    return prisma.task.update({where: {number}, data: {command, frequency, period, enabled, approved}})
 }
 
 async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {

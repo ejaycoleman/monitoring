@@ -27,6 +27,7 @@ const tasks = (state = [], action) => {
             existingTask.frequency = action.value.frequency
             existingTask.period = action.value.period
             existingTask.enabled = action.value.enabled
+            existingTask.approved = action.value.approved
             return tasks
         case APPROVE_TASK:
             tasks = state.map(a => ({...a}))

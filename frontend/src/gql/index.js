@@ -99,6 +99,8 @@ export const modifyTask = gql`
             command,
             frequency,
             period,
+            enabled,
+            approved,
             executions {
             datetime
             },
@@ -107,7 +109,6 @@ export const modifyTask = gql`
                     id
                 }
             }
-            enabled
         }
     }
 `

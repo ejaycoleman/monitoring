@@ -50,7 +50,7 @@ export default function StatusRow(props) {
 		})
 		setRanInTime(ranInTime)
 		setNotifications(task.notifications && task.notifications.length !== 0)
-	}, [setRanInTime, task.frequency, task.period, task.executions, task.notifications])
+	}, [setRanInTime, task.frequency, task.period, task.executions, task.notifications, task.approved])
 
 	return (
 		<React.Fragment>
