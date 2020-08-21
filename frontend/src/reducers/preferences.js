@@ -4,11 +4,11 @@ const preferences = (state = {executionThresholdAbsolute: '', executionThreshold
     switch (action.type) {
         case SET_PREFERENCES:
             return {
-                executionThresholdAbsolute: action.value.executionThresholdAbsolute, 
-                executionThresholdIdeal: action.value.executionThresholdIdeal, 
-                recieveEmailForLate: action.value.recieveEmailForLate, 
-                recieveEmailForNever: action.value.recieveEmailForNever, 
-                recieveEmailForRan: action.value.recieveEmailForRan}
+                executionThresholdAbsolute: action.value.executionThresholdAbsolute !== undefined ? action.value.executionThresholdAbsolute : state.executionThresholdAbsolute, 
+                executionThresholdIdeal: action.value.executionThresholdIdeal !== undefined ? action.value.executionThresholdIdeal : state.executionThresholdIdeal, 
+                recieveEmailForLate: action.value.recieveEmailForLate !== undefined ? action.value.recieveEmailForLate : state.recieveEmailForLate, 
+                recieveEmailForNever: action.value.recieveEmailForNever !== undefined ? action.value.recieveEmailForNever : state.recieveEmailForNever, 
+                recieveEmailForRan: action.value.recieveEmailForRan !== undefined ? action.value.recieveEmailForRan : state.recieveEmailForRan}
         case LOGOUT_USER:
             return {
                 executionThresholdAbsolute: '', 

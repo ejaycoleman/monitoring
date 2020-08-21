@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setPreferences as setPreferenceAction } from '../actions'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
@@ -19,6 +20,8 @@ const User = props => {
         setRecieveEmailForNever(userPreferences.recieveEmailForNever)
         setRecieveEmailForRan(userPreferences.recieveEmailForRan)
     }, [userPreferences])
+
+    const dispatch = useDispatch();
 
 	return (
 		<div>
@@ -65,7 +68,11 @@ const User = props => {
                     />
                 </li>
                 <Button
-                    onClick={() => setPreferences(recieveEmailForLate, recieveEmailForNever, recieveEmailForRan)}
+                    onClick={() => {
+                            setPreferences(recieveEmailForLate, recieveEmailForNever, recieveEmailForRan)
+                            dispatch(setPreferenceAction({recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}))
+                        } 
+                    }
                     variant="contained" color="secondary"
                 >
                     SUBMIT
