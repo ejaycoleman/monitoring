@@ -94,6 +94,10 @@ const Upload = props => {
 						try {
 							JSON.parse(jsonFile).tasks.forEach((task) => {
 								try {
+									if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(newTaskNumber)).length !== 0) {
+										setErrors([`Task #${task.number} already exists!`])
+										return
+									}
 									uploadSingleTask(task).then(({data}) => {
 										if (isAdmin) {
 											dispatch(addTask(data.uploadSingleTask))
@@ -115,7 +119,6 @@ const Upload = props => {
 							} else {
 								toSetErrors.push(`invalid json - ${e}`)
 							}
-							
 						} finally {
 							setErrors(toSetErrors)
 						}
@@ -153,6 +156,10 @@ const Upload = props => {
 				</NativeSelect>
 				<Button variant="contained" onClick={() => {
 					try {
+						if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(newTaskNumber)).length !== 0) {
+							setErrors([`task #${newTaskNumber} already exists!`])
+							return
+						}
 						uploadSingleTask({ 
 							number: newTaskNumber, 
 							command: newTaskCommand, 
