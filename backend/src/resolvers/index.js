@@ -7,6 +7,8 @@ const User = require('./User')
 const TaskNotification = require('./TaskNotification')
 const Preference = require('./Preference')
 
+// combine all the resolvers
+
 const resolvers = {
     Query, 
     Mutation,

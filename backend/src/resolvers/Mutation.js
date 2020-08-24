@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+// User registration mutation (hashes passwords and initialises data)
 async function register(parent, { isAdmin, email, password }, context) {
     const hashedPassword = await bcrypt.hash(password, 10)
     const user = await context.prisma.user.create({
@@ -18,6 +19,7 @@ async function register(parent, { isAdmin, email, password }, context) {
     return user
 }
 
+// User login mutation, returns an authentication token if credentials are correct
 async function login(parent, {email, password}, context) {
     const user = await context.prisma.user.findOne({where: {email}})
     if (!user) {
@@ -42,6 +44,7 @@ async function login(parent, {email, password}, context) {
     }
 }
 
+// Mutation for creating a task
 async function uploadSingleTask(parent, { number, command, frequency, period }, {user, prisma, pubsub}) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -74,11 +77,12 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
             }
         })
 
+        // Created a websocket event
         pubsub.publish('NEW_TASK', {
             newTask
         })
     
-        return newTask
+        return newTask 
     } catch (e) {
         if (e.message.includes('Unique constraint failed on the constraint: `number`')) {
             throw new Error(`Task #${number} already present`)
@@ -101,6 +105,7 @@ async function approveTask(parent, { number }, {user, prisma}) {
     return prisma.task.update({where: {number: parseInt(number)}, data: {approved: true}})
 }
 
+// Endpoint for when a user wants to receive notifications for a task
 async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -122,6 +127,7 @@ async function toggleNotification(parent, { taskNumber }, {user, prisma}) {
     return prisma.taskNotification.delete({where: {id: existing[0].id}})
 }
 
+// Mutation for users to set preferences
 async function setPreferences(parent, data, {user, prisma}) {
     const { 
         idealFrequency, 
@@ -139,7 +145,7 @@ async function setPreferences(parent, data, {user, prisma}) {
     const userPreference = await prisma.user.findOne({where: {id: user.id}}).preference()
 
     // currently only one part of the preferences can be changed
-    // maybe update all preferences in one go
+    // maybe update all preferences in one go (rather than threshold preferences/notification preferences)
     if (idealFrequency && idealPeriod && absoluteFrequency && absolutePeriod) {
         const multiplier = {days: 1, weeks: 7, months: 30}
         if (parseInt(absoluteFrequency) * multiplier[absolutePeriod] < parseInt(idealFrequency) * multiplier[idealPeriod]) {
@@ -159,6 +165,7 @@ async function setPreferences(parent, data, {user, prisma}) {
     throw new Error('Unexpected parameters')
 }
 
+// How admins and non-admins modify tasks
 async function modifyTask(parent, { number, command, frequency, period, enabled }, { user, prisma }) {
     if (!user) {
         throw new Error('Not Authenticated')
@@ -193,6 +200,7 @@ async function modifyTask(parent, { number, command, frequency, period, enabled 
     return prisma.task.update({where: {number}, data: {command, frequency, period, enabled, approved}})
 }
 
+// Mutation for removing tasks
 async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     if (!user) {
         throw new Error('Not Authenticated')

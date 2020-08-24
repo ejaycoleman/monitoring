@@ -1,3 +1,4 @@
+// The types of subscription are here
 const newExecution = {
     subscribe: (parent, args, { pubsub }) => {
         return pubsub.asyncIterator('NEW_EXECUTION')

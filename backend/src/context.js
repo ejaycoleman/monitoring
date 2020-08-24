@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 const pubsub = new PubSub()
 pubsub.ee.setMaxListeners(30);
 
+// verifies the authentication token is valid
 const getUser = token => {
     try {
         if (token) {
@@ -17,6 +18,7 @@ const getUser = token => {
     }
 }
 
+// Provides prisma (for database), pubsub (for websockets) and user with each request
 const createContext = ({request}) => {
     if (!request) {
         return { 
