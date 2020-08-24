@@ -77,7 +77,7 @@ export default function PreferencesModal(props) {
 					Apply
 				</Button>
 			</DialogActions>
-			<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/> Absolute must be greater than ideal!</Notification> 
+			<Notification show={snackBarErrorShow} onClose={() => setSnackBarErrorShow(false)}><WarningIcon style={{color: '#F2A83B', paddingRight: 5}}/>Warnings should be triggered before errors</Notification> 
 		</React.Fragment>
 	)
 }
