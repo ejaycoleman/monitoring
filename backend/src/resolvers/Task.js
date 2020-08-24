@@ -1,3 +1,5 @@
+// Resolver for linking executions, authors and notifications to the task entity
+
 // Return associated executions when task is queried
 function executions(parent, args, context) {
     return context.prisma.task.findOne({where: { id: parent.id }}).executions()

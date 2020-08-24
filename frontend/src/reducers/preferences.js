@@ -1,3 +1,5 @@
+// Redux reducers for the state referring to preferences
+
 import {SET_PREFERENCES, LOGOUT_USER} from '../constants'
 
 const preferences = (state = {executionThresholdAbsolute: '', executionThresholdIdeal: '', receiveEmailForLate: false, receiveEmailForNever: false, receiveEmailForRan: false}, action) => {

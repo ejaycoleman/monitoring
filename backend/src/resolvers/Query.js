@@ -1,3 +1,5 @@
+// The resolver for the queries available
+
 // return details about the user logged in
 async function currentUser(parent, args, { user, prisma }) {
     if (!user) {

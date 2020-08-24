@@ -1,3 +1,5 @@
+// The component for the edit task modal, used for modiyfing, requesting modifications and deleting tasks
+
 import React from 'react';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,7 +23,7 @@ export default function TaskSettingsModal(props) {
 	const [enabled, setEnabled] = React.useState(task.enabled);
 	const [error, setError] = React.useState('')
 	const [deleteConfirmDialog, setDeleteConfirmDialog] = React.useState(false)
-	const { isAdmin, email } = useSelector(state => state.isLogged)
+	const { admin, email } = useSelector(state => state.isLogged)
 	const dispatch = useDispatch()
 
 	return (
@@ -70,7 +72,8 @@ export default function TaskSettingsModal(props) {
 							setError(e.message)
 						}
 					}}>
-						{!isAdmin && email === task.author.email ? 'Request Change' : 'Apply'}
+						{/* If the user is not an admin, but is the owner of the task then they can request changes (task will need approval again) */}
+						{!admin && email === task.author.email ? 'Request Change' : 'Apply'}
 					</Button>
 				)}
 			</DialogActions>

@@ -1,3 +1,5 @@
+// The component for rendering the Status page, located at http://localhost:3000/
+
 import React from 'react'
 import moment from 'moment'
 import Table from '@material-ui/core/Table'

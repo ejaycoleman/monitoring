@@ -1,3 +1,5 @@
+// The actions available to Redux
+
 import { LOGIN_USER, LOGOUT_USER, ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED, APPROVE_TASK, SET_PREFERENCES } from '../constants'
 
 export const login = value => ({

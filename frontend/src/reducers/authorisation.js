@@ -1,3 +1,5 @@
+// Redux reducers for the state referring to authorisation
+
 import {LOGIN_USER, LOGOUT_USER} from '../constants'
 
 const authorisation = (state = {authed: false, admin: false, email: ''}, action) => {

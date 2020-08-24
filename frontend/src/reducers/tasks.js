@@ -1,3 +1,5 @@
+// Redux reducers for the state referring to tasks
+
 import { ADD_TASK, ADD_EXECUTION, MODIFY_TASK, REMOVE_TASK, RESET_TASKS, TOGGLE_TASK_ENABLED, APPROVE_TASK } from '../constants'
 
 const tasks = (state = [], action) => {

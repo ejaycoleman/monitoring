@@ -1,3 +1,5 @@
+// Component for rendering the Login page to users (http://localhost:3000/login)
+
 import React, { useState } from 'react'
 import { login, setPreferences } from '../actions'
 import { useDispatch } from 'react-redux'

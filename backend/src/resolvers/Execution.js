@@ -1,5 +1,6 @@
-// Return associated task when execution is queried
+// Resolver for linking tasks to the execution entity
 
+// Return associated task when execution is queried
 function task(parent, args, context) {
     return context.prisma.execution.findOne({where: {id: parent.id}}).task()
 }

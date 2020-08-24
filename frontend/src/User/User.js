@@ -1,3 +1,6 @@
+// Component for users to set their email notification preferences
+// found at http://localhost:3000/user (authentication required)
+
 import React, {useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setPreferences as setPreferenceAction } from '../actions'
@@ -6,7 +9,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Button from '@material-ui/core/Button'
 
-// Component for users to set their email notification preferences
 const User = props => {	
     const { setPreferences } = props
     const { email } = useSelector(state => state.isLogged)

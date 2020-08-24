@@ -1,3 +1,6 @@
+// Component for the execution graph displayed in http://localhost:3000/. Relied on the Canvas JS Library, where source 
+// files are located in ./canvasjs.min.js and canvas.react.js
+
 import React from 'react';
 import CanvasJSReact from './canvasjs.react'
 import moment from 'moment'

@@ -1,3 +1,5 @@
+// Component for the menu displayed when clicking on the user dropdown in the navigation
+
 import React from 'react';
 import { useRef, useEffect } from "react";
 

@@ -1,3 +1,5 @@
+// The component for rendering notifications (divs on top of the page (top-right))
+
 import React from 'react';
 import { useRef, useEffect } from "react";
 

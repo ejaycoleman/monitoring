@@ -1,3 +1,6 @@
+// This is the app root file, which imports and renders components
+// It also provides some app configuration
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";

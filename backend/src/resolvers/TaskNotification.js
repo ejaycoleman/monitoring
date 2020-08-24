@@ -1,3 +1,5 @@
+// Resolver to link users and tasks to the taskNotification entity
+
 // Return associated user when notification is queried
 function user(parent, args, context) {
     return context.prisma.taskNotification.findOne({where: { id: parent.id }}).user()

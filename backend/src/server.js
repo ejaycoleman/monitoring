@@ -1,3 +1,5 @@
+// The main server file for the backend
+
 const { GraphQLServer } = require('graphql-yoga')
 const { resolvers } = require('./resolvers') 
 const fs = require('fs')
@@ -27,7 +29,7 @@ const moveFiles = file => {
 }
  
 async function postExecution(taskId, datetime, file) {
-    // Creates an executionn in the database, notifying users who have enabled notifications
+    // Creates an execution in the database, notifying users who have enabled notifications
     
     const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
     const associatedNotifications = await prisma.task.findOne({where: {number: taskId}}).notifications().user()
@@ -49,7 +51,8 @@ async function postExecution(taskId, datetime, file) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
-        // Used for websockets, allowing live updates on the status page
+
+        // Trigger the execution websocket event
         pubsub.publish('NEW_EXECUTION', {
             newExecution
         })
@@ -58,7 +61,7 @@ async function postExecution(taskId, datetime, file) {
     }
 }
 
-// RUN EVERY 5 SECONDS, reading executions within the ingress directory
+// RUN EVERY 5 SECONDS, reading executions within the ingress directory. The frequency can be changed by the first argument '*/5 * * * * *', which currently describes "run every 5 seconnds".
 const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
     fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {
         files.forEach(file => {
@@ -72,8 +75,8 @@ const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
 })
 fileReaderCron.start()
 
-// RUN DAILY, triggering various notifications for users with them enabled
-const notify = new CronJob('* * 0 * * *', async function() {
+// RUN DAILY, triggering various notifications for users with them enabled. The frequency can be changed by the first argument '* * 0 * * *', which currently describes "run every day at 00:00".
+const notify = new CronJob('0 0 0 * * *', async function() {
     const tasks = await prisma.task.findMany()
     tasks.forEach(async task => {
         const executions = await prisma.task.findOne({where: {id: task.id}}).executions({orderBy: {datetime: 'desc'}})

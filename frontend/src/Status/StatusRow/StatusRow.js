@@ -1,3 +1,5 @@
+// The component for tasks displayed in the task table on http://localhost:3000/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -41,6 +43,70 @@ export default function StatusRow(props) {
 
 	task.executions && task.executions.map((execution, index) => execution.index = index + 1)
 
+	// determine which type of chip to render (depending on ownership and privileges)
+	const renderChip = () => {
+		if (task.approved) {
+			if (task.enabled) {
+				if (!task.executions || task.executions.length === 0) {
+					return <Chip
+						size="small"
+						icon={<HelpIcon style={{color: 'grey'}}/> }
+						label="NEVER RECEIVED"
+						variant="outlined"
+					/>
+				} else {
+					if (ranInTime) {
+						return <Chip
+							size="small"
+							icon={<CheckCircleIcon style={{color: 'green'}}/>}
+							label="RECEIVED"
+							variant="outlined"
+							style={{border: '1px solid green'}}
+						/>
+					} else {
+						return <Chip
+							size="small"
+							icon={<CancelIcon style={{color: '#e53935'}}/>}
+							label="OVERDUE"
+							variant="outlined"
+							style={{border: '1px solid #e53935'}}
+						/>
+					}
+				} 
+			} else {
+				return <Chip
+					color='secondary'
+					size="small"
+					label="DISABLED"
+					style={{backgroundColor: '#e53935'}}
+				/>
+			}
+		} else {
+			if (admin) {
+				return <Button 
+					style={{backgroundColor: 'green', color: 'white'}}
+					variant="contained" 
+					size="small"
+					endIcon={<CheckCircleIcon />}
+					onClick={() => {
+						graphqlApproveTask({ 
+							number: task.number
+						}).then(({data}) => {
+							dispatch(approveTask(data.approveTask.number))
+						}).catch(error => console.log(error))
+					}}>
+					APPROVE
+				</Button>
+			} else {
+				return <Chip
+					size="small"
+					label="IN REVIEW"
+					variant="outlined"	
+				/>
+			}
+		}
+	}
+
 	React.useEffect(() => {
 		let ranInTime = false
 		task.executions.forEach(execution => {
@@ -75,74 +141,10 @@ export default function StatusRow(props) {
 					{task.author.email === email ? 'you' : task.author.email}
 				</TableCell>
 				<TableCell component="th" scope="row" align="right" style={{textAlign: 'center', paddingTop: 20}}>
-					{task.approved ?
-						(task.enabled ?
-							(!task.executions || task.executions.length === 0) ? 
-								<Chip
-									size="small"
-									icon={<HelpIcon style={{color: 'grey'}}/> }
-									label="NEVER RECEIVED"
-									variant="outlined"
-								/>
-							:
-								(ranInTime ? 
-									<Chip
-										size="small"
-										icon={<CheckCircleIcon style={{color: 'green'}}/>}
-										label="RECEIVED"
-										variant="outlined"
-										style={{border: '1px solid green'}}
-									/>
-								:
-									<Chip
-										size="small"
-										icon={<CancelIcon style={{color: '#e53935'}}/>}
-										label="OVERDUE"
-										variant="outlined"
-										style={{border: '1px solid #e53935'}}
-									/>
-								) 
-							: 
-								(
-									<Chip
-										color='secondary'
-										size="small"
-										label="DISABLED"
-										style={{backgroundColor: '#e53935'}}
-									/>
-								)
-							)
-						:
-						(	
-							<div>
-								{ admin ?
-									<Button 
-										style={{backgroundColor: 'green', color: 'white'}}
-										variant="contained" 
-										size="small"
-										endIcon={<CheckCircleIcon />}
-										onClick={() => {
-											graphqlApproveTask({ 
-												number: task.number
-											}).then(({data}) => {
-												dispatch(approveTask(data.approveTask.number))
-											}).catch(error => console.log(error))
-										}}>
-										APPROVE
-									</Button>
-								: (
-									<Chip
-										size="small"
-										label="IN REVIEW"
-										variant="outlined"
-										
-									/>
-								)}
-							</div>
-						)
-					}
+					{ renderChip() }
 				</TableCell>
 				<TableCell component="th" scope="row" align="right" style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+					{/* determine whether to display the bell icon to enable notifications and the edit task icon */}
 					{
 						authed && task.approved &&
 						(<IconButton
@@ -167,6 +169,7 @@ export default function StatusRow(props) {
 				<TableRow>
 					<TableCell style={{ paddingBottom: 0, paddingTop: 0, borderLeft: task.enabled ? '10px solid green' : '10px solid red' }} colSpan={9}>
 					{ task.approved &&
+						// The expandable table for displaying task executions
 						<ExecutionTable task={task} open={open} />
 					}
 					</TableCell>

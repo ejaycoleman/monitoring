@@ -1,3 +1,5 @@
+// Resolver to link tasks, notifications and preferences to the user entitity
+
 // Return associated tasks when user is queried
 function tasks(parent, args, {prisma}) {
     return prisma.user.findOne({where: { id: parent.id }}).tasks()

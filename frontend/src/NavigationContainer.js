@@ -1,9 +1,10 @@
+// gets task and user details so child components can access them
+
 import Navigation from './Navigation'
 import { graphql } from 'react-apollo'
 import { retreiveTasks, currentUser } from './gql'
 import { flowRight as compose } from 'lodash'
 
-// gets task and user details so child components can access them
 const NavigationContainer =
     compose(
         graphql(retreiveTasks, {
@@ -11,7 +12,7 @@ const NavigationContainer =
                 return ({
                     tasks,
                     loading,
-                    subscribeToMore
+                    subscribeToMore // this allows a subscription to be initialised
                 })
             },
         }),
@@ -19,7 +20,7 @@ const NavigationContainer =
             props: ({ data: { currentUser, refetch}, ownProps}) => {
                 return ({
                     currentUser,
-                    refetch
+                    refetch // provides a method to refetch information
                 })
             },
         })

@@ -1,3 +1,7 @@
+// This component enables routing, and also provides the interface for the navigation bar
+// It also initialises some data which is user universally across all components, such as login
+// status and tasks.
+
 import React, { useState, useEffect } from 'react'
 import { Route, NavLink, Switch, useLocation, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'

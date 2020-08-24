@@ -1,6 +1,8 @@
+// Provides the props for toggling notifications on tasks and approving tasks (for admins)
+
 import StatusRow from './StatusRow'
 import { graphql } from 'react-apollo'
-import { toggleNotification, approveTaskMutation, removeTask } from '../../gql'
+import { toggleNotification, approveTaskMutation } from '../../gql'
 import { flowRight as compose } from 'lodash'
 
 const StatusRowContainer =
@@ -28,19 +30,7 @@ const StatusRowContainer =
                     })
                 }
             })
-        }),
-        graphql(removeTask, {
-            props: ({ loading, mutate, ownProps }) => ({
-                loading: loading || ownProps.loading,
-                removeTaskProp: (taskNumber) => {
-                    return mutate({
-                        variables: {
-                            taskNumber: parseInt(taskNumber)
-                        }
-                    })
-                }
-            })
-        }),
+        })
     )(StatusRow)
 
 export default StatusRowContainer

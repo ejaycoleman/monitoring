@@ -1,3 +1,5 @@
+// The various mutation resolvers
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -32,6 +34,7 @@ async function login(parent, {email, password}, context) {
         throw new Error('Invalid Login')
     }
 
+    // Creates a authentication token
     const token = jwt.sign(
         {id: user.id},
         'the-project-secret',
@@ -77,7 +80,7 @@ async function uploadSingleTask(parent, { number, command, frequency, period }, 
             }
         })
 
-        // Created a websocket event
+        // Trigger a websocket event
         pubsub.publish('NEW_TASK', {
             newTask
         })
@@ -218,6 +221,7 @@ async function removeTask(parent, { taskNumber }, { user, prisma, pubsub }) {
     await prisma.taskNotification.deleteMany({where: {taskId: fullTask.id}})
     const task = await prisma.task.delete({where: {id: fullTask.id}})
 
+    // trigger a websocket event
     pubsub.publish('TASK_DELETED', { 
         taskDeleted: fullTask
     })

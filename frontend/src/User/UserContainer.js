@@ -1,9 +1,10 @@
+// Prepares the mutation for setting user preferences
+
 import User from './User'
 import { graphql } from 'react-apollo'
 import { userSetExecutionPreferences } from '../gql'
 import { flowRight as compose } from 'lodash'
 
-// Prepares the mutation for setting user preferences
 const UserContainer =
     compose(
         graphql(userSetExecutionPreferences, {

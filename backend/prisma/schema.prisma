@@ -1,3 +1,5 @@
+// The scheme for populating the database
+
 datasource db {
   provider = "mysql"
   url      = "mysql://root:prisma@mysql:3306/prisma"

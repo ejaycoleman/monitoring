@@ -1,3 +1,5 @@
+// All the GraphQL payload objects
+
 import gql from 'graphql-tag'
 
 // new executions subscription

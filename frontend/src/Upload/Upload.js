@@ -1,3 +1,5 @@
+// The component for rendering the Upload page, located in http://localhost:3000/upload (authentication required)
+
 import React, { useState, useEffect } from 'react'
 import JSONTree from 'react-json-tree'
 import TextField from '@material-ui/core/TextField'
@@ -10,6 +12,7 @@ import { addTask } from '../actions'
 import Notification from '../Notification/Notification'
 import WarningIcon from '@material-ui/icons/Warning'
 
+// The theme used by the JSONTree component
 const theme = {
 	scheme: 'monokai',
 	base00: '#292C33',

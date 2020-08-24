@@ -1,3 +1,5 @@
+// The component for users changing their preferences for when to be alerted for late execution updates
+
 import React from 'react';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -14,6 +16,7 @@ import { useDispatch } from 'react-redux'
 export default function PreferencesModal(props) {
 	const {close, preferences, setPreferences } = props
 	const preference = preferences? preferences : null
+	// absolute is referring to errors and ideal is referring to warnings
 	const [idealFreq, setIdealFreq] = React.useState(preference.executionThresholdIdeal ? preference.executionThresholdIdeal.split("-")[0] : '1')
 	const [idealPeriod, setIdealPeriod] = React.useState(preference.executionThresholdIdeal ? preference.executionThresholdIdeal.split("-")[1] : 'days')
 	const [absoluteFreq, setAbsoluteFreq] = React.useState(preference.executionThresholdAbsolute ? preference.executionThresholdAbsolute.split("-")[0] : '10')
@@ -60,6 +63,7 @@ export default function PreferencesModal(props) {
 					Cancel
 				</Button>
 				<Button onClick={() => {
+					// determine (in days) if errors are before warnings
 					const multiplier = {days: 1, weeks: 7, months: 30}
 					if (parseInt(absoluteFreq) * multiplier[absolutePeriod] < parseInt(idealFreq) * multiplier[idealPeriod]) {
 						setSnackBarErrorShow(true)

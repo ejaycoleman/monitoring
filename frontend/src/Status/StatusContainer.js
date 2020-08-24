@@ -1,3 +1,5 @@
+// Provides the props for setting user preferences mutation
+
 import Status from './Status'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'

@@ -1,3 +1,5 @@
+// Provides the props for modifying and editing tasks, with validation
+
 import TaskSettingsModal from './TaskSettingsModal'
 import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'

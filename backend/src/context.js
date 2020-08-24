@@ -1,3 +1,5 @@
+// Enables backend authentication and prisma
+
 const { PrismaClient } = require('@prisma/client')
 const { PubSub } = require('graphql-yoga')
 const jwt = require('jsonwebtoken')

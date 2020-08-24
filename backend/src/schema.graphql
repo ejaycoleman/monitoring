@@ -1,3 +1,5 @@
+# The various queries, entities and mutations available from the backend are defined here
+
 type Query {
   currentUser: User
   tasks: [Task]
@@ -23,6 +25,7 @@ type User {
   preference: Preference
 }
 
+# Payload for logging in (provides a token and the user)
 type LoginResponse {
   token: String
   user: User

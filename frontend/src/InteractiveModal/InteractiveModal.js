@@ -1,6 +1,7 @@
+// Component for interactive modals (such as what's used for editing tasks)
+
 import React from 'react';
 import { useRef, useEffect } from "react";
-
 import Paper from '@material-ui/core/Paper'
 
 export default function InteractiveModal(props) {
