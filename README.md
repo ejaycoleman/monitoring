@@ -47,6 +47,9 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 
 # Documentation
 ## Frontend File Structure (/frontend/src)
+The overall strucuture consists of components within the src directory, along with other helpers/functionality. If a component interacts with the GraphQL backend, it will consist of a ComponentContainer.js and a Component file, link together with an index.js file. The component container places either the query result or the mutation trigger in the props of the component, where it can be called as either props.query or props.mutation().
+Redux is used so all the child components have access to data in an overarching state (known at the store). Task data (including executions) and user data (including preferences) are stored here, and it allows changes to be reflected across all pages when it changes it once place.
+
 /actions - used for redux, describes paramaters for reducers  
 /gql - the various GraphQL queries and mutations for interacting with the backend  
 /InteractiveModal - Used for things such as preference panes  
@@ -66,6 +69,8 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 /index.js - Initialises connections (socket and https) with the backend  
 
 ## Backend File Structure (/backend)
+The overall structure consists of the main server.js file, which initialises the backend to use prisma and also implements other functionality (such as cron jobs). The resolvers directory contains all the various resolvers for how data can be queried and mutated. 
+
 /src/server.js - Initialises the backend, providing a prisma endpoint and configures the cronjobs (such as reading executions)  
 /src/schema.graphql - The schema used by the backend (providing various queries, mutations and entities to be used at localhost:4000)  
 /src/context.js - Used for authentication  
@@ -73,3 +78,11 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 /prisma/schema.prisma - The schema for the database. Prisma will generate a database in accordance to this schema  
 /ingress - directory where executions are written  
 /archive - directory for storing recorded executions  
+
+# TODO
+1) Prevent users from submitting values lower than 1.
+2) Looking at the table of tasks when there is a task waiting for approval, I think it would be more intuitive if the reject button was next to the approve button, rather than having to edit the task.
+3) I don't think a user has any visibility if one of their tasks is rejected? Perhaps this could be another notification option.
+4) It looks like there is code which should produce a log message when an e-mail notification would be generated, but I can't see any messages in the console.
+5) Enabling and disabling of notifications doesn't seem to be stored consistently.
+6) Over time, the graph will get quite dense. It may be worth a drop-down where you can choose to view the last week, month, 3 months, 6 months, 12 months, 24 months, or perhaps allow the specification of a start and end date to display. You will want to change the values on the y-axis so that the lowest value being displayed is shown at the bottom of the graph.
