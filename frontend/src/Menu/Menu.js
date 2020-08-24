@@ -29,7 +29,8 @@ export default function Menu(props) {
             display: show? 'block' : 'none', 
             position: 'fixed', 
             top: 15, 
-            right: 15
+            right: 15,
+            zIndex: 999
         }}>
             <Paper elevation={3} style={{padding: 10, display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}>
                 <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
