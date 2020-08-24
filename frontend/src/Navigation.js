@@ -30,6 +30,7 @@ const Navigation = props => {
     const [currentRoute, setCurrentRoute] = useState("")
     const [isMenuOpen, handleMenuClose] = useState(false)
 
+    // Sets user preferences in global state (using redux) 
     useEffect(() => {
         if (currentUser) {
             currentUser.preference && dispatch(setPreferences(currentUser.preference))
@@ -37,6 +38,7 @@ const Navigation = props => {
         }
     }, [currentUser, dispatch])
 
+    // Checks if the auth token is still valid
     useEffect(() => {
         const session = jwt.decode(localStorage.getItem(AUTH_TOKEN))
         if (session && (new Date().getTime() / 1000 > session.exp)) {
@@ -44,14 +46,17 @@ const Navigation = props => {
         }
     }, [])
 
+    // Used for hilighting links in nav based on url
     useEffect(() => {
         setCurrentRoute(location.pathname)
     }, [location])
 
+    // Adds each task to the redux store
     useEffect(() => {
 		tasks && tasks.map(task => dispatch(addTask(task)))
 	}, [tasks, dispatch])
     
+    // Initialises subscriptions
     useEffect(() => {        
         subscribeToMore({
 			document: retrieveExecutionsSubscription,
@@ -69,6 +74,7 @@ const Navigation = props => {
         })
     }, [dispatch, subscribeToMore])
 
+    // method of signing out
     const signOut = () => {
         dispatch(logout())
         localStorage.removeItem(AUTH_TOKEN)
@@ -76,6 +82,7 @@ const Navigation = props => {
         history.push("/");
     }
 
+    // JSX for rendering navigation bar and routes
     return (
         <div>
             <AppBar position="static">
@@ -109,6 +116,7 @@ const Navigation = props => {
                 </Toolbar>
             </AppBar>
             <div style={{padding: 20}}>
+                {/* The Switch below determines which component should be shown depending on the URL */}
                 <Switch>
                     <Route path="/" exact component={Status} />
                     <Route path="/login/" render={() => <Login refetchUser={() => refetch()} history={history} />} />

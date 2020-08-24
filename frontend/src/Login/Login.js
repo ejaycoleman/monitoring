@@ -38,6 +38,7 @@ const Login = props => {
 						helperText={error && "Invalid Credentials"}
 					/>
 					<Button style={{width: 100, marginTop: 20}} variant="contained" onClick={() => loginMutation({ email, password }).then(({data}) => {
+						// Set preferences and login user when they click the login button, and navigate them to /
 						data.login.user.preference && dispatch(setPreferences(data.login.user.preference))
 						localStorage.setItem(AUTH_TOKEN, data.login.token)
 						dispatch(login({admin: data.login.user.isAdmin, email: data.login.user.email}))

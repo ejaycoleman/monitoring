@@ -16,7 +16,8 @@ export default function ExecutionTable(props) {
 	
 	const [page, setPage] = React.useState(0);
 	const numberOfPages = 5
-    
+	
+	// used for sorting
     const descendingComparator = (a, b, orderBy) => {
         if (b[orderBy] < a[orderBy]) {
             return -1;
@@ -26,13 +27,15 @@ export default function ExecutionTable(props) {
         }
         return 0;
     }
-      
+	  
+	// used for sorting
     const getComparator = (order, orderBy) => {
         return order === 'desc'
             ? (a, b) => descendingComparator(a, b, orderBy)
             : (a, b) => -descendingComparator(a, b, orderBy);
     }
-    
+	
+	// user for sorting
     const stableSort = (array, comparator) => {
         const stabilizedThis = array.map((el, index) => [el, index]);
         stabilizedThis.sort((a, b) => {

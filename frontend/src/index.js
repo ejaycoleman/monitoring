@@ -16,6 +16,7 @@ import rootReducer from './reducers'
 import NavigationContainer from './NavigationContainer'
 import './index.css';
 
+// Add authentication token to request header
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem(AUTH_TOKEN)
   return {
@@ -26,6 +27,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
+// initialises websocket connncetion
 const wsLink = new WebSocketLink({
   uri: `ws://${BACKEND_URL}`,
   options: {
@@ -36,11 +38,12 @@ const wsLink = new WebSocketLink({
   }
 })
 
-
+// initialises http connection
 const httpLink = createHttpLink({
   uri: `http://${BACKEND_URL}`,
 })
 
+//  selects which connection to use (websocket vs http)
 const link = split(
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query)
@@ -64,4 +67,5 @@ const AppRouter = () => {
   )
 }
 
+// Places NavigationContainer in the element with id #root (found in the ../public/index.html file)
 ReactDOM.render(<ApolloProvider client={client}><React.StrictMode><Provider store={store}><AppRouter/></Provider></React.StrictMode></ApolloProvider>, document.getElementById('root'))

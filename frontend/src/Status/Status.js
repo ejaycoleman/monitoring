@@ -40,6 +40,7 @@ export default function Status(props) {
 		tasks && tasks.map(task => dispatch(addTask(task)))
 	}, [tasks, dispatch])
 
+	// subscribe to websocket for tasks
 	React.useEffect(() => {
 		const currentTasksInStore = store.getState().tasks
 		setMostRecentExecution(getMostRecentExecution(currentTasksInStore))
@@ -54,6 +55,7 @@ export default function Status(props) {
 
 	}, [tasks, reduxTasks, dispatch])
 
+	// Determine the most recent execution
 	const getMostRecentExecution = tasks => {
 		let mostRecentExecution = 0
 		tasks.forEach(task => {
@@ -64,6 +66,7 @@ export default function Status(props) {
 		return mostRecentExecution
 	}
 
+	// return one of 3 colours depending on user's preferences of most recent execution
 	const determineChipColor = time => {
 		const [idealFrequency, idealPeriod] = userPreferences ? userPreferences.executionThresholdIdeal.split("-") : [1, 'days']
 		const [absoluteFrequency, absolutePeriod] = userPreferences? userPreferences.executionThresholdAbsolute.split("-") : [10, 'days']
@@ -75,6 +78,7 @@ export default function Status(props) {
 		return 'orange'
 	}	
 
+	// Used for sorting the table
 	const descendingComparator = (a, b, orderBy) => {
 		let first = a[orderBy]
 		let second = b[orderBy]
@@ -91,13 +95,16 @@ export default function Status(props) {
 		}
 		return 0
 	}
-	  
+	
+	// comparitor function
 	const getComparator = (order, orderBy) => {
 		return order === 'desc'
 			? (a, b) => descendingComparator(a, b, orderBy)
 			: (a, b) => -descendingComparator(a, b, orderBy)
 	}
 	  
+
+	// sorting algorithm
 	const stableSort = (array, comparator) => {
 		const stabilizedThis = array.map((el, index) => [el, index])
 		stabilizedThis.sort((a, b) => {
@@ -147,6 +154,7 @@ export default function Status(props) {
 								</TableHead>
 								<TableBody>
 									{
+										// sort the table then for each row, create a StatusRow component
 										stableSort(reduxTasks, getComparator(order, orderBy)).map((task, index) => (<StatusRow showPreferencesModal={(task) => setPreferencesModalOpen(task)} showNotificationError={() => setNotificationErrorShow(true)} key={index} task={task} ranInTime={true} />)) 
 									}
 								</TableBody>
@@ -163,6 +171,7 @@ export default function Status(props) {
 					marginBottom: 20, 
 					float: 'right'
 				}}>
+					{/* Display the 'last recieved' chip component underneath the table */}
 					<Chip 
 						icon={<WatchLaterIcon style={{color: determineChipColor(mostRecentExecution)}}/>} 
 						label={mostRecentExecution ? `Last received ${
@@ -181,6 +190,7 @@ export default function Status(props) {
 					</InteractiveModal>
 				</div>
 			</div>
+			{/* Display graph at bottom if there are executions */}
 			<div style={{width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 70}}>
 				{mostRecentExecution && reduxTasks.filter(task => task.approved).length !== 0 ? <Visualisations></Visualisations> : null}
 			</div>

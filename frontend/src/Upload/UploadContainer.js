@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo'
 import { flowRight as compose } from 'lodash'
 import { createSingleTask, retreiveTasks } from '../gql'
 
+// Props for creating and retrieving tasks
 const UploadContainer =
     compose(
         graphql(createSingleTask, {

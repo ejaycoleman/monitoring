@@ -7,6 +7,7 @@ export default function InteractiveModal(props) {
     const { show, onClose, children } = props
     const wrapperRef = useRef(null);
 
+    // This is used to handle a user clicking outside of the component
     useEffect(() => {
         function handleClickOutside(e) {
             if (!wrapperRef.current.contains(e.target)) {

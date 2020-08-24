@@ -7,6 +7,7 @@ const CanvasJSChart = CanvasJSReact.CanvasJSChart
 export default function Visualisations(props) {
     const [showTask, setShowTask] = React.useState(-1)
 
+    // When a user selects a task in the legend, set showTask to the index
     const toggleDataSeries = e => {
         if (showTask === -1) {
             setShowTask(parseInt(e.dataSeries.name.match(/\d+$/)[0]))
@@ -17,6 +18,7 @@ export default function Visualisations(props) {
         }
     }
 
+    // config for the graph
     const options = {
         theme: "light2",
         animationEnabled: true,
@@ -52,6 +54,7 @@ export default function Visualisations(props) {
         return 0;
       }
 
+    // create an array of times, containing an object of task numbers that were executed on that date
     const times = {}
     reduxTasks && reduxTasks.forEach(task => {
         task.executions.sort(compare).forEach((execution) => {
@@ -59,6 +62,7 @@ export default function Visualisations(props) {
         })
     })
 
+    // create the data of tasks and executions for the graph
     reduxTasks && reduxTasks.filter(task => task.approved).forEach(task => {
         let runningTotal = 0
         let dataPoints = []

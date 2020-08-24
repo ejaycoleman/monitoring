@@ -10,6 +10,7 @@ export default function Notification(props) {
     const { show, onClose } = props
     const wrapperRef = useRef(null);
 
+    // This is used to handle a user clicking outside of the notification component
     useEffect(() => {
         function handleClickOutside(e) {
             if (!wrapperRef.current.contains(e.target)) {
@@ -30,6 +31,7 @@ export default function Notification(props) {
             right: 15, 
             textAlign: 'center',
             height: 50, 
+            zIndex: 9999
         }}>
             <Paper elevation={3} style={{padding: 10, display: 'flex',}}>
                 <div style={{ height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

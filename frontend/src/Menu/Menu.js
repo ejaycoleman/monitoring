@@ -11,6 +11,7 @@ export default function Menu(props) {
     const { show, onClose } = props
     const wrapperRef = useRef(null);
 
+    // This is used to handle a user clicking outside of the menu component
     useEffect(() => {
         function handleClickOutside(e) {
             if (!wrapperRef.current.contains(e.target)) {

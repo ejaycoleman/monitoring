@@ -70,6 +70,7 @@ const Upload = props => {
 		})
 	}, [refetch, dispatch])
 
+	// Reads JSON file after it's uploaded
 	const readFileUploaded = file => {
 		const fileReader = new FileReader()
 		fileReader.onloadend = (e) => {
@@ -90,6 +91,7 @@ const Upload = props => {
 			<div className="flex flex-column">
 				<FormGroup row>
 					<CssTextField variant="outlined" type="file" accept=".json" onChange={(e) => readFileUploaded(e.target.files[0])}/>
+					{/* Button below contains logic for uploading a json file */}
 					<Button variant="contained" onClick={() =>	{
 						try {
 							let errorFlag = false
@@ -178,6 +180,7 @@ const Upload = props => {
 					<option value="weeks">weeks</option>
 					<option value="months">months</option>
 				</NativeSelect>
+				{/* Button below contains logic for uploading single task using the input */}
 				<Button variant="contained" onClick={() => {
 					try {
 						if (reduxTasks && reduxTasks.filter(currentTask => currentTask.number === parseInt(newTaskNumber)).length !== 0) {
@@ -206,6 +209,7 @@ const Upload = props => {
 					setErrors(toSetErrors)
 				}}>{isAdmin ? 'CREATE' : 'REQUEST'}</Button>
 			</FormGroup>
+			{/* This displays the black error box */}
 			{errors.length !== 0 && <div style={{color: 'white', backgroundColor: 'black', fontFamily: 'Andale Mono,AndaleMono,monospace', paddingLeft: 20, paddingRight: 20, paddingBottom: 5}}>
 				<h2 style={{paddingTop: 10, display: 'flex', alignItems: 'center'}}><WarningIcon style={{color: '#F2A83B', paddingRight: 5, fontSize: '1.5em'}}/> errors:</h2>
 				{errors.map((e, i) => <h3 key={i}>{i + 1}. {e}</h3>)}
