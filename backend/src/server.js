@@ -12,17 +12,23 @@ const server = new GraphQLServer({
     context: createContext
 })
 
-const sendEmail = (email, task) => {
-    console.log(`Sending an email to ${email} for task #${task}`)
+const sendEmail = (email, task, message) => {
+    // When emails are implemented, they will be triggered by this method
+
+    console.log(`Sending an email to ${email} for task #${task} saying: ${message}`)
 }
 
 const moveFiles = file => {
+    // Moves files to archive once they have been run
+
     fs.rename(path.join(__dirname, '../ingress', file), path.join(__dirname, '../archive', file), err => {
         if (err) throw err;
     });
 }
  
 async function postExecution(taskId, datetime, file) {
+    // Creates an executionn in the database, notifying users who have enabled notifications
+    
     const associatedTask = await prisma.task.findOne({where: {number: taskId}, include: {executions: true}})
     const associatedNotifications = await prisma.task.findOne({where: {number: taskId}}).notifications().user()
     if (associatedTask && associatedTask.executions && associatedTask.approved) {
@@ -31,10 +37,11 @@ async function postExecution(taskId, datetime, file) {
             return
         }
 
+        // For each user expecting notifications, an email will be sent
         associatedNotifications && associatedNotifications.map(async notification => {
             const preferences = await prisma.preference.findOne({where: {userId: notification.user.id}})
             if (preferences.recieveEmailForRan) {
-                sendEmail(notification.user.email, associatedTask.number)
+                sendEmail(notification.user.email, associatedTask.number, 'task run')
             }
         })
 
@@ -42,6 +49,7 @@ async function postExecution(taskId, datetime, file) {
             datetime,
             task: { connect: { id: associatedTask.id } },
         }})
+        // Used for websockets, allowing live updates on the status page
         pubsub.publish('NEW_EXECUTION', {
             newExecution
         })
@@ -50,7 +58,7 @@ async function postExecution(taskId, datetime, file) {
     }
 }
 
-// RUN EVERY 5 SECONDS
+// RUN EVERY 5 SECONDS, reading executions within the ingress directory
 const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
     fs.readdir(path.join(__dirname, '../ingress'), (err, files) => {
         files.forEach(file => {
@@ -64,7 +72,7 @@ const fileReaderCron = new CronJob('*/5 * * * * *', async function() {
 })
 fileReaderCron.start()
 
-// RUN DAILY
+// RUN DAILY, triggering various notifications for users with them enabled
 const notify = new CronJob('* * 0 * * *', async function() {
     const tasks = await prisma.task.findMany()
     tasks.forEach(async task => {
@@ -73,7 +81,7 @@ const notify = new CronJob('* * 0 * * *', async function() {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
                 if (notif.user.preference.recieveEmailForLate) {
-                    console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} wasnt run on time`)
+                    sendEmail(notif.user.email, task.number, 'Task wasn\'t run in time')
                 }
             })
         }
@@ -81,7 +89,7 @@ const notify = new CronJob('* * 0 * * *', async function() {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
                 if (notif.user.preference.recieveEmailForNever) {
-                    console.log(`NOTIFY ${notif.user.email} THAT: ${task.number} hasnt received any tasks`)
+                    sendEmail(notif.user.email, task.number, 'Task never executed')
                 }
             })
         }
@@ -89,6 +97,7 @@ const notify = new CronJob('* * 0 * * *', async function() {
 })
 notify.start()
 
+// Creates an endpoint for downloading the tasks as a .json file
 server.get('/file.json', async (err, res) => {
     prisma.task.findMany({select: {number: true, command: true, frequency: true, period: true}}).then(tasks => {
         res.status(200)
