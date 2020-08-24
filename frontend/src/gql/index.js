@@ -47,13 +47,13 @@ export const retreiveTasks = gql` {
 
 // mutation for setting user preferences for recent execution thresholds
 export const userSetExecutionPreferences = gql`
-    mutation setPreferences($idealFrequency: String, $idealPeriod: String, $absoluteFrequency: String, $absolutePeriod: String, $recieveEmailForLate: Boolean, $recieveEmailForNever: Boolean, $recieveEmailForRan: Boolean) {
-        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod, recieveEmailForLate: $recieveEmailForLate, recieveEmailForNever: $recieveEmailForNever, recieveEmailForRan: $recieveEmailForRan) {
+    mutation setPreferences($idealFrequency: String, $idealPeriod: String, $absoluteFrequency: String, $absolutePeriod: String, $receiveEmailForLate: Boolean, $receiveEmailForNever: Boolean, $receiveEmailForRan: Boolean) {
+        setPreferences(idealFrequency: $idealFrequency, idealPeriod: $idealPeriod, absoluteFrequency: $absoluteFrequency, absolutePeriod: $absolutePeriod, receiveEmailForLate: $receiveEmailForLate, receiveEmailForNever: $receiveEmailForNever, receiveEmailForRan: $receiveEmailForRan) {
             executionThresholdIdeal,
             executionThresholdAbsolute,
-            recieveEmailForLate,
-            recieveEmailForNever,
-            recieveEmailForRan
+            receiveEmailForLate,
+            receiveEmailForNever,
+            receiveEmailForRan
         }
     }
 `
@@ -157,9 +157,9 @@ export const loginMutation = gql`
                 preference {
                     executionThresholdIdeal,
                     executionThresholdAbsolute,
-                    recieveEmailForLate,
-                    recieveEmailForNever,
-                    recieveEmailForRan
+                    receiveEmailForLate,
+                    receiveEmailForNever,
+                    receiveEmailForRan
                 }
             }
         }
@@ -175,9 +175,9 @@ export const currentUser = gql`
             preference {
                 executionThresholdIdeal,
                 executionThresholdAbsolute,
-                recieveEmailForLate,
-                recieveEmailForNever,
-                recieveEmailForRan
+                receiveEmailForLate,
+                receiveEmailForNever,
+                receiveEmailForRan
             }
         }
     }

@@ -9,12 +9,12 @@ const UserContainer =
         graphql(userSetExecutionPreferences, {
             props: ({ loading, mutate, ownProps }) => ({
                 loading: loading || ownProps.loading,
-                setPreferences: (recieveEmailForLate, recieveEmailForNever, recieveEmailForRan) => {
+                setPreferences: (receiveEmailForLate, receiveEmailForNever, receiveEmailForRan) => {
                     return mutate({
                         variables: {
-                            recieveEmailForLate,
-                            recieveEmailForNever,
-                            recieveEmailForRan
+                            receiveEmailForLate,
+                            receiveEmailForNever,
+                            receiveEmailForRan
                         }
                     })
                 }

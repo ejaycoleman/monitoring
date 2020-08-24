@@ -11,9 +11,9 @@ async function register(parent, { isAdmin, email, password }, context) {
             password: hashedPassword,
             preference: { create: { executionThresholdIdeal: '', 
             executionThresholdAbsolute: '',
-            recieveEmailForLate: true,
-            recieveEmailForNever: true,
-            recieveEmailForRan: true}}
+            receiveEmailForLate: true,
+            receiveEmailForNever: true,
+            receiveEmailForRan: true}}
         }
     })
     return user
@@ -134,9 +134,9 @@ async function setPreferences(parent, data, {user, prisma}) {
         idealPeriod, 
         absoluteFrequency, 
         absolutePeriod, 
-        recieveEmailForLate, 
-        recieveEmailForNever, 
-        recieveEmailForRan } = data
+        receiveEmailForLate, 
+        receiveEmailForNever, 
+        receiveEmailForRan } = data
 
     if (!user) {
         throw new Error('Not Authenticated')
@@ -159,8 +159,8 @@ async function setPreferences(parent, data, {user, prisma}) {
         const executionThresholdIdeal = `${idealFrequency}-${idealPeriod}`
         const executionThresholdAbsolute = `${absoluteFrequency}-${absolutePeriod}`
         return prisma.preference.update({where: {id: userPreference.id}, data: {executionThresholdIdeal, executionThresholdAbsolute}})
-    } else if (recieveEmailForLate !== null || recieveEmailForNever !== null || recieveEmailForRan !== null) {
-        return prisma.preference.update({where: {id: userPreference.id}, data: {recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}})
+    } else if (receiveEmailForLate !== null || receiveEmailForNever !== null || receiveEmailForRan !== null) {
+        return prisma.preference.update({where: {id: userPreference.id}, data: {receiveEmailForLate, receiveEmailForNever, receiveEmailForRan}})
     }
     throw new Error('Unexpected parameters')
 }

@@ -40,7 +40,7 @@ async function postExecution(taskId, datetime, file) {
         // For each user expecting notifications, an email will be sent
         associatedNotifications && associatedNotifications.map(async notification => {
             const preferences = await prisma.preference.findOne({where: {userId: notification.user.id}})
-            if (preferences.recieveEmailForRan) {
+            if (preferences.receiveEmailForRan) {
                 sendEmail(notification.user.email, associatedTask.number, 'task run')
             }
         })
@@ -80,7 +80,7 @@ const notify = new CronJob('* * 0 * * *', async function() {
         if (executions[0] && moment().startOf('day').subtract(task.frequency, task.period).isAfter(moment.unix(executions[0].datetime))) {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
-                if (notif.user.preference.recieveEmailForLate) {
+                if (notif.user.preference.receiveEmailForLate) {
                     sendEmail(notif.user.email, task.number, 'Task wasn\'t run in time')
                 }
             })
@@ -88,7 +88,7 @@ const notify = new CronJob('* * 0 * * *', async function() {
         if (executions.length === 0) {
             const associatedNotifications = await prisma.task.findOne({where: {id: task.id}}).notifications({include: {user: {include: {preference: true}}}})
             associatedNotifications.forEach(notif => {
-                if (notif.user.preference.recieveEmailForNever) {
+                if (notif.user.preference.receiveEmailForNever) {
                     sendEmail(notif.user.email, task.number, 'Task never executed')
                 }
             })

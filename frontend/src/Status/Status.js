@@ -171,7 +171,7 @@ export default function Status(props) {
 					marginBottom: 20, 
 					float: 'right'
 				}}>
-					{/* Display the 'last recieved' chip component underneath the table */}
+					{/* Display the 'last received' chip component underneath the table */}
 					<Chip 
 						icon={<WatchLaterIcon style={{color: determineChipColor(mostRecentExecution)}}/>} 
 						label={mostRecentExecution ? `Last received ${

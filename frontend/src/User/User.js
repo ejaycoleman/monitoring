@@ -12,14 +12,14 @@ const User = props => {
     const { email } = useSelector(state => state.isLogged)
     const userPreferences = useSelector(state => state.preferences)
 
-    const [ recieveEmailForLate, setRecieveEmailForLate ] = useState(false)
-    const [ recieveEmailForNever, setRecieveEmailForNever ] = useState(false)
-    const [ recieveEmailForRan, setRecieveEmailForRan ] = useState(false)
+    const [ receiveEmailForLate, setreceiveEmailForLate ] = useState(false)
+    const [ receiveEmailForNever, setreceiveEmailForNever ] = useState(false)
+    const [ receiveEmailForRan, setreceiveEmailForRan ] = useState(false)
 
     React.useEffect(() => {
-        setRecieveEmailForLate(userPreferences.recieveEmailForLate)
-        setRecieveEmailForNever(userPreferences.recieveEmailForNever)
-        setRecieveEmailForRan(userPreferences.recieveEmailForRan)
+        setreceiveEmailForLate(userPreferences.receiveEmailForLate)
+        setreceiveEmailForNever(userPreferences.receiveEmailForNever)
+        setreceiveEmailForRan(userPreferences.receiveEmailForRan)
     }, [userPreferences])
 
     const dispatch = useDispatch();
@@ -27,15 +27,15 @@ const User = props => {
 	return (
 		<div>
 			<h1 style={{color: 'white'}}>Welcome, {email}!</h1>
-            <h2>When subscribed to a task, what notifications would you like to recieve?</h2>
+            <h2>When subscribed to a task, what notifications would you like to receive?</h2>
             <ul style={{color: 'white', }}>
                 <li>
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={recieveEmailForRan}
-                                onChange={() => setRecieveEmailForRan(!recieveEmailForRan)}
-                                name="recieveEmailForRan"
+                                checked={receiveEmailForRan}
+                                onChange={() => setreceiveEmailForRan(!receiveEmailForRan)}
+                                name="receiveEmailForRan"
                                 color="secondary"
                             />
                         }
@@ -46,9 +46,9 @@ const User = props => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={recieveEmailForLate}
-                                onChange={() => setRecieveEmailForLate(!recieveEmailForLate)}
-                                name="recieveEmailForLate"
+                                checked={receiveEmailForLate}
+                                onChange={() => setreceiveEmailForLate(!receiveEmailForLate)}
+                                name="receiveEmailForLate"
                                 color="secondary"
                             />
                         }
@@ -59,9 +59,9 @@ const User = props => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={recieveEmailForNever}
-                                onChange={() => setRecieveEmailForNever(!recieveEmailForNever)}
-                                name="recieveEmailForNever"
+                                checked={receiveEmailForNever}
+                                onChange={() => setreceiveEmailForNever(!receiveEmailForNever)}
+                                name="receiveEmailForNever"
                                 color="secondary"
                             />
                         }
@@ -70,8 +70,8 @@ const User = props => {
                 </li>
                 <Button
                     onClick={() => {
-                            setPreferences(recieveEmailForLate, recieveEmailForNever, recieveEmailForRan)
-                            dispatch(setPreferenceAction({recieveEmailForLate, recieveEmailForNever, recieveEmailForRan}))
+                            setPreferences(receiveEmailForLate, receiveEmailForNever, receiveEmailForRan)
+                            dispatch(setPreferenceAction({receiveEmailForLate, receiveEmailForNever, receiveEmailForRan}))
                         } 
                     }
                     variant="contained" color="secondary"

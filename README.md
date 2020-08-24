@@ -56,12 +56,12 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 /reducers - the logic for changing the global store (implemented by Redux). Three stores (authorisation, preferences and tasks) are combined into one store using index  
 /Status - the code for the Status (Home) page.  
 /Status/ExecutionTable - the code for each table displaying executions (expanded in the task table)  
-/Status/PreferencesModal - the preferences component (displayed when changing the chip for last recieved executions)  
+/Status/PreferencesModal - the preferences component (displayed when changing the chip for last received executions)  
 /Status/StatusRow - the component to display the task within the table  
 /Status/TaskSettingsModal - the component to display the preferences modal when editing a task  
 /Status/Visualisations - the component for displaying the graph at the bottom of the Status component  
 /Upload - The page for uploading new tasks  
-/User - The page whenere users can change their preferences (For types of notification they recieve)  
+/User - The page whenere users can change their preferences (For types of notification they receive)  
 /Navigation.js - An overarching component, displaying the navigation at the top and page at the bottom, providing from authentication logic  
 /index.js - Initialises connections (socket and https) with the backend  
 
