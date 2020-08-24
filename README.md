@@ -46,7 +46,6 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 
 
 # Documentation
-
 ## Frontend File Structure (/frontend/src)
 /actions - used for redux, describes paramaters for reducers  
 /gql - the various GraphQL queries and mutations for interacting with the backend  
@@ -54,7 +53,7 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 /Login - renders the Login page. Contains three files: index, Login and LoginContainer. LoginContainer enabled GraphQL data - providing data as a prop in Login. Login contains the remaining code  
 /Menu - the component for the dropdown menu in the navigation  
 /Notification - the component for showing notifications in the top right (for examples alerts when something didn't work)  
-/reducers - the logic for changing the global store (implemented by Redux). Three stores (authorisation, preferences and tasks) are combined into one store using index
+/reducers - the logic for changing the global store (implemented by Redux). Three stores (authorisation, preferences and tasks) are combined into one store using index  
 /Status - the code for the Status (Home) page.  
 /Status/ExecutionTable - the code for each table displaying executions (expanded in the task table)  
 /Status/PreferencesModal - the preferences component (displayed when changing the chip for last recieved executions)  
@@ -65,3 +64,12 @@ To view the raw data stored in the database, you can visit [localhost:5555](http
 /User - The page whenere users can change their preferences (For types of notification they recieve)  
 /Navigation.js - An overarching component, displaying the navigation at the top and page at the bottom, providing from authentication logic  
 /index.js - Initialises connections (socket and https) with the backend  
+
+## Backend File Structure (/backend)
+/src/server.js - Initialises the backend, providing a prisma endpoint and configures the cronjobs (such as reading executions)  
+/src/schema.graphql - The schema used by the backend (providing various queries, mutations and entities to be used at localhost:4000)  
+/src/context.js - Used for authentication  
+/src/resolvers - Contains the logic for each type of commmand on the backend. Mutation.js and Query.js provide mutation and query logic retrospectively, while the rest provide logic as to how entities are related (allowing nested queries)  
+/prisma/schema.prisma - The schema for the database. Prisma will generate a database in accordance to this schema  
+/ingress - directory where executions are written  
+/archive - directory for storing recorded executions  
