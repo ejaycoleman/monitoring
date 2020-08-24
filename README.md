@@ -43,3 +43,25 @@ Finally, go to [localhost:3000](http://localhost:3000), and monitor the status o
 Task executions are saved in the `backend/ingress` directory. Add/rename the files in here and the server will check every 5 seconds for changes, updating the db and /status page. <br>
 
 To view the raw data stored in the database, you can visit [localhost:5555](http://localhost:5555) <br>
+
+
+# Documentation
+
+## Frontend File Structure (/frontend/src)
+/actions - used for redux, describes paramaters for reducers  
+/gql - the various GraphQL queries and mutations for interacting with the backend  
+/InteractiveModal - Used for things such as preference panes  
+/Login - renders the Login page. Contains three files: index, Login and LoginContainer. LoginContainer enabled GraphQL data - providing data as a prop in Login. Login contains the remaining code  
+/Menu - the component for the dropdown menu in the navigation  
+/Notification - the component for showing notifications in the top right (for examples alerts when something didn't work)  
+/reducers - the logic for changing the global store (implemented by Redux). Three stores (authorisation, preferences and tasks) are combined into one store using index
+/Status - the code for the Status (Home) page.  
+/Status/ExecutionTable - the code for each table displaying executions (expanded in the task table)  
+/Status/PreferencesModal - the preferences component (displayed when changing the chip for last recieved executions)  
+/Status/StatusRow - the component to display the task within the table  
+/Status/TaskSettingsModal - the component to display the preferences modal when editing a task  
+/Status/Visualisations - the component for displaying the graph at the bottom of the Status component  
+/Upload - The page for uploading new tasks  
+/User - The page whenere users can change their preferences (For types of notification they recieve)  
+/Navigation.js - An overarching component, displaying the navigation at the top and page at the bottom, providing from authentication logic  
+/index.js - Initialises connections (socket and https) with the backend  
