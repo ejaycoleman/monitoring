@@ -81,8 +81,8 @@ The overall structure consists of the main server.js file, which initialises the
 
 # TODO
 1) Prevent users from submitting values lower than 1.
-2) Looking at the table of tasks when there is a task waiting for approval, I think it would be more intuitive if the reject button was next to the approve button, rather than having to edit the task.
-3) I don't think a user has any visibility if one of their tasks is rejected? Perhaps this could be another notification option.
-4) It looks like there is code which should produce a log message when an e-mail notification would be generated, but I can't see any messages in the console.
+2) The reject button should be next to the approve button on the table of tass
+3) Users could get notified when one of their requested tasks has been rejected
+4) Confirm email logic is working
 5) Enabling and disabling of notifications doesn't seem to be stored consistently.
 6) Over time, the graph will get quite dense. It may be worth a drop-down where you can choose to view the last week, month, 3 months, 6 months, 12 months, 24 months, or perhaps allow the specification of a start and end date to display. You will want to change the values on the y-axis so that the lowest value being displayed is shown at the bottom of the graph.
